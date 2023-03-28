@@ -1,5 +1,3 @@
-# AndroidProgramming
-
 # 게임 컨셉
 Puzzle Bobble과 같은 색의 구슬을 충돌 시키는 것으로 점수를 획득하는 게임
 
