@@ -1,19 +1,24 @@
 package com.example.apgp_puzzlebobble;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
+import android.view.Choreographer;
 import android.view.View;
 
 import java.util.ArrayList;
 
 
-public class GameView extends View {
+public class GameView extends View implements Choreographer.FrameCallback{
 
     public static float scale;
     public static float game_width = 9.0f;
     public static float game_height = 16.0f;
     public static int x_offset, y_offset;
+
+    public static Resources res;
+
 
 
     public GameView(Context context) {
@@ -21,14 +26,9 @@ public class GameView extends View {
         init(null, 0);
     }
 
-
     private void init(AttributeSet attrs, int defStyle) {
-
-    }
-
-    private void update()
-    {
-        BaseScene.getTopScene().update();
+        GameView.res = getResources();
+        Choreographer.getInstance().postFrameCallback(this);
     }
 
     protected void onSizeChanged(int w, int h, int oldw, int oldh)
@@ -54,8 +54,24 @@ public class GameView extends View {
         canvas.save();
         canvas.translate(x_offset, y_offset);
         canvas.scale(scale, scale);
-        canvas.restore();
 
        BaseScene.getTopScene().draw(canvas);
+        canvas.restore();
+    }
+
+    private long previousNanos;
+    @Override
+    public void doFrame(long nanos) {
+        if(previousNanos != 0)
+        {
+            long elapsedNanos = nanos - previousNanos;
+            BaseScene.getTopScene().update(elapsedNanos);
+        }
+        previousNanos = nanos;
+        invalidate();
+        if(isShown())
+        {
+            Choreographer.getInstance().postFrameCallback(this);
+        }
     }
 }

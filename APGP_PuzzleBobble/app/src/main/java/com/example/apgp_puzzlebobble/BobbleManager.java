@@ -10,6 +10,10 @@ public class BobbleManager implements IGameObject {
     public static int nextNum = 0;
     public HashMap<Integer, Bobble> BobbleMap;
 
+    BobbleManager()
+    {
+
+    }
     void addBobble()
     {
         BobbleMap.put(nextNum++, new Bobble());
