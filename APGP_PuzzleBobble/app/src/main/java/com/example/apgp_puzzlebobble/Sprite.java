@@ -1,6 +1,7 @@
 package com.example.apgp_puzzlebobble;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.RectF;
 
@@ -8,13 +9,20 @@ public class Sprite implements IGameObject{
     protected Bitmap bitmap;
     protected RectF dstRect = new RectF();
     protected float x, y, width, height;
-    public Sprite(float cx, float cy, float width, float height)
+    public Sprite(int bitmapResId, float cx, float cy, float width, float height)
     {
         this.x = cx;
         this.y = cy;
         this.width = width;
         this.height = height;
+        if (bitmapResId != 0) {
+            this.setBitmapResource(bitmapResId);
+        }
         fixDstRect();
+    }
+
+    protected void setBitmapResource(int bitmapResId) {
+        this.bitmap =  BitmapFactory.decodeResource(GameView.res, R.mipmap.bobblesprite);
     }
 
     @Override
@@ -35,7 +43,7 @@ public class Sprite implements IGameObject{
     }
     public void draw(Canvas canvas)
     {
-        canvas.drawBitmap(bitmap, null, dstRect, null);
+        canvas.drawBitmap(this.bitmap, null, dstRect, null);
     }
 
 }
