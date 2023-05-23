@@ -32,7 +32,7 @@ public class AnimSprite extends Sprite{
         super.update();
         time += BaseScene.frameTime;
         int frameIndex = Math.round(time * fps) % frameCount;
-        srcRect.set(frameIndex * frameWidth, 0, (frameIndex + 1) * frameWidth, frameHeight);
+        //srcRect.set(frameIndex * frameWidth, 0, (frameIndex + 1) * frameWidth, frameHeight);
     }
     @Override
     public void draw(Canvas canvas) {

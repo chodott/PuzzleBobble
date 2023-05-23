@@ -1,6 +1,7 @@
 package com.example.apgp_puzzlebobble;
 
 import android.graphics.Canvas;
+import android.view.MotionEvent;
 
 import java.util.ArrayList;
 
@@ -35,6 +36,10 @@ public class BaseScene {
         {
             gobj.draw(canvas);
         }
+    }
+
+    public boolean onTouchEvent(MotionEvent event) {
+        return false;
     }
 
     private ArrayList<IGameObject> gameObjects = new ArrayList<>();

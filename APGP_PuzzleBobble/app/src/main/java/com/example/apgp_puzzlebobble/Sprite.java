@@ -28,6 +28,9 @@ public class Sprite implements IGameObject{
     @Override
     public void update()
     {
+        float half_width = width/2;
+        float half_height = height/2;
+        dstRect.set(x - half_width,y - half_height, x + half_width, y + half_height);
     }
 
     protected void fixDstRect()

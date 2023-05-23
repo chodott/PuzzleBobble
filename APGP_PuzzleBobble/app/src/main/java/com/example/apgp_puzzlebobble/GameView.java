@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.Choreographer;
+import android.view.MotionEvent;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -59,6 +60,14 @@ public class GameView extends View implements Choreographer.FrameCallback{
         canvas.restore();
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        boolean handled = BaseScene.getTopScene().onTouchEvent(event);
+        if (handled) {
+            return true;
+        }
+        return super.onTouchEvent(event);
+    }
     private long previousNanos;
     @Override
     public void doFrame(long nanos) {

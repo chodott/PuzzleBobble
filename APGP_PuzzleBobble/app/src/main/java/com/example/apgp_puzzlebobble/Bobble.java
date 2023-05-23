@@ -3,6 +3,7 @@ package com.example.apgp_puzzlebobble;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.graphics.RectF;
 
 import java.util.ArrayList;
@@ -12,21 +13,30 @@ public class Bobble extends AnimSprite{
     private static final float BOBBLE_X = 4.5F;
     private static final float BOBBLE_Y = 12.F;
     private static final float BOBBLE_SIZE = 1.F;
-    private float accumulatedTime;
+    private static float dropSpeed = 5.f;
     private static Bitmap bitmap = BitmapFactory.decodeResource(GameView.res, R.mipmap.bobblesprite);
+
+    private float xShotSpeed;
+    private float yShotSpeed;
+
+    private float accumulatedTime;
+    private float direction;
     private RectF dstRect = new RectF();
+    private Rect srcRect = new Rect();
     private float dx, dy;
 
     public ArrayList<Integer> parentsBobbleNum;
 
     public int color;
+    public boolean bDestroyed;
+    public boolean bActive;
 
     public Bobble()
     {
         super(R.mipmap.bobblesprite, 4.5f, 4.5f, 1.f, 1.f, 1.955f, 0);
         Random random = new Random();
         color = random.nextInt(4);
-        dstRect.set(0,0,1.f,1.f);
+        dstRect.set(x,y,1.f,1.f);
         if(bitmap == null)
         {
             setBitmap();
@@ -35,15 +45,68 @@ public class Bobble extends AnimSprite{
 
     public static void setBitmap()
     {
-        Bobble.bitmap = BitmapFactory.decodeResource(GameView.res, R.mipmap.bobblesprite);
+        bitmap = BitmapFactory.decodeResource(GameView.res, R.mipmap.bobblesprite);
+    }
+
+    public Bobble setPos(float xPos, float yPos)
+    {
+        x = xPos;
+        y = yPos;
+        return this;
     }
 
     public void update()
+
     {
         super.update();
+        float frameTime = BaseScene.frameTime;
+        if(bDestroyed)
+        {
+            y -= dropSpeed * frameTime;
+
+            //삭제 조건
+            if(y <= 0.f)
+            {
+
+            }
+        }
+        else if(bActive)
+        {
+            x += xShotSpeed * frameTime;
+            y -= yShotSpeed * frameTime;
+            if(x <= 0.f || x >= 9.f)
+            {
+                xShotSpeed *= -1.f; //방향 변경
+            }
+        }
+        dstRect.set(x, y, 1.f, 1.f);
+        srcRect.set(0,0,70,70);
     }
+    @Override
     public void draw(Canvas canvas)
     {
         super.draw(canvas);
+        //canvas.drawBitmap(bitmap, srcRect, dstRect, null);
+    }
+
+    public void shot(float direction)
+    {
+        this.direction = direction;
+        double angleRadians = Math.atan(direction);
+        double angleDegrees = Math.toDegrees(angleRadians);
+        if(direction < 0.f)
+        {
+            xShotSpeed = -1.f; //(float) Math.cos(angleDegrees);
+
+        }
+        else
+        {
+            xShotSpeed = 1.f; //(float) Math.cos(angleDegrees);
+        }
+        yShotSpeed = direction * xShotSpeed;
+        bActive = true;
+
     }
 }
+
+
