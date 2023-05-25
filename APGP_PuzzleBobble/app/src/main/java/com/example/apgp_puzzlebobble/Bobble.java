@@ -22,27 +22,25 @@ public class Bobble extends AnimSprite{
     private float accumulatedTime;
     private float direction;
     private RectF dstRect = new RectF();
-    private Rect srcRect = new Rect();
     private float dx, dy;
 
     public ArrayList<Integer> parentsBobbleNum;
 
     public int color;
-    public boolean bDestroyed;
+    private boolean bDestroyed;
     public boolean bActive;
 
     public Bobble()
     {
         super(R.mipmap.bobblesprite, 4.5f, 4.5f, 1.f, 1.f, 1.955f, 0);
         Random random = new Random();
-        color = random.nextInt(4);
+        color = random.nextInt(3);
         dstRect.set(x,y,1.f,1.f);
         if(bitmap == null)
         {
             setBitmap();
         }
     }
-
     public static void setBitmap()
     {
         bitmap = BitmapFactory.decodeResource(GameView.res, R.mipmap.bobblesprite);
@@ -53,6 +51,27 @@ public class Bobble extends AnimSprite{
         x = xPos;
         y = yPos;
         return this;
+    }
+
+    public boolean getAcitve()
+    {
+        return bActive;
+    }
+
+    public void setActive(boolean b)
+    {
+        bActive = b;
+    }
+
+    public boolean checkCollision(Bobble target)
+    {
+        double distance = Math.sqrt(Math.pow(x - target.x,2) + Math.pow(y - target.y,2));
+        if(BOBBLE_SIZE > distance)
+        {
+            setActive(false);
+            return true;
+        }
+        return false;
     }
 
     public void update()
@@ -80,13 +99,12 @@ public class Bobble extends AnimSprite{
             }
         }
         dstRect.set(x, y, 1.f, 1.f);
-        srcRect.set(0,0,70,70);
+        srcRect.set(0,color * 70,70, color * 70 + 70);
     }
     @Override
     public void draw(Canvas canvas)
     {
         super.draw(canvas);
-        //canvas.drawBitmap(bitmap, srcRect, dstRect, null);
     }
 
     public void shot(float direction)

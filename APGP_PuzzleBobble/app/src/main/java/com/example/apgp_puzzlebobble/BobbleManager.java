@@ -50,9 +50,9 @@ public class BobbleManager implements IGameObject {
         bobbleMap.get(curBobbleNum).shot(direction);
     }
 
-    //충돌 발생시 이벤트
+
     void checkBobble(int bobbleNum)
-    {
+    {   //충돌 발생시 이벤트
         Bobble bb = FindBobble(bobbleNum);
         for(int bbNum : bb.parentsBobbleNum)
         {
@@ -87,6 +87,25 @@ public class BobbleManager implements IGameObject {
         for(Bobble bb: bobbleMap.values())
         {
             bb.update();
+        }
+
+        //충돌체크
+        if(FindBobble(curBobbleNum).getAcitve())
+        {
+            Bobble curbb = FindBobble(curBobbleNum);
+
+            for(int key: bobbleMap.keySet())
+            {
+                if(key != curBobbleNum)
+                {
+                    boolean bResult = curbb.checkCollision(bobbleMap.get(key));
+                    if(bResult)
+                    {
+                        checkBobble(curBobbleNum);
+                        popBobbles();
+                    }
+                }
+            }
         }
     }
 
