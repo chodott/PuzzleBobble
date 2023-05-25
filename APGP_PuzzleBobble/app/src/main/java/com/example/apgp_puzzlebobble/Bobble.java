@@ -12,7 +12,7 @@ import java.util.Random;
 public class Bobble extends AnimSprite{
     private static final float BOBBLE_X = 4.5F;
     private static final float BOBBLE_Y = 12.F;
-    private static final float BOBBLE_SIZE = 1.F;
+    private static final float BOBBLE_SIZE = 0.5F;
     private static float dropSpeed = 5.f;
     private static Bitmap bitmap = BitmapFactory.decodeResource(GameView.res, R.mipmap.bobblesprite);
 
@@ -24,7 +24,7 @@ public class Bobble extends AnimSprite{
     private RectF dstRect = new RectF();
     private float dx, dy;
 
-    public ArrayList<Integer> parentsBobbleNum;
+    public ArrayList<Integer> parentsBobbleNum = new ArrayList<>();
 
     public int color;
     private boolean bDestroyed;
@@ -66,7 +66,7 @@ public class Bobble extends AnimSprite{
     public boolean checkCollision(Bobble target)
     {
         double distance = Math.sqrt(Math.pow(x - target.x,2) + Math.pow(y - target.y,2));
-        if(BOBBLE_SIZE > distance)
+        if(BOBBLE_SIZE * 2 > distance)
         {
             setActive(false);
             return true;

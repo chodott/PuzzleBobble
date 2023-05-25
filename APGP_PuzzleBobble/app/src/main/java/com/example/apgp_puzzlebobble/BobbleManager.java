@@ -1,6 +1,7 @@
 package com.example.apgp_puzzlebobble;
 
 import android.graphics.Canvas;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,7 +10,7 @@ public class BobbleManager implements IGameObject {
 
     public static int nextNum = 0;
     public HashMap<Integer, Bobble> bobbleMap = new HashMap<>();
-    public ArrayList<Integer> popTargetBobbles;
+    public ArrayList<Integer> popTargetBobbles = new ArrayList<>();
     public int curBobbleNum;
 
     BobbleManager()
@@ -54,6 +55,7 @@ public class BobbleManager implements IGameObject {
     void checkBobble(int bobbleNum)
     {   //충돌 발생시 이벤트
         Bobble bb = FindBobble(bobbleNum);
+        if(bb.parentsBobbleNum.isEmpty()) return;
         for(int bbNum : bb.parentsBobbleNum)
         {
             if(bb.color == FindBobble(bbNum).color)
@@ -67,19 +69,27 @@ public class BobbleManager implements IGameObject {
 
     void popBobbles()
     {
-        if(popTargetBobbles.size() < 3) return;
-        for(int i : popTargetBobbles)
+        if(popTargetBobbles.size() >= 3)
         {
-            for(int j : FindBobble(i).parentsBobbleNum)
-            {
-                FindBobble(j).parentsBobbleNum.remove(j);
+            for (int i : popTargetBobbles) {
+                for (int j : FindBobble(i).parentsBobbleNum) {
+                    //FindBobble(j).parentsBobbleNum.remove(j);
+                }
+                DeleteBobble(i);
             }
+            Log.d("success", "popBobbles: ");
         }
+        popTargetBobbles.clear();
     }
 
     Bobble FindBobble(int num)
     {
         return bobbleMap.get(num);
+    }
+
+    void DeleteBobble(int num)
+    {
+        bobbleMap.remove(num);
     }
 
     @Override
@@ -93,7 +103,7 @@ public class BobbleManager implements IGameObject {
         if(FindBobble(curBobbleNum).getAcitve())
         {
             Bobble curbb = FindBobble(curBobbleNum);
-
+            boolean bHit = false;
             for(int key: bobbleMap.keySet())
             {
                 if(key != curBobbleNum)
@@ -101,10 +111,17 @@ public class BobbleManager implements IGameObject {
                     boolean bResult = curbb.checkCollision(bobbleMap.get(key));
                     if(bResult)
                     {
-                        checkBobble(curBobbleNum);
-                        popBobbles();
+                        curbb.parentsBobbleNum.add(key);
+                        bHit = true;
                     }
                 }
+            }
+            if(bHit)
+            {
+                checkBobble(curBobbleNum);
+                popTargetBobbles.add(curBobbleNum);
+                popBobbles();
+                addNewBobble();
             }
         }
     }
