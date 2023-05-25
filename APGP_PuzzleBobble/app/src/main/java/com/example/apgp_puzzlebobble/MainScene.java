@@ -19,7 +19,6 @@ public class MainScene extends BaseScene {
             case MotionEvent.ACTION_DOWN:
                 startX = Metrics.toGameX(event.getX());
                 startY = -Metrics.toGameY(event.getY());
-                Log.d("현재", "onTouchEvent: Down");
                 return true;
             case MotionEvent.ACTION_MOVE:
 
@@ -28,10 +27,8 @@ public class MainScene extends BaseScene {
             case MotionEvent.ACTION_UP:
                 float endX = Metrics.toGameX(event.getX());
                 float endY = -Metrics.toGameY(event.getY());
-                float direction = (endY - startY) / (endX - startX);
-                Log.d("Shot", "Direction = " + direction + "x =" + endX + "y =" + endY );
+                float direction = (startY - endY) / (startX - endX);
                 bobbleMgr.shotBobble(direction);
-                Log.d("현재", "onTouchEvent: ");
                 return true;
         }
         return super.onTouchEvent(event);

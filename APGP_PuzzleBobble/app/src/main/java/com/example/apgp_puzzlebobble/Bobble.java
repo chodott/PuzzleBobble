@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -16,6 +17,7 @@ public class Bobble extends AnimSprite{
     private static float dropSpeed = 5.f;
     private static Bitmap bitmap = BitmapFactory.decodeResource(GameView.res, R.mipmap.bobblesprite);
 
+    private static float speed = 5.f;
     private float xShotSpeed;
     private float yShotSpeed;
 
@@ -91,8 +93,8 @@ public class Bobble extends AnimSprite{
         }
         else if(bActive)
         {
-            x += xShotSpeed * frameTime;
-            y -= yShotSpeed * frameTime;
+            x += xShotSpeed * frameTime * speed;
+            y -= yShotSpeed * frameTime * speed;
             if(x <= 0.f || x >= 9.f)
             {
                 xShotSpeed *= -1.f; //방향 변경
@@ -112,17 +114,24 @@ public class Bobble extends AnimSprite{
         this.direction = direction;
         double angleRadians = Math.atan(direction);
         double angleDegrees = Math.toDegrees(angleRadians);
+        Log.d("shot", "Degree: " + angleDegrees);
+
         if(direction < 0.f)
         {
-            xShotSpeed = -1.f; //(float) Math.cos(angleDegrees);
+            xShotSpeed = -(float) Math.cos(angleRadians);
+            yShotSpeed = -(float)Math.tan(angleRadians);
 
         }
         else
         {
-            xShotSpeed = 1.f; //(float) Math.cos(angleDegrees);
+            xShotSpeed = (float) Math.cos(angleRadians);
+            yShotSpeed = (float)Math.tan(angleRadians);
         }
-        yShotSpeed = direction * xShotSpeed;
+
+        //yShotSpeed = direction * xShotSpeed;
         bActive = true;
+        Log.d("shot", "xspeed: " + yShotSpeed);
+        Log.d("shot", "yspeed: " + xShotSpeed);
 
     }
 }
