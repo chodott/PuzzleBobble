@@ -15,7 +15,8 @@ public class Bobble extends AnimSprite{
     private static final float BOBBLE_Y = 12.F;
     private static final float BOBBLE_SIZE = 0.5F;
     private static float dropSpeed = 5.f;
-    private static Bitmap bitmap = BitmapFactory.decodeResource(GameView.res, R.mipmap.bobblesprite);
+    private static Bitmap bitmap;
+    private static Random random;
 
     private static float speed = 5.f;
     private float xShotSpeed;
@@ -23,8 +24,8 @@ public class Bobble extends AnimSprite{
 
     private float accumulatedTime;
     private float direction;
-    private RectF dstRect = new RectF();
-    private float dx, dy;
+
+    //private RectF dstRect = new RectF();
 
     public ArrayList<Integer> parentsBobbleNum = new ArrayList<>();
 
@@ -35,9 +36,8 @@ public class Bobble extends AnimSprite{
     public Bobble()
     {
         super(R.mipmap.bobblesprite, 4.5f, 4.5f, 1.f, 1.f, 1.955f, 0);
-        Random random = new Random();
+        if(random == null) random = new Random();
         color = random.nextInt(3);
-        dstRect.set(x,y,1.f,1.f);
         if(bitmap == null)
         {
             setBitmap();
@@ -52,6 +52,7 @@ public class Bobble extends AnimSprite{
     {
         x = xPos;
         y = yPos;
+        setDstRect();
         return this;
     }
 
@@ -100,7 +101,7 @@ public class Bobble extends AnimSprite{
                 xShotSpeed *= -1.f; //방향 변경
             }
         }
-        dstRect.set(x, y, 1.f, 1.f);
+
         srcRect.set(0,color * 70,70, color * 70 + 70);
     }
     @Override
