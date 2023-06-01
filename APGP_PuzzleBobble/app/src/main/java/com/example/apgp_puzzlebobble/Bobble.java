@@ -114,8 +114,6 @@ public class Bobble extends AnimSprite{
     {
         this.direction = direction;
         double angleRadians = Math.atan(direction);
-        double angleDegrees = Math.toDegrees(angleRadians);
-        Log.d("shot", "Degree: " + angleDegrees);
 
         if(direction < 0.f)
         {
@@ -125,11 +123,10 @@ public class Bobble extends AnimSprite{
         }
         else
         {
-            xShotSpeed = (float) Math.cos(angleRadians);
+            xShotSpeed = (float)Math.cos(angleRadians);
             yShotSpeed = (float)Math.tan(angleRadians);
         }
 
-        //yShotSpeed = direction * xShotSpeed;
         bActive = true;
         Log.d("shot", "xspeed: " + yShotSpeed);
         Log.d("shot", "yspeed: " + xShotSpeed);

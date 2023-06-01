@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -40,12 +41,16 @@ public class MainScene extends BaseScene {
                 shotPath.reset();
                 float curX = Metrics.toGameX(event.getX());
                 float curY = -Metrics.toGameY(event.getY());
-                //shotPath.moveTo(startX/ 120, -startY / 120);
                 shotPath.moveTo(4.5f, 14.f);
                 float slope = (startY - curY) / (startX - curX);
-                //착탄지 정확하게 계산 필요
-                float xPos = curX - 4.5f;
-                float yPos = 14.f - slope * xPos;
+
+                curX /= 120.f;
+                curY /= 120.f;
+                float xDist = startX/120.f - curX;
+                float xPos = 4.5f + (startX/120.f - curX);
+                if(curX < 4.5f) slope *= -1;
+                float yPos = 14.f - (slope * (xDist));
+
                 shotPath.lineTo(xPos, yPos);
                 return true;
 
