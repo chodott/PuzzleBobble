@@ -117,14 +117,14 @@ public class Bobble extends AnimSprite{
 
         if(direction < 0.f)
         {
-            xShotSpeed = -(float) Math.cos(angleRadians);
-            yShotSpeed = -(float)Math.tan(angleRadians);
+            xShotSpeed = -(float)Math.cos(angleRadians);
+            yShotSpeed = -(float)Math.sin(angleRadians);
 
         }
         else
         {
             xShotSpeed = (float)Math.cos(angleRadians);
-            yShotSpeed = (float)Math.tan(angleRadians);
+            yShotSpeed = (float)Math.sin(angleRadians);
         }
 
         bActive = true;
