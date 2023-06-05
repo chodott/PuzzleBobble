@@ -26,7 +26,7 @@ public class MainScene extends BaseScene {
     }
     public MainScene()
     {
-        add(new Background());
+        add(new Background(0));
         bobbleMgr = new BobbleManager();
         add(bobbleMgr);
         score =  new Score(R.mipmap.scoresprite, 9.f, 0.f, 0.8f);
@@ -58,7 +58,8 @@ public class MainScene extends BaseScene {
             case MotionEvent.ACTION_UP:
                 float endX = Metrics.toGameX(event.getX());
                 float endY = -Metrics.toGameY(event.getY());
-                if(-startY > 15.f && -endY > 14.f)
+                Log.d("MainScene", "onTouchEvent: " + startY + " " + endY);
+                if(-startY > 1640.f && -endY < 1040.f)
                 {
                     //아이템 창 호출
                     new InventoryScene(itemList).pushScene();

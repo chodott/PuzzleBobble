@@ -1,6 +1,7 @@
 package com.example.apgp_puzzlebobble;
 
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ public class InventoryScene extends BaseScene
 
     public InventoryScene(ArrayList<Integer> itemList)
     {
-        add(new Background());
+        add(new Background(1));
 
         //Item 획득 목록 전달
         for(int type : itemList)
@@ -39,12 +40,13 @@ public class InventoryScene extends BaseScene
         {
             case MotionEvent.ACTION_DOWN:
                 startY = Metrics.toGameY(event.getY());
+                Log.d("Inventory", "onTouchEvent: ");
                 break;
             case MotionEvent.ACTION_MOVE:
                 break;
             case MotionEvent.ACTION_UP:
                 float endY = Metrics.toGameY(event.getY());
-                if(startY < 3.f && endY > 5.f)
+                if(startY < 800.f && endY > 1200.f)
                 {
                     popScene();
                 }
