@@ -17,11 +17,17 @@ public class BaseScene {
         stack.add(this);
         return stack.size();
     }
+
+    public void popScene()
+    {
+        stack.remove(this);
+    }
     public int add(IGameObject gobj)
     {
         gameObjects.add(gobj);
         return gameObjects.size();
     }
+
     public void update(long elapsedNanos)
     {
         frameTime = elapsedNanos/ 1_000_000_000f;
