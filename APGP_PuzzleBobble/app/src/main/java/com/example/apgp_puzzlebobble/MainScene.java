@@ -31,6 +31,20 @@ public class MainScene extends BaseScene {
         add(bobbleMgr);
         score =  new Score(R.mipmap.scoresprite, 9.f, 0.f, 0.8f);
         add(score);
+
+        //임의로 추가
+        itemList.add(0);
+        itemList.add(1);
+        itemList.add(2);
+    }
+
+    public void addNewItem(int type)
+    {
+        itemList.add(type);
+    }
+    public void equipItem(int type)
+    {
+        bobbleMgr.equipItem(type);
     }
 
     public boolean onTouchEvent(MotionEvent event) {
@@ -39,18 +53,19 @@ public class MainScene extends BaseScene {
             case MotionEvent.ACTION_DOWN:
                 startX = Metrics.toGameX(event.getX());
                 startY = -Metrics.toGameY(event.getY());
+                Log.d("", "onTouchEvent: " +startX + "y" + startY);
                 return true;
             case MotionEvent.ACTION_MOVE:
                 float curX = Metrics.toGameX(event.getX());
                 float curY = -Metrics.toGameY(event.getY());
+
                 //구슬 각도 조절 동작
                 shotPath.reset();
-                shotPath.moveTo(4.5f, 14.f);
+                float xCenter = Metrics.game_width/2;
+                shotPath.moveTo(xCenter, 14.f);
                 float slope = (startY - curY) / (startX - curX);
-                curX /= 120.f;
-                float xDist = startX / 120.f - curX;
-                float xPos = 4.5f + (startX / 120.f - curX);
-                if (curX < 4.5f) slope *= -1;
+                float xDist = startX  - curX;
+                float xPos = xCenter + (startX - curX);
                 float yPos = 14.f - (slope * (xDist));
                 shotPath.lineTo(xPos, yPos);
                 return true;
@@ -59,7 +74,7 @@ public class MainScene extends BaseScene {
                 float endX = Metrics.toGameX(event.getX());
                 float endY = -Metrics.toGameY(event.getY());
                 Log.d("MainScene", "onTouchEvent: " + startY + " " + endY);
-                if(-startY > 1640.f && -endY < 1040.f)
+                if(-startY > 14.f && -endY < 10.f)
                 {
                     //아이템 창 호출
                     new InventoryScene(itemList).pushScene();

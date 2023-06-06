@@ -11,14 +11,12 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Bobble extends AnimSprite{
-    private static final float BOBBLE_X = 4.5F;
-    private static final float BOBBLE_Y = 12.F;
     private static final float BOBBLE_SIZE = 0.5F;
     private static float dropSpeed = 5.f;
     private static Bitmap bitmap;
     private static Random random;
 
-    private static float speed = 5.f;
+    private static float speed = 10.f;
     private float xShotSpeed;
     private float yShotSpeed;
 
@@ -128,8 +126,6 @@ public class Bobble extends AnimSprite{
         }
 
         bActive = true;
-        Log.d("shot", "xspeed: " + yShotSpeed);
-        Log.d("shot", "yspeed: " + xShotSpeed);
 
     }
 }

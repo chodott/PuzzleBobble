@@ -27,6 +27,11 @@ public class AnimSprite extends Sprite{
         srcRect.set(0,0, 70, 70);
     }
 
+    public void setSrcRect(float cx, float cy, float width, float height)
+    {
+        //출력
+
+    }
     @Override
     public void update() {
         super.update();

@@ -13,11 +13,6 @@ import java.util.ArrayList;
 
 public class GameView extends View implements Choreographer.FrameCallback{
 
-    public static float scale;
-    public static float game_width = 9.0f;
-    public static float game_height = 16.0f;
-    public static int x_offset, y_offset;
-
     public static Resources res;
 
 
@@ -30,19 +25,36 @@ public class GameView extends View implements Choreographer.FrameCallback{
     private void init(AttributeSet attrs, int defStyle) {
         GameView.res = getResources();
         Choreographer.getInstance().postFrameCallback(this);
+        //setFullScreen();
+    }
+
+    public void setFullScreen() {
+        setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
     }
 
     protected void onSizeChanged(int w, int h, int oldw, int oldh)
     {
         super.onSizeChanged(w,h,oldw,oldh);
+//
+//        float view_ratio = (float)w / (float)h;
+//        float game_ratio = game_width / game_height;
+//        if(view_ratio > game_ratio)
+//        {
+//            x_offset = (int)((w - h * game_ratio)/2);
+//            y_offset = 0;
+//            scale = h/game_height;
+//        }
 
         float view_ratio = (float)w / (float)h;
-        float game_ratio = game_width / game_height;
-        if(view_ratio > game_ratio)
-        {
-            x_offset = (int)((w - h * game_ratio)/2);
-            y_offset = 0;
-            scale = h/game_height;
+        float game_ratio = Metrics.game_width / Metrics.game_height;
+        if (view_ratio > game_ratio) {
+            Metrics.x_offset = (int) ((w - h * game_ratio) / 2);
+            Metrics.y_offset = 0;
+            Metrics.scale = h / Metrics.game_height;
+        } else {
+            Metrics.x_offset = 0;
+            Metrics.y_offset = (int)((h - w / game_ratio) / 2);
+            Metrics.scale = w / Metrics.game_width;
         }
 
 
@@ -51,10 +63,9 @@ public class GameView extends View implements Choreographer.FrameCallback{
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
         canvas.save();
-        canvas.translate(x_offset, y_offset);
-        canvas.scale(scale, scale);
+        canvas.translate(Metrics.x_offset, Metrics.y_offset);
+        canvas.scale(Metrics.scale, Metrics.scale);
 
        BaseScene.getTopScene().draw(canvas);
         canvas.restore();

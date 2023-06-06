@@ -48,5 +48,5 @@ public class BaseScene {
         return false;
     }
 
-    private ArrayList<IGameObject> gameObjects = new ArrayList<>();
+    protected ArrayList<IGameObject> gameObjects = new ArrayList<>();
 }

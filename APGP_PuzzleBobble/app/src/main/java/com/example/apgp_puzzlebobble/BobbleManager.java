@@ -11,6 +11,8 @@ public class BobbleManager implements IGameObject {
     public static int nextNum = 0;
     public HashMap<Integer, Bobble> bobbleMap = new HashMap<>();
     public ArrayList<Integer> popTargetBobbles = new ArrayList<>();
+
+    public Bobble curBobble;
     public int curBobbleNum;
 
     BobbleManager()
@@ -23,9 +25,8 @@ public class BobbleManager implements IGameObject {
     {
         //발사할 구슬 생성
         curBobbleNum = nextNum;
-        addBobble(new Bobble()
-                .setPos(4.5f, 14.f));
-
+        curBobble = new Bobble()
+                .setPos(Metrics.game_width/2, 14.f);
     }
     void addBobble()
     {
@@ -48,13 +49,14 @@ public class BobbleManager implements IGameObject {
 
     void shotBobble(float direction)
     {
-        bobbleMap.get(curBobbleNum).shot(direction);
+        curBobble.shot(direction);
     }
 
 
     void checkBobble(int bobbleNum)
     {   //충돌 발생시 이벤트
         Bobble bb = FindBobble(bobbleNum);
+        if(bb == null) return;
         if(bb.parentsBobbleNum.isEmpty()) return;
         for(int bbNum : bb.parentsBobbleNum)
         {
@@ -69,7 +71,8 @@ public class BobbleManager implements IGameObject {
 
     void popBobbles()
     {
-        if(popTargetBobbles.size() >= 3)
+        int comboSize = popTargetBobbles.size();
+        if(comboSize >= 3)
         {
             for (int i : popTargetBobbles) {
                 for (int j : FindBobble(i).parentsBobbleNum) {
@@ -79,7 +82,26 @@ public class BobbleManager implements IGameObject {
             }
             Log.d("success", "popBobbles: ");
         }
+        makeNewItem(comboSize);
         popTargetBobbles.clear();
+    }
+
+    public void makeNewItem(int comboSize)
+    {
+        BaseScene scene = BaseScene.getTopScene();
+        MainScene mainscene = (MainScene)scene;
+        //콤보 종류
+        mainscene.addNewItem(0);
+    }
+
+    public void equipItem(int type)
+    {
+        switch(type)
+        {
+            case 1:
+                curBobble = new BombItem();
+        }
+        curBobble.setPos(Metrics.game_width/2, 14.f);
     }
 
     Bobble FindBobble(int num)
@@ -98,28 +120,29 @@ public class BobbleManager implements IGameObject {
         {
             bb.update();
         }
+        curBobble.update();
 
         //충돌체크
-        if(FindBobble(curBobbleNum).getAcitve())
+        if(curBobble.getAcitve())
         {
-            Bobble curbb = FindBobble(curBobbleNum);
             boolean bHit = false;
             for(int key: bobbleMap.keySet())
             {
                 if(key != curBobbleNum)
                 {
-                    boolean bResult = curbb.checkCollision(bobbleMap.get(key));
+                    boolean bResult = curBobble.checkCollision(bobbleMap.get(key));
                     if(bResult)
                     {
-                        curbb.parentsBobbleNum.add(key);
+                        curBobble.parentsBobbleNum.add(key);
                         bHit = true;
                     }
                 }
             }
             if(bHit)
             {
+                addBobble(curBobble);
                 checkBobble(curBobbleNum);
-                popTargetBobbles.add(curBobbleNum);
+                popTargetBobbles.add(curBobbleNum++);
                 popBobbles();
                 addNewBobble();
             }
@@ -133,5 +156,6 @@ public class BobbleManager implements IGameObject {
         {
             bb.draw(canvas);
         }
+        curBobble.draw(canvas);
     }
 }

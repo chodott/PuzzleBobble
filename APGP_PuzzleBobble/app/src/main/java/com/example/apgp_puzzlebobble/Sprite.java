@@ -22,7 +22,7 @@ public class Sprite implements IGameObject{
     }
 
     protected void setBitmapResource(int bitmapResId) {
-        this.bitmap =  BitmapFactory.decodeResource(GameView.res, R.mipmap.bobblesprite);
+        this.bitmap =  BitmapFactory.decodeResource(GameView.res, bitmapResId);
     }
 
     @Override

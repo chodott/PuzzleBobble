@@ -10,11 +10,11 @@
         android:theme="@style/Theme.APGP_PuzzleBobble"
         tools:targetApi="31">
         <activity
-            android:name=".TitleActivity"
+            android:name=".MainActivity"
             android:exported="false"
             android:theme="@style/Theme.APGP_PuzzleBobble" />
         <activity
-            android:name=".MainActivity"
+            android:name=".TitleActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
