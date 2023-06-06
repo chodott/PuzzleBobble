@@ -98,8 +98,16 @@ public class BobbleManager implements IGameObject {
     {
         switch(type)
         {
+            case 0:
+                curBobble = new Bobble();
+                break;
             case 1:
                 curBobble = new BombItem();
+                break;
+
+            case 2:
+                break;
+                    //curBobble = new TimeItem();
         }
         curBobble.setPos(Metrics.game_width/2, 14.f);
     }

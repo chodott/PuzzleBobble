@@ -17,6 +17,8 @@ public class Bobble extends AnimSprite{
     private static Random random;
 
     private static float speed = 10.f;
+
+    private static int COLOR_COUNT = 3;
     private float xShotSpeed;
     private float yShotSpeed;
 
@@ -31,15 +33,27 @@ public class Bobble extends AnimSprite{
     private boolean bDestroyed;
     public boolean bActive;
 
-    public Bobble()
+    public Bobble(int bitmapId, int frameCount, int typeCount)
     {
-        super(R.mipmap.bobblesprite, 4.5f, 4.5f, 1.f, 1.f, 1.955f, 0);
+        super(bitmapId, 4.5f, 4.5f, 1.f, 1.f, 1.955f, frameCount, typeCount);
         if(random == null) random = new Random();
         color = random.nextInt(3);
         if(bitmap == null)
         {
             setBitmap();
         }
+
+    }
+    public Bobble()
+    {
+        super(R.mipmap.bobblesprite, 4.5f, 4.5f, 1.f, 1.f, 1.955f, 7, COLOR_COUNT);
+        if(random == null) random = new Random();
+        color = random.nextInt(3);
+        if(bitmap == null)
+        {
+            setBitmap();
+        }
+        srcRect.set(0,color * 70,70, color * 70 + 70);
     }
     public static void setBitmap()
     {
@@ -69,6 +83,7 @@ public class Bobble extends AnimSprite{
         double distance = Math.sqrt(Math.pow(x - target.x,2) + Math.pow(y - target.y,2));
         if(BOBBLE_SIZE * 2 > distance)
         {
+            bAnimating = true;
             setActive(false);
             return true;
         }
@@ -100,7 +115,6 @@ public class Bobble extends AnimSprite{
             }
         }
 
-        srcRect.set(0,color * 70,70, color * 70 + 70);
     }
     @Override
     public void draw(Canvas canvas)

@@ -43,8 +43,11 @@ public class Sprite implements IGameObject{
         dstRect.set(x - half_width,y - half_height, x + half_width, y + half_height);
 
     }
+
     protected void setSize(float width, float height)
     {
+        this.width = width;
+        this.height = height;
         float half_width = width/2;
         float half_height = height/2;
         dstRect.set(x - half_width, y - half_height, x+ half_width, y + half_height);

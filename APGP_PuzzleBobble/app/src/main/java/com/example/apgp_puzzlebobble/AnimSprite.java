@@ -8,36 +8,37 @@ public class AnimSprite extends Sprite{
     protected int frameIndex, frameCount;
     protected int frameWidth, frameHeight;
     protected float time, fps;
-    public AnimSprite(int bitmapResId, float cx, float cy, float width, float height, float fps, int frameCount)
+
+    protected boolean bAnimating;
+    public AnimSprite(int bitmapResId, float cx, float cy, float width, float height, float fps, int frameCount, int typeCount)
     {
         super(bitmapResId, cx, cy, width, height);
         this.fps = fps;
         int Width = bitmap.getWidth();
-        frameHeight = 5;
+        int Height = bitmap.getHeight();
         if(frameCount == 0)
         {
-            frameWidth = frameHeight;
-            this.frameCount = Width/ frameHeight;
+            frameWidth = Width;
+            this.frameCount = Width/ Height;
         }
         else
         {
             frameWidth = Width/ frameCount;
+            frameHeight = Height/typeCount;
             this.frameCount = frameCount;
         }
-        srcRect.set(0,0, 70, 70);
+        srcRect.set(0,0, frameWidth, frameHeight);
     }
 
-    public void setSrcRect(float cx, float cy, float width, float height)
-    {
-        //출력
 
-    }
     @Override
     public void update() {
         super.update();
-        time += BaseScene.frameTime;
-        int frameIndex = Math.round(time * fps) % frameCount;
-        //srcRect.set(frameIndex * frameWidth, 0, (frameIndex + 1) * frameWidth, frameHeight);
+        if(bAnimating) {
+            time += BaseScene.frameTime;
+            int frameIndex = Math.round(time * fps) % frameCount;
+            srcRect.set(frameIndex * frameWidth, 0, (frameIndex + 1) * frameWidth, frameHeight);
+        }
     }
     @Override
     public void draw(Canvas canvas) {
