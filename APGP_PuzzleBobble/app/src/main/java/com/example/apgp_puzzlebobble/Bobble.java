@@ -13,7 +13,6 @@ import java.util.Random;
 public class Bobble extends AnimSprite{
     private static final float BOBBLE_SIZE = 0.5F;
     private static float dropSpeed = 5.f;
-    private static Bitmap bitmap;
     private static Random random;
 
     private static float speed = 10.f;
@@ -25,7 +24,6 @@ public class Bobble extends AnimSprite{
     private float accumulatedTime;
     private float direction;
 
-    //private RectF dstRect = new RectF();
 
     public ArrayList<Integer> parentsBobbleNum = new ArrayList<>();
 
@@ -33,31 +31,12 @@ public class Bobble extends AnimSprite{
     private boolean bDestroyed;
     public boolean bActive;
 
-    public Bobble(int bitmapId, int frameCount, int typeCount)
-    {
-        super(bitmapId, 4.5f, 4.5f, 1.f, 1.f, 1.955f, frameCount, typeCount);
-        if(random == null) random = new Random();
-        color = random.nextInt(3);
-        if(bitmap == null)
-        {
-            setBitmap();
-        }
-
-    }
     public Bobble()
     {
         super(R.mipmap.bobblesprite, 4.5f, 4.5f, 1.f, 1.f, 1.955f, 7, COLOR_COUNT);
         if(random == null) random = new Random();
         color = random.nextInt(3);
-        if(bitmap == null)
-        {
-            setBitmap();
-        }
         srcRect.set(0,color * 70,70, color * 70 + 70);
-    }
-    public static void setBitmap()
-    {
-        bitmap = BitmapFactory.decodeResource(GameView.res, R.mipmap.bobblesprite);
     }
 
     public Bobble setPos(float xPos, float yPos)

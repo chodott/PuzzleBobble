@@ -9,10 +9,11 @@ import java.util.HashMap;
 public class BobbleManager implements IGameObject {
 
     public static int nextNum = 0;
-    public HashMap<Integer, Bobble> bobbleMap = new HashMap<>();
-    public ArrayList<Integer> popTargetBobbles = new ArrayList<>();
+    public static HashMap<Integer, Bobble> bobbleMap = new HashMap<>();
+    public static ArrayList<Integer> popTargetBobbles = new ArrayList<>();
 
     public Bobble curBobble;
+    public ItemBobble curItem;
     public int curBobbleNum;
 
     BobbleManager()
@@ -49,7 +50,8 @@ public class BobbleManager implements IGameObject {
 
     void shotBobble(float direction)
     {
-        curBobble.shot(direction);
+        if(curItem != null) curItem.shot(direction);
+        else curBobble.shot(direction);
     }
 
 
@@ -69,22 +71,39 @@ public class BobbleManager implements IGameObject {
         }
     }
 
-    void popBobbles()
+    void popBobbles(boolean bUseItem)
     {
-        int comboSize = popTargetBobbles.size();
-        if(comboSize >= 3)
+        if(bUseItem)
         {
-            for (int i : popTargetBobbles) {
-                for (int j : FindBobble(i).parentsBobbleNum) {
+            for (int i : popTargetBobbles)
+            {
+                for (int j : FindBobble(i).parentsBobbleNum)
+                {
                     //FindBobble(j).parentsBobbleNum.remove(j);
                 }
                 DeleteBobble(i);
             }
             Log.d("success", "popBobbles: ");
         }
-        makeNewItem(comboSize);
-        popTargetBobbles.clear();
-    }
+        else
+        {
+            int comboSize = popTargetBobbles.size();
+            if(comboSize >= 3)
+            {
+                for (int i : popTargetBobbles) {
+                    for (int j : FindBobble(i).parentsBobbleNum) {
+                        //FindBobble(j).parentsBobbleNum.remove(j);
+                    }
+                    DeleteBobble(i);
+                }
+                Log.d("success", "popBobbles: ");
+            }
+            makeNewItem(comboSize);
+
+
+        }
+         popTargetBobbles.clear();
+        }
 
     public void makeNewItem(int comboSize)
     {
@@ -102,7 +121,7 @@ public class BobbleManager implements IGameObject {
                 curBobble = new Bobble();
                 break;
             case 1:
-                curBobble = new BombItem();
+                curItem = new BombItem();
                 break;
 
             case 2:
@@ -131,7 +150,22 @@ public class BobbleManager implements IGameObject {
         curBobble.update();
 
         //충돌체크
-        if(curBobble.getAcitve())
+        if(curItem != null)
+        {
+            curItem.update();
+            boolean bHit = false;
+            for(int key: bobbleMap.keySet())
+            {
+                bHit = curItem.checkCollision(bobbleMap.get(key));
+                if (bHit) {
+                    curItem.applyAbility();
+                    break;
+                }
+            }
+            popBobbles(true);
+        }
+
+        else if(curBobble.getAcitve())
         {
             boolean bHit = false;
             for(int key: bobbleMap.keySet())
@@ -151,9 +185,9 @@ public class BobbleManager implements IGameObject {
                 addBobble(curBobble);
                 checkBobble(curBobbleNum);
                 popTargetBobbles.add(curBobbleNum++);
-                popBobbles();
                 addNewBobble();
             }
+            popBobbles(false);
         }
     }
 
@@ -165,5 +199,6 @@ public class BobbleManager implements IGameObject {
             bb.draw(canvas);
         }
         curBobble.draw(canvas);
+        if(curItem != null) curItem.draw(canvas);
     }
 }
