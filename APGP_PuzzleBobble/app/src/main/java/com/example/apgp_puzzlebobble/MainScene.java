@@ -15,6 +15,7 @@ public class MainScene extends BaseScene {
 
     public BobbleManager bobbleMgr;
     public Score score;
+    public LimitTimer limitTimer;
     public Path shotPath = new Path();
     public ArrayList<Integer> itemList = new ArrayList<Integer>();
     float startX, startY;
@@ -31,6 +32,8 @@ public class MainScene extends BaseScene {
         add(bobbleMgr);
         score =  new Score(R.mipmap.scoresprite, 9.f, 0.f, 0.8f);
         add(score);
+        limitTimer = new LimitTimer(R.mipmap.scoresprite, 4.5f, 0.f, 1.f);
+        add(limitTimer);
 
         //임의로 추가
         itemList.add(0);
@@ -42,6 +45,7 @@ public class MainScene extends BaseScene {
     {
         //배경음악 실행
         Sound.playMusic(R.raw.mainmusic);
+
     }
 
     protected void onEnd()
@@ -102,6 +106,12 @@ public class MainScene extends BaseScene {
                 }
         }
         return super.onTouchEvent(event);
+    }
+
+    @Override
+    public void update(long elapsedNanos) {
+        super.update(elapsedNanos);
+
     }
 
     @Override
