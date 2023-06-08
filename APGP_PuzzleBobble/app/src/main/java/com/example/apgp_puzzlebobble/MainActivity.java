@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(gameView);
 
         new MainScene().pushScene();
+        BaseScene.getTopScene().onStart();
     }
 
 

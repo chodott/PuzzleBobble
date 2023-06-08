@@ -5,7 +5,7 @@ import android.view.MotionEvent;
 
 import java.util.ArrayList;
 
-public class BaseScene {
+public abstract class BaseScene {
     private static ArrayList<BaseScene> stack = new ArrayList<>();
     public static float frameTime;
     public static BaseScene getTopScene()
@@ -27,6 +27,9 @@ public class BaseScene {
         gameObjects.add(gobj);
         return gameObjects.size();
     }
+
+    protected abstract void onStart();
+    protected abstract void onEnd();
 
     public void update(long elapsedNanos)
     {

@@ -42,6 +42,16 @@ public class InventoryScene extends BaseScene
     }
 
     @Override
+    protected void onStart() {
+
+    }
+
+    @Override
+    protected void onEnd() {
+
+    }
+
+    @Override
     public void update(long elapsedNanos) {
         super.update(elapsedNanos);
     }
@@ -84,6 +94,9 @@ public class InventoryScene extends BaseScene
                         popScene();
                         MainScene mainscene = (MainScene)getTopScene();
                         mainscene.equipItem(selectedItem.type);
+
+                        //아이템 사용 사운드 추가
+                        Sound.playEffect(R.raw.itemuseeffect);
                     }
                     selectedItem = null;
                 }

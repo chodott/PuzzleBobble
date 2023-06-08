@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class GameView extends View implements Choreographer.FrameCallback{
 
     public static Resources res;
-
+    public static GameView view;
 
 
     public GameView(Context context) {
@@ -24,6 +24,7 @@ public class GameView extends View implements Choreographer.FrameCallback{
 
     private void init(AttributeSet attrs, int defStyle) {
         GameView.res = getResources();
+        GameView.view = this;
         Choreographer.getInstance().postFrameCallback(this);
         //setFullScreen();
     }

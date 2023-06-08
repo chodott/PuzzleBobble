@@ -38,6 +38,17 @@ public class MainScene extends BaseScene {
         itemList.add(2);
     }
 
+    protected void onStart()
+    {
+        //배경음악 실행
+        Sound.playMusic(R.raw.mainmusic);
+    }
+
+    protected void onEnd()
+    {
+        Sound.stopMusic();
+    }
+
     public void addNewItem(int type)
     {
         itemList.add(type);
@@ -78,6 +89,7 @@ public class MainScene extends BaseScene {
                 {
                     //아이템 창 호출
                     new InventoryScene(itemList).pushScene();
+                    Sound.playEffect(R.raw.pauseeffect);
                     return true;
                 }
                 else

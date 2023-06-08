@@ -52,6 +52,9 @@ public class BobbleManager implements IGameObject {
     {
         if(curItem != null) curItem.shot(direction);
         else curBobble.shot(direction);
+
+        //발사 효과음 출력
+        Sound.playEffect(R.raw.shoteffect);
     }
 
 
@@ -83,7 +86,7 @@ public class BobbleManager implements IGameObject {
                 }
                 DeleteBobble(i);
             }
-            Log.d("success", "popBobbles: ");
+
         }
         else
         {
@@ -96,7 +99,9 @@ public class BobbleManager implements IGameObject {
                     }
                     DeleteBobble(i);
                 }
-                Log.d("success", "popBobbles: ");
+
+                //pop bobble sound
+                //Sound.playEffect(R.raw.);
             }
             makeNewItem(comboSize);
 
@@ -125,8 +130,8 @@ public class BobbleManager implements IGameObject {
                 break;
 
             case 2:
+                curItem = new TimeItem();
                 break;
-                    //curBobble = new TimeItem();
         }
         curBobble.setPos(Metrics.game_width/2, 14.f);
     }
