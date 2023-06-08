@@ -7,6 +7,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 
 public class LimitTimer implements IGameObject{
+    private static boolean bStopped = false;
     private final Bitmap bitmap;
     private final int srcWidth, srcHeight;
     private final float dstWidth, dstHeight;
@@ -14,6 +15,7 @@ public class LimitTimer implements IGameObject{
     private final Rect srcRect = new Rect();
     private final RectF dstRect = new RectF();
     private int limitTime= 60;
+    private float stoppedTime = 0;
     private float runningTime = 0;
 
     public LimitTimer(int mipmapResId, float right, float top, float width)
@@ -30,9 +32,24 @@ public class LimitTimer implements IGameObject{
     public void setLimitTime(int limitTime) {this.limitTime = limitTime;}
     public int getLimitTime(){ return limitTime;}
 
+    public static void stopTimer() {bStopped = true;}
+    public void resumeTimer() {
+        bStopped = false;
+        stoppedTime = 0;
+    }
+
     @Override
     public void update() {
-        runningTime += BaseScene.frameTime;
+        float frameTime = BaseScene.frameTime;
+        if(!bStopped) runningTime += frameTime;
+        else
+        {
+            stoppedTime += frameTime;
+            if(stoppedTime > 5.f)
+            {
+                resumeTimer();
+            }
+        }
     }
 
     @Override

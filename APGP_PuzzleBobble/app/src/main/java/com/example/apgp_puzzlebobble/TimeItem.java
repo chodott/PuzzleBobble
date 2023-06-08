@@ -2,13 +2,18 @@ package com.example.apgp_puzzlebobble;
 
 public class TimeItem extends ItemBobble{
 
-    private static int FRAME_COUNT = 10;
+    private static int FRAME_COUNT = 8;
     public TimeItem() {
-        super(R.mipmap.itemsprite, FRAME_COUNT, 1);
+        super(R.mipmap.clocksprite, FRAME_COUNT, 2);
     }
+
+
 
     @Override
-    public void applyAbility() {
-
+    public void applyAbility()
+    {
+        LimitTimer.stopTimer();
+        bActive = false;
     }
+
 }

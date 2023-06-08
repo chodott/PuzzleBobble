@@ -158,6 +158,7 @@ public class BobbleManager implements IGameObject {
         if(curItem != null)
         {
             curItem.update();
+            if(!curItem.bActive) return;
             boolean bHit = false;
             for(int key: bobbleMap.keySet())
             {
