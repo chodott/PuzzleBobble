@@ -11,10 +11,13 @@ public class LimitTimer implements IGameObject{
     private final Bitmap bitmap;
     private final int srcWidth, srcHeight;
     private final float dstWidth, dstHeight;
+
+    private final float ADDLINE_TIME = 10.f;
     private final float right, top;
     private final Rect srcRect = new Rect();
     private final RectF dstRect = new RectF();
     private int limitTime= 60;
+    private int spawnTime = 5;
     private float stoppedTime = 0;
     private float runningTime = 0;
 
@@ -41,7 +44,16 @@ public class LimitTimer implements IGameObject{
     @Override
     public void update() {
         float frameTime = BaseScene.frameTime;
-        if(!bStopped) runningTime += frameTime;
+        if(!bStopped)
+        {
+            runningTime += frameTime;
+            int temp = (int)(runningTime / ADDLINE_TIME);
+            if(spawnTime != temp)
+            {
+                BobbleManager.addBobbleLine();
+                spawnTime = temp;
+            }
+        }
         else
         {
             stoppedTime += frameTime;

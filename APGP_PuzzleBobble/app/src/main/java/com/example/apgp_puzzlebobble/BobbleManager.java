@@ -3,6 +3,7 @@ package com.example.apgp_puzzlebobble;
 import android.graphics.Canvas;
 import android.util.Log;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -25,7 +26,7 @@ public class BobbleManager implements IGameObject {
     void addNewBobble()
     {
         //발사할 구슬 생성
-        curBobbleNum = nextNum;
+        curBobbleNum = nextNum++;
         curBobble = new Bobble()
                 .setPos(Metrics.game_width/2, 14.f);
     }
@@ -33,28 +34,58 @@ public class BobbleManager implements IGameObject {
     {
         bobbleMap.put(Integer.valueOf(nextNum++), new Bobble());
     }
-    void addBobble(Bobble bobble)
+    static void addBobble(Bobble bobble, int num) {bobbleMap.put(num, bobble);}
+    static void addBobble(Bobble bobble)
     {
         bobbleMap.put(Integer.valueOf(nextNum++), bobble);
     }
 
-    void addBobbleLine()
+    static void addBobbleLine()
     {
+        ArrayList<Integer> newbbNum = new ArrayList<>();
         //정해진 개수만큼 반복하면서 추가
-        for(int i=0;i<10; ++i)
+        for(int i=0;i<8; ++i)
         {
-            addBobble(new Bobble()
-                    .setPos(i * 1.f, 3.f));
+            newbbNum.add(BobbleManager.nextNum);
+            Bobble curbb = new Bobble().setPos(i * 1.f + 1.f, 2.f);
+            addBobble(curbb);
+            if(i > 0)
+            {
+                curbb.parentsBobbleNum.add(nextNum - 2);
+                FindBobble(nextNum-2).parentsBobbleNum.add(nextNum - 1);
+            }
+
         }
+
+        for(int bbnum: bobbleMap.keySet())
+        {
+            Bobble bb = bobbleMap.get(bbnum);
+            for(int curbbnum : newbbNum)
+            {
+                if(curbbnum != bbnum)
+                {
+                    Bobble curbb = bobbleMap.get(curbbnum);
+                    boolean bOverlap = bb.checkCollision(curbb);
+                    if(bOverlap)
+                    {
+                        curbb.parentsBobbleNum.add(bbnum);
+                        bb.parentsBobbleNum.add(curbbnum);
+                    }
+                }
+            }
+            if(!newbbNum.contains(bbnum))
+                bb.setPos(bb.x, bb.y + 1.f);
+        }
+
+        newbbNum.clear();
     }
 
     void shotBobble(float direction)
     {
-        if(curItem != null) curItem.shot(direction);
-        else curBobble.shot(direction);
-
         //발사 효과음 출력
         Sound.playEffect(R.raw.shoteffect);
+        if(curItem != null) curItem.shot(direction);
+        else curBobble.shot(direction);
     }
 
 
@@ -65,12 +96,17 @@ public class BobbleManager implements IGameObject {
         if(bb.parentsBobbleNum.isEmpty()) return;
         for(int bbNum : bb.parentsBobbleNum)
         {
-            if(bb.color == FindBobble(bbNum).color)
-            {//컬러가 같을 때 부모 계속 추적
+            Bobble checkbb = FindBobble(bbNum);
+            if(checkbb == null) return;
+            if(checkbb.bChecked) return;
+
+            checkbb.bChecked = true;
+            if(bb.color == checkbb.color)
+            {
+                //컬러가 같을 때 부모 계속 추적
                 checkBobble(bbNum);
                 popTargetBobbles.add(bbNum);
             }
-            else return;
         }
     }
 
@@ -84,7 +120,7 @@ public class BobbleManager implements IGameObject {
                 {
                     //FindBobble(j).parentsBobbleNum.remove(j);
                 }
-                DeleteBobble(i);
+                FindBobble(i).pop();
             }
 
         }
@@ -94,17 +130,16 @@ public class BobbleManager implements IGameObject {
             if(comboSize >= 3)
             {
                 for (int i : popTargetBobbles) {
-                    for (int j : FindBobble(i).parentsBobbleNum) {
-                        //FindBobble(j).parentsBobbleNum.remove(j);
-                    }
+//                    for (int j : FindBobble(i).parentsBobbleNum) {
+//                        FindBobble(j).parentsBobbleNum.remove(j);
+//                    }
                     DeleteBobble(i);
                 }
 
                 //pop bobble sound
-                //Sound.playEffect(R.raw.);
+                //Sound.playEffect(R.raw);
             }
             makeNewItem(comboSize);
-
 
         }
          popTargetBobbles.clear();
@@ -136,7 +171,7 @@ public class BobbleManager implements IGameObject {
         curBobble.setPos(Metrics.game_width/2, 14.f);
     }
 
-    Bobble FindBobble(int num)
+    static Bobble FindBobble(int num)
     {
         return bobbleMap.get(num);
     }
@@ -188,13 +223,18 @@ public class BobbleManager implements IGameObject {
             }
             if(bHit)
             {
-                addBobble(curBobble);
+                addBobble(curBobble, curBobbleNum);
                 checkBobble(curBobbleNum);
-                popTargetBobbles.add(curBobbleNum++);
+                popTargetBobbles.add(curBobbleNum);
                 addNewBobble();
             }
+            uncheckBobble();
             popBobbles(false);
         }
+    }
+
+    private void uncheckBobble() {
+        for(Bobble bb : bobbleMap.values()) bb.bChecked = false;
     }
 
     @Override

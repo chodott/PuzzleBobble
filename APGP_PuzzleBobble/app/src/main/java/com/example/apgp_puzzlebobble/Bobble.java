@@ -31,12 +31,13 @@ public class Bobble extends AnimSprite{
     private boolean bDestroyed;
     public boolean bActive;
 
+    public boolean bChecked =false;
     public Bobble()
     {
         super(R.mipmap.bobblesprite, 4.5f, 4.5f, 1.f, 1.f, 1.955f, 7, COLOR_COUNT);
         if(random == null) random = new Random();
         color = random.nextInt(3);
-        srcRect.set(0,color * 70,70, color * 70 + 70);
+        type = color;
     }
 
     public Bobble setPos(float xPos, float yPos)
@@ -59,11 +60,36 @@ public class Bobble extends AnimSprite{
 
     public boolean checkCollision(Bobble target)
     {
+        float targetX = target.x;
+        float targetY = target.y;
         double distance = Math.sqrt(Math.pow(x - target.x,2) + Math.pow(y - target.y,2));
+        if(distance == 0.f)
+        {
+            Log.d("checkk", "checkCollision: " + targetX + "y" + targetY);
+            return true;
+        }
         if(BOBBLE_SIZE * 2 > distance)
         {
             bAnimating = true;
             setActive(false);
+
+            float gap = 1.f- (float)distance;
+            float slope = (targetY - y) / (targetX - x);
+
+            double angleRadians = Math.atan(slope);
+            float newX, newY;
+            if(slope < 0.f)
+            {
+                newX = x - (float)Math.cos(angleRadians) * gap;
+                newY = y - (float)Math.sin(angleRadians) * gap;
+            }
+            else
+            {
+                newX = x + (float)Math.cos(angleRadians) * gap;
+                newY = y + (float)Math.sin(angleRadians) * gap;
+            }
+
+            setPos(newX, newY);
             return true;
         }
         return false;
@@ -88,7 +114,7 @@ public class Bobble extends AnimSprite{
         {
             x += xShotSpeed * frameTime * speed;
             y -= yShotSpeed * frameTime * speed;
-            if(x <= 0.f || x >= 9.f)
+            if(x <= 1.f || x >= 8.f)
             {
                 xShotSpeed *= -1.f; //방향 변경
             }
@@ -119,6 +145,17 @@ public class Bobble extends AnimSprite{
         }
 
         bActive = true;
+
+    }
+
+    public void pop()
+    {
+        bDestroyed = true;
+        bAnimating = true;
+
+        width = 2.f;
+        height = 2.f;
+
 
     }
 }
