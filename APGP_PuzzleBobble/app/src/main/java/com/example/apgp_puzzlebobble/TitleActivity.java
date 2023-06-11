@@ -18,4 +18,5 @@ public class TitleActivity extends AppCompatActivity {
     {
         startActivity(new Intent(this, MainActivity.class));
     }
+    public void onBtnExit(View view) {finish();}
 }

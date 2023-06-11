@@ -13,11 +13,17 @@ import java.util.ArrayList;
 public class MainScene extends BaseScene {
     private static Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
+    public static boolean bGameover = false;
+
     public BobbleManager bobbleMgr;
     public Score score;
     public LimitTimer limitTimer;
+    public EndScreen endScreen;
     public Path shotPath = new Path();
     public ArrayList<Integer> itemList = new ArrayList<Integer>();
+
+    private Button restartBtn;
+    private Button endBtn;
     float startX, startY;
     static
     {
@@ -34,6 +40,15 @@ public class MainScene extends BaseScene {
         add(score);
         limitTimer = new LimitTimer(R.mipmap.scoresprite, 4.5f, 0.f, 1.f);
         add(limitTimer);
+
+
+        //Game Over관련
+        endScreen = new EndScreen();
+
+        restartBtn = new Button(R.mipmap.buttonsprite, Metrics.game_width/2, Metrics.game_height/2 - 0.75f, 4.f, 1.f);
+        endBtn = new Button(R.mipmap.buttonsprite, Metrics.game_width/2, Metrics.game_height/2 + 0.75f, 4.f, 1.f);
+        restartBtn.setSrcRect(0);
+        endBtn.setSrcRect(1);
 
         //임의로 추가
         itemList.add(0);
@@ -68,7 +83,16 @@ public class MainScene extends BaseScene {
             case MotionEvent.ACTION_DOWN:
                 startX = Metrics.toGameX(event.getX());
                 startY = -Metrics.toGameY(event.getY());
-                Log.d("", "onTouchEvent: " +startX + "y" + startY);
+
+                if(bGameover) {
+                    if (restartBtn.checkTouched(startX, -startY)) {
+                        popScene();
+                        new MainScene().pushScene();
+                    } else if (endBtn.checkTouched(startX, -startY)) {
+                        System.exit(0);
+                    }
+                }
+
                 return true;
             case MotionEvent.ACTION_MOVE:
                 float curX = Metrics.toGameX(event.getX());
@@ -112,6 +136,10 @@ public class MainScene extends BaseScene {
     public void update(long elapsedNanos) {
         super.update(elapsedNanos);
 
+        if(bGameover)
+        {
+            onEnd();
+        }
     }
 
     @Override
@@ -119,6 +147,13 @@ public class MainScene extends BaseScene {
     {
         super.draw(canvas);
         canvas.drawPath(shotPath, paint);
+
+        if(bGameover)
+        {
+            endScreen.draw(canvas);
+            restartBtn.draw(canvas);
+            endBtn.draw(canvas);
+        }
 
     }
 }

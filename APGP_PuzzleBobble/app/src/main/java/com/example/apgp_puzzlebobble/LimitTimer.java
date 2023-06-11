@@ -16,7 +16,7 @@ public class LimitTimer implements IGameObject{
     private final float right, top;
     private final Rect srcRect = new Rect();
     private final RectF dstRect = new RectF();
-    private int limitTime= 60;
+    private int limitTime= 5;
     private int spawnTime = 5;
     private float stoppedTime = 0;
     private float runningTime = 0;
@@ -53,6 +53,8 @@ public class LimitTimer implements IGameObject{
                 BobbleManager.addBobbleLine();
                 spawnTime = temp;
             }
+
+            if(runningTime >= limitTime) MainScene.bGameover = true;
         }
         else
         {

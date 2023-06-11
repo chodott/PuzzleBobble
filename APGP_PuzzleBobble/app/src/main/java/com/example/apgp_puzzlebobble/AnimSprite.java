@@ -13,7 +13,7 @@ public class AnimSprite extends Sprite{
     protected float time, fps;
 
     protected boolean bAnimating;
-    public int type = 1;
+    public int type = 0;
 
     public AnimSprite(int bitmapResId, float cx, float cy, float width, float height, float fps, int frameCount, int typeCount)
     {

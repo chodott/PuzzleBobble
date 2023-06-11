@@ -12,7 +12,7 @@ import java.util.Random;
 
 public class Bobble extends AnimSprite{
     private static final float BOBBLE_SIZE = 0.5F;
-    private static float dropSpeed = 5.f;
+    private static float dropSpeed = 20.f;
     private static Random random;
 
     private static float speed = 10.f;
@@ -28,9 +28,10 @@ public class Bobble extends AnimSprite{
     public ArrayList<Integer> parentsBobbleNum = new ArrayList<>();
 
     public int color;
-    private boolean bDestroyed;
+    public boolean bDestroyed;
     public boolean bActive;
 
+    public boolean bAttached;
     public boolean bChecked =false;
     public Bobble()
     {
@@ -65,7 +66,6 @@ public class Bobble extends AnimSprite{
         double distance = Math.sqrt(Math.pow(x - target.x,2) + Math.pow(y - target.y,2));
         if(distance == 0.f)
         {
-            Log.d("checkk", "checkCollision: " + targetX + "y" + targetY);
             return true;
         }
         if(BOBBLE_SIZE * 2 > distance)
@@ -102,7 +102,7 @@ public class Bobble extends AnimSprite{
         float frameTime = BaseScene.frameTime;
         if(bDestroyed)
         {
-            y -= dropSpeed * frameTime;
+            y += dropSpeed * frameTime;
 
             //삭제 조건
             if(y <= 0.f)

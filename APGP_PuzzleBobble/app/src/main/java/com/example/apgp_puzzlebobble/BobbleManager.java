@@ -130,9 +130,17 @@ public class BobbleManager implements IGameObject {
             if(comboSize >= 3)
             {
                 for (int i : popTargetBobbles) {
-//                    for (int j : FindBobble(i).parentsBobbleNum) {
-//                        FindBobble(j).parentsBobbleNum.remove(j);
-//                    }
+                    Bobble targetbb = FindBobble(i);
+                    if(targetbb == null)  continue;
+                    for (int j : targetbb.parentsBobbleNum) {
+                        Bobble checkbb = FindBobble(j);
+                        if(checkbb.bChecked) return;
+                        else
+                        {
+                            checkbb.parentsBobbleNum.remove((Object)i);
+                        }
+
+                    }
                     DeleteBobble(i);
                 }
 
@@ -143,7 +151,53 @@ public class BobbleManager implements IGameObject {
 
         }
          popTargetBobbles.clear();
+        uncheckBobble();
+
+        //drop 필요
+        dropBobble();
         }
+
+    public void dropBobble() {
+        for(Bobble bb : bobbleMap.values())
+        {
+            for(int key : bb.parentsBobbleNum)
+            {
+                checkAttached(key);
+            }
+            if(bb.bAttached == false)
+                bb.bDestroyed = true;
+            uncheckBobble();
+        }
+        for(Bobble bb : bobbleMap.values())
+        {
+            bb.bAttached = false;
+        }
+    }
+
+    private boolean checkAttached(int key) {
+        Bobble bb = bobbleMap.get(key);
+        if(bb.bChecked) return bb.bAttached;
+
+        bb.bChecked = true;
+        if(bb.y <= 2.f || bb.bAttached)
+        {
+            bb.bAttached = true;
+            return true;
+        }
+        else
+        {
+            for(int parentKey : bb.parentsBobbleNum)
+            {
+                if(checkAttached(parentKey))
+                {
+                    bb.bAttached = true;
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 
     public void makeNewItem(int comboSize)
     {
@@ -217,6 +271,7 @@ public class BobbleManager implements IGameObject {
                     if(bResult)
                     {
                         curBobble.parentsBobbleNum.add(key);
+                        bobbleMap.get(key).parentsBobbleNum.add(curBobbleNum);
                         bHit = true;
                     }
                 }
@@ -231,6 +286,17 @@ public class BobbleManager implements IGameObject {
             uncheckBobble();
             popBobbles(false);
         }
+
+        MainScene.bGameover = checkGameover();
+    }
+
+    private boolean checkGameover()
+    {
+        for(Bobble bb : bobbleMap.values())
+        {
+            if(bb.y >13.f && !bb.bDestroyed) return true;
+        }
+        return false;
     }
 
     private void uncheckBobble() {
