@@ -12,6 +12,7 @@ public class Background extends Sprite{
     static int bitmapId = R.mipmap.background;
     protected Rect srcRect = new Rect();
 
+
     public Background(int type)
     {
         super(bitmapId, Metrics.game_width/2, Metrics.game_height/2, Metrics.game_width, Metrics.game_height);

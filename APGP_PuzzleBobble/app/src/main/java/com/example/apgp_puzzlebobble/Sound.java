@@ -10,6 +10,26 @@ public class Sound {
     protected static MediaPlayer mediaPlayer;
     protected static SoundPool soundPool;
 
+    public Sound()
+    {
+        SoundPool pool = getSoundPool();
+
+        int soundId;
+        soundId = pool.load(GameView.view.getContext(), R.raw.bombeffect, 1);
+        soundIdMap.put(R.raw.bombeffect, soundId);
+        soundId = pool.load(GameView.view.getContext(), R.raw.popeffect, 1);
+        soundIdMap.put(R.raw.bombeffect, soundId);
+        soundId = pool.load(GameView.view.getContext(), R.raw.pauseeffect, 1);
+        soundIdMap.put(R.raw.bombeffect, soundId);
+        soundId = pool.load(GameView.view.getContext(), R.raw.gameovereffect, 1);
+        soundIdMap.put(R.raw.bombeffect, soundId);
+        soundId = pool.load(GameView.view.getContext(), R.raw.itemuseeffect, 1);
+        soundIdMap.put(R.raw.bombeffect, soundId);
+        soundId = pool.load(GameView.view.getContext(), R.raw.shoteffect, 1);
+        soundIdMap.put(R.raw.bombeffect, soundId);
+
+    }
+
     public static void playMusic(int resId)
     {
         if(mediaPlayer != null)

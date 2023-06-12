@@ -135,7 +135,7 @@ public class MainScene extends BaseScene {
                     if (-startY > 14.f && -endY < 10.f) {
                         //아이템 창 호출
                         new InventoryScene(itemlistMap).pushScene();
-                        Sound.playEffect(R.raw.pauseeffect);
+                        sound.playEffect(R.raw.pauseeffect);
                         return true;
                     } else {
 

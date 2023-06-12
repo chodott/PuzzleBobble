@@ -7,12 +7,13 @@ public class BombItem extends ItemBobble {
     private static int FRAME_COUNT = 10;
     public boolean bExplosed = false;
     public BombItem(){
-        super(R.mipmap.bombsprite,7.9f, FRAME_COUNT,1);
-        this.type = ItemType.bomb.ordinal();
+        super(R.mipmap.bombsprite,3.9f, FRAME_COUNT,1);
+        type = 0;
     }
 
     public void explose()
     {
+        Sound.playEffect(R.raw.bombeffect);
         bExplosed = true;
         setSize(EXPLOSION_SIZE, EXPLOSION_SIZE);
         bActive = false;

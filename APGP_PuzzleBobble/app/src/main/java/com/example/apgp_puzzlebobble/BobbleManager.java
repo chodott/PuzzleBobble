@@ -12,6 +12,7 @@ public class BobbleManager implements IGameObject {
     public static int nextNum = 0;
     public static HashMap<Integer, Bobble> bobbleMap = new HashMap<>();
     public static ArrayList<Integer> popTargetBobbles = new ArrayList<>();
+    public static ArrayList<Integer> trashList = new ArrayList<>();
     public static int saveNum = 0;
     public Bobble curBobble;
     public static ItemBobble curItem;
@@ -43,7 +44,10 @@ public class BobbleManager implements IGameObject {
     {
         bobbleMap.put(Integer.valueOf(nextNum++), new Bobble());
     }
-    static void addBobble(Bobble bobble, int num) {bobbleMap.put(num, bobble);}
+    static void addBobble(Bobble bobble, int num) {
+        bobbleMap.put(num, bobble);
+        bobble.num = num;
+    }
     static void addBobble(Bobble bobble)
     {
         bobbleMap.put(Integer.valueOf(nextNum++), bobble);
@@ -141,7 +145,6 @@ public class BobbleManager implements IGameObject {
         else
         {
             int comboSize = popTargetBobbles.size();
-            Log.d("logic", "popBobbles: " +comboSize);
             if(comboSize >= 3)
             {
                 //pop bobble sound
@@ -179,8 +182,11 @@ public class BobbleManager implements IGameObject {
                 checkAttached(key);
             }
             if(bb.bAttached == false)
+            {
+                Log.d("debug", "dropBobble: " + bb.parentsBobbleNum);
                 bb.bDestroyed = true;
-            uncheckBobble();
+            }
+                uncheckBobble();
         }
 
         for(Bobble bb : bobbleMap.values())
@@ -304,6 +310,10 @@ public class BobbleManager implements IGameObject {
 
         }
 
+        for(int key : trashList)
+        {
+            bobbleMap.remove(key);
+        }
         MainScene.bGameover = checkGameover();
     }
 
@@ -328,6 +338,8 @@ public class BobbleManager implements IGameObject {
             bb.draw(canvas);
         }
         curBobble.draw(canvas);
-        if(curItem != null) curItem.draw(canvas);
+
+        if(curItem != null)
+            curItem.draw(canvas);
     }
 }

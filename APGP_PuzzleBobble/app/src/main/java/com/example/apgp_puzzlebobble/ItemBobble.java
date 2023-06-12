@@ -9,7 +9,6 @@ public abstract class ItemBobble extends AnimSprite
     private float xShotSpeed;
     private float yShotSpeed;
     private static float speed = 10.f;
-    public ItemType itemType;
     public boolean bActive;
 
     public ItemBobble(int bitmapId, float fps, int frameCount, int typeCount)

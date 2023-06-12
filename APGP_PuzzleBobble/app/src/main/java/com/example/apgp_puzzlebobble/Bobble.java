@@ -27,6 +27,7 @@ public class Bobble extends AnimSprite{
 
     public ArrayList<Integer> parentsBobbleNum = new ArrayList<>();
 
+    public int num;
     public int color;
     public boolean bDestroyed;
     public boolean bActive;
@@ -112,7 +113,7 @@ public class Bobble extends AnimSprite{
             //삭제 조건
             if(y <= 0.f)
             {
-
+                BobbleManager.trashList.add(num);
             }
         }
         else if(bActive)
@@ -164,8 +165,8 @@ public class Bobble extends AnimSprite{
         bDestroyed = true;
         bAnimating = true;
 
-        width = 2.f;
-        height = 2.f;
+        //width = 2.f;
+        //height = 2.f;
 
 
     }
