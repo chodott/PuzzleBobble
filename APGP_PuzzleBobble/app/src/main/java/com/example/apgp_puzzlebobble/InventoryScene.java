@@ -14,6 +14,8 @@ public class InventoryScene extends BaseScene
     private Background bg;
     private static float speed;
     private float x,y = 0;
+
+    public HashMap<Integer, Item> ItemMap= new HashMap<>();
     public boolean bTouchItem = false;
     public Item selectedItem;
     float startX, startY;
@@ -25,19 +27,15 @@ public class InventoryScene extends BaseScene
         //Item 획득 목록 전달
         for(ItemType key : itemList.keySet())
         {
-            int size = ItemType.values().length;
-            int type = key.ordinal() + 1;
-            float row = (type / 4 + 1) * Metrics.game_height/4;
-            float column = type % 3 * Metrics.game_width/3;
-            add(new Item(column, row, type-1));
+            int type = key.ordinal();
+            addItem(type);
         }
     }
 
     public boolean checkItemSelect(float cx, float cy)
     {
-        for(IGameObject gobj : gameObjects)
+        for(Item item : ItemMap.values())
         {
-            Item item = (Item)gobj;
             //아이템과 충돌 검사 후 반환
             if(item.checkSelect(cx, cy))
             {
@@ -61,12 +59,28 @@ public class InventoryScene extends BaseScene
     @Override
     public void update(long elapsedNanos) {
         super.update(elapsedNanos);
+        ArrayList<Integer> targetList = new ArrayList<>();
+        for(int key : ItemMap.keySet())
+        {
+
+            Item item = ItemMap.get(key);
+            if(item.count <= 0)
+                targetList.add(key);
+        }
+        for(int targetKey : targetList)
+        {
+            ItemMap.remove(targetKey);
+        }
     }
 
     @Override
     public void draw(Canvas canvas) {
         bg.draw(canvas);
         super.draw(canvas);
+        for(Item item : ItemMap.values())
+        {
+            item.draw(canvas);
+        }
     }
 
     public boolean onTouchEvent(MotionEvent event)
@@ -108,15 +122,17 @@ public class InventoryScene extends BaseScene
 
                     else
                     {
-                        for(IGameObject gobj : gameObjects)
+                        for(Item item : ItemMap.values())
                         {
-                            Item item = (Item)gobj;
                             //아이템과 충돌 검사 후 반환
                             if(selectedItem.checkCollision(item))
                             {
-                                int type = random.nextInt(ItemType.values().length);
-                                selectedItem.change(type);
-                                gameObjects.remove(item);
+                                selectedItem.decCount();
+                                item.decCount();
+                                int type = random.nextInt(2) + 7;
+
+                                addItem(type);
+                                break;
                             }
                         }
                     }
@@ -131,6 +147,18 @@ public class InventoryScene extends BaseScene
                 break;
         }
         return true;
+    }
+
+    private void addItem(int type)
+    {
+        if(ItemMap.containsKey(type)) ItemMap.get(type).addCount();
+        else
+        {
+            float row = ((type+1) / 4 + 1) * Metrics.game_height/4;
+            float column = (type+1) % 3 * Metrics.game_width/3;
+            Item item = new Item(column, row, type);
+            ItemMap.put(type, item);
+        }
     }
 
 }

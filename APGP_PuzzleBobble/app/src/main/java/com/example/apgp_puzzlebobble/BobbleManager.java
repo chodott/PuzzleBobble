@@ -12,15 +12,24 @@ public class BobbleManager implements IGameObject {
     public static int nextNum = 0;
     public static HashMap<Integer, Bobble> bobbleMap = new HashMap<>();
     public static ArrayList<Integer> popTargetBobbles = new ArrayList<>();
-
+    public static int saveNum = 0;
     public Bobble curBobble;
     public static ItemBobble curItem;
     public int curBobbleNum;
+    private int targetColor;
 
     BobbleManager()
     {
         addBobbleLine();
         addNewBobble();
+    }
+
+    public static void restart()
+    {
+        nextNum = 0;
+        bobbleMap.clear();
+        popTargetBobbles.clear();
+        curItem = null;
     }
 
     void addNewBobble()
@@ -44,16 +53,19 @@ public class BobbleManager implements IGameObject {
     {
         ArrayList<Integer> newbbNum = new ArrayList<>();
         //정해진 개수만큼 반복하면서 추가
-        for(int i=0;i<8; ++i)
+        for(int i=0;i<9; ++i)
         {
-            newbbNum.add(nextNum);
+            int addNum = nextNum++;
+            newbbNum.add(addNum);
             Bobble curbb = new Bobble().setPos(i * 1.f + 1.f, 2.f);
-            addBobble(curbb);
+            addBobble(curbb, addNum);
             if(i > 0)
             {
-                curbb.parentsBobbleNum.add(nextNum - 2);
-                FindBobble(nextNum-2).parentsBobbleNum.add(nextNum - 1);
+                curbb.parentsBobbleNum.add(saveNum);
+                FindBobble(saveNum).parentsBobbleNum.add(addNum);
+
             }
+            saveNum = addNum;
         }
 
         for(int bbnum: bobbleMap.keySet())
@@ -93,7 +105,7 @@ public class BobbleManager implements IGameObject {
         Bobble bb = FindBobble(bobbleNum);
         bb.bChecked = true;
         //if(bb == null) return;
-        if(bb.parentsBobbleNum.isEmpty()) return;
+        //if(bb.parentsBobbleNum.isEmpty()) return;
         for(int bbNum : bb.parentsBobbleNum)
         {
             Bobble checkbb = FindBobble(bbNum);
@@ -136,6 +148,7 @@ public class BobbleManager implements IGameObject {
                 Sound.playEffect(R.raw.popeffect);
                 for (int i : popTargetBobbles) {
                     Bobble targetbb = FindBobble(i);
+                    targetColor = targetbb.color;
                     if(targetbb == null)  continue;
                     for (int j : targetbb.parentsBobbleNum)
                     {
@@ -206,21 +219,21 @@ public class BobbleManager implements IGameObject {
         BaseScene scene = BaseScene.getTopScene();
         MainScene mainscene = (MainScene)scene;
         //콤보 종류
-        mainscene.addNewItem(2);
+        mainscene.addNewItem(targetColor);
     }
 
     public void equipItem(int type)
     {
         switch(type)
         {
-            case 0:
-                curBobble = new Bobble();
+            default:
+                curBobble = new Bobble(type);
                 break;
-            case 1:
+            case 7:
                 curItem = new BombItem();
                 break;
 
-            case 2:
+            case 8:
                 curItem = new TimeItem();
                 break;
         }

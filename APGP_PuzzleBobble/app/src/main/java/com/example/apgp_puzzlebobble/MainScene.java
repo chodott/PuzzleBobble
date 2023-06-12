@@ -56,6 +56,13 @@ public class MainScene extends BaseScene {
         //임의로 추가
     }
 
+    private static void restart()
+    {
+        bGameover = false;
+        score.setScore(0);
+        BobbleManager.restart();
+    }
+
     protected void onStart()
     {
         //배경음악 실행
@@ -93,15 +100,6 @@ public class MainScene extends BaseScene {
                 startX = Metrics.toGameX(event.getX());
                 startY = -Metrics.toGameY(event.getY());
 
-                if(bGameover) {
-                    if (restartBtn.checkTouched(startX, -startY)) {
-                        popScene();
-                        new MainScene().pushScene();
-                    } else if (endBtn.checkTouched(startX, -startY)) {
-                        System.exit(0);
-                    }
-                }
-
                 return true;
             case MotionEvent.ACTION_MOVE:
                 float curX = Metrics.toGameX(event.getX());
@@ -121,21 +119,31 @@ public class MainScene extends BaseScene {
             case MotionEvent.ACTION_UP:
                 float endX = Metrics.toGameX(event.getX());
                 float endY = -Metrics.toGameY(event.getY());
-                Log.d("MainScene", "onTouchEvent: " + startY + " " + endY);
-                if(-startY > 14.f && -endY < 10.f)
-                {
-                    //아이템 창 호출
-                    new InventoryScene(itemlistMap).pushScene();
-                    Sound.playEffect(R.raw.pauseeffect);
-                    return true;
-                }
-                else
-                {
 
-                    float direction = (startY - endY) / (startX - endX);
-                    bobbleMgr.shotBobble(direction);
-                    shotPath.reset();
-                    return true;
+                if(bGameover) {
+                    if (restartBtn.checkTouched(startX, -startY)) {
+                        popScene();
+                        MainScene.restart();
+                        new MainScene().pushScene();
+                    } else if (endBtn.checkTouched(startX, -startY)) {
+                        System.exit(0);
+                    }
+                }
+
+                else {
+
+                    if (-startY > 14.f && -endY < 10.f) {
+                        //아이템 창 호출
+                        new InventoryScene(itemlistMap).pushScene();
+                        Sound.playEffect(R.raw.pauseeffect);
+                        return true;
+                    } else {
+
+                        float direction = (startY - endY) / (startX - endX);
+                        bobbleMgr.shotBobble(direction);
+                        shotPath.reset();
+                        return true;
+                    }
                 }
         }
         return super.onTouchEvent(event);

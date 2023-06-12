@@ -22,7 +22,8 @@ public class Sprite implements IGameObject{
     }
 
     protected void setBitmapResource(int bitmapResId) {
-        this.bitmap =  BitmapFactory.decodeResource(GameView.res, bitmapResId);
+        bitmap = BitmapPool.get(bitmapResId);
+        //this.bitmap =  BitmapFactory.decodeResource(GameView.res, bitmapResId);
     }
 
     @Override

@@ -17,7 +17,7 @@ public class Bobble extends AnimSprite{
 
     private static float speed = 10.f;
 
-    private static int COLOR_COUNT = 3;
+    private static int COLOR_COUNT = 7;
     private float xShotSpeed;
     private float yShotSpeed;
 
@@ -37,8 +37,13 @@ public class Bobble extends AnimSprite{
     {
         super(R.mipmap.bobblesprite, 4.5f, 4.5f, 1.f, 1.f, 6.955f, 7, COLOR_COUNT);
         if(random == null) random = new Random();
-        color = random.nextInt(3);
+        color = random.nextInt(COLOR_COUNT);
         type = color;
+    }
+
+    public Bobble(int type) {
+        super(R.mipmap.bobblesprite, 4.5f, 4.5f, 1.f, 1.f, 6.955f, 7, COLOR_COUNT);
+        this.type = type;
     }
 
     public Bobble setPos(float xPos, float yPos)
@@ -114,9 +119,14 @@ public class Bobble extends AnimSprite{
         {
             x += xShotSpeed * frameTime * speed;
             y -= yShotSpeed * frameTime * speed;
-            if(x <= 1.f || x >= 8.f)
+            if(x <= 1.f || x >= 9.f)
             {
                 xShotSpeed *= -1.f; //방향 변경
+            }
+
+            if(y <= 2.f)
+            {
+                bActive = false;
             }
         }
 
@@ -129,6 +139,7 @@ public class Bobble extends AnimSprite{
 
     public void shot(float direction)
     {
+        if(bActive) return;
         this.direction = direction;
         double angleRadians = Math.atan(direction);
 
