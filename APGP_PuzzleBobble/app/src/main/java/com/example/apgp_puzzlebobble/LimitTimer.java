@@ -16,7 +16,7 @@ public class LimitTimer implements IGameObject{
     private final float right, top;
     private final Rect srcRect = new Rect();
     private final RectF dstRect = new RectF();
-    private int limitTime= 5;
+    private int limitTime= 60;
     private int spawnTime = 5;
     private float stoppedTime = 0;
     private float runningTime = 0;

@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class InventoryScene extends BaseScene
 {
@@ -15,14 +16,18 @@ public class InventoryScene extends BaseScene
     public Item selectedItem;
     float startX, startY;
 
-    public InventoryScene(ArrayList<Integer> itemList)
+    public InventoryScene(HashMap<ItemType ,Integer> itemList)
     {
         bg = new Background(1);
 
         //Item 획득 목록 전달
-        for(int type : itemList)
+        for(ItemType key : itemList.keySet())
         {
-            add(new Item(4.5f, 4.5f, type));
+            int size = ItemType.values().length;
+            int type = key.ordinal() + 1;
+            float row = (type / 4 + 1) * Metrics.game_height/4;
+            float column = type % 3 * Metrics.game_width/3;
+            add(new Item(column, row, type-1));
         }
     }
 
@@ -101,7 +106,7 @@ public class InventoryScene extends BaseScene
                     selectedItem = null;
                 }
 
-                else if(startY < 800.f && endY > 1200.f)
+                else if(startY < 4.f && endY > 10.f)
                 {
                     popScene();
                 }

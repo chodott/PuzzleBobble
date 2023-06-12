@@ -46,7 +46,7 @@ public class BobbleManager implements IGameObject {
         //정해진 개수만큼 반복하면서 추가
         for(int i=0;i<8; ++i)
         {
-            newbbNum.add(BobbleManager.nextNum);
+            newbbNum.add(nextNum);
             Bobble curbb = new Bobble().setPos(i * 1.f + 1.f, 2.f);
             addBobble(curbb);
             if(i > 0)
@@ -54,7 +54,6 @@ public class BobbleManager implements IGameObject {
                 curbb.parentsBobbleNum.add(nextNum - 2);
                 FindBobble(nextNum-2).parentsBobbleNum.add(nextNum - 1);
             }
-
         }
 
         for(int bbnum: bobbleMap.keySet())
@@ -92,13 +91,14 @@ public class BobbleManager implements IGameObject {
     void checkBobble(int bobbleNum)
     {   //충돌 발생시 이벤트
         Bobble bb = FindBobble(bobbleNum);
-        if(bb == null) return;
+        bb.bChecked = true;
+        //if(bb == null) return;
         if(bb.parentsBobbleNum.isEmpty()) return;
         for(int bbNum : bb.parentsBobbleNum)
         {
             Bobble checkbb = FindBobble(bbNum);
-            if(checkbb == null) return;
-            if(checkbb.bChecked) return;
+            if(checkbb == null) continue;
+            if(checkbb.bChecked) continue;
 
             checkbb.bChecked = true;
             if(bb.color == checkbb.color)
@@ -123,34 +123,34 @@ public class BobbleManager implements IGameObject {
                 FindBobble(i).pop();
             }
 
+            int score = popTargetBobbles.size() * 10;
+            MainScene.score.setScore(MainScene.score.getScore() + score);
         }
         else
         {
             int comboSize = popTargetBobbles.size();
+            Log.d("logic", "popBobbles: " +comboSize);
             if(comboSize >= 3)
             {
+                //pop bobble sound
+                Sound.playEffect(R.raw.popeffect);
                 for (int i : popTargetBobbles) {
                     Bobble targetbb = FindBobble(i);
                     if(targetbb == null)  continue;
-                    for (int j : targetbb.parentsBobbleNum) {
+                    for (int j : targetbb.parentsBobbleNum)
+                    {
                         Bobble checkbb = FindBobble(j);
-                        if(checkbb.bChecked) return;
-                        else
-                        {
-                            checkbb.parentsBobbleNum.remove((Object)i);
-                        }
-
+                        checkbb.parentsBobbleNum.remove((Object)i);
                     }
                     DeleteBobble(i);
                 }
-
-                //pop bobble sound
-                //Sound.playEffect(R.raw);
+                int score = comboSize * 10;
+                MainScene.score.setScore(MainScene.score.getScore() + score);
             }
             makeNewItem(comboSize);
 
         }
-         popTargetBobbles.clear();
+        popTargetBobbles.clear();
         uncheckBobble();
 
         //drop 필요
@@ -168,6 +168,7 @@ public class BobbleManager implements IGameObject {
                 bb.bDestroyed = true;
             uncheckBobble();
         }
+
         for(Bobble bb : bobbleMap.values())
         {
             bb.bAttached = false;
@@ -179,7 +180,7 @@ public class BobbleManager implements IGameObject {
         if(bb.bChecked) return bb.bAttached;
 
         bb.bChecked = true;
-        if(bb.y <= 2.f || bb.bAttached)
+        if(bb.y <= 2.5f || bb.bAttached)
         {
             bb.bAttached = true;
             return true;
@@ -282,9 +283,10 @@ public class BobbleManager implements IGameObject {
                 checkBobble(curBobbleNum);
                 popTargetBobbles.add(curBobbleNum);
                 addNewBobble();
+                uncheckBobble();
+                popBobbles(false);
             }
-            uncheckBobble();
-            popBobbles(false);
+
         }
 
         MainScene.bGameover = checkGameover();

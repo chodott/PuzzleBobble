@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainScene extends BaseScene {
     private static Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -16,11 +17,11 @@ public class MainScene extends BaseScene {
     public static boolean bGameover = false;
 
     public BobbleManager bobbleMgr;
-    public Score score;
+    public static Score score;
     public LimitTimer limitTimer;
     public EndScreen endScreen;
     public Path shotPath = new Path();
-    public ArrayList<Integer> itemList = new ArrayList<Integer>();
+    public HashMap<ItemType, Integer> itemlistMap = new HashMap<>();
 
     private Button restartBtn;
     private Button endBtn;
@@ -51,9 +52,6 @@ public class MainScene extends BaseScene {
         endBtn.setSrcRect(1);
 
         //임의로 추가
-        itemList.add(0);
-        itemList.add(1);
-        itemList.add(2);
     }
 
     protected void onStart()
@@ -65,12 +63,15 @@ public class MainScene extends BaseScene {
 
     protected void onEnd()
     {
-        Sound.stopMusic();
+        Sound.pauseMusic();
     }
 
     public void addNewItem(int type)
     {
-        itemList.add(type);
+        ItemType itemType = ItemType.values()[type];
+        if(itemlistMap.containsKey(itemType))
+            itemlistMap.put(itemType, itemlistMap.get(type));
+        else itemlistMap.put(itemType, 1);
     }
     public void equipItem(int type)
     {
@@ -116,7 +117,7 @@ public class MainScene extends BaseScene {
                 if(-startY > 14.f && -endY < 10.f)
                 {
                     //아이템 창 호출
-                    new InventoryScene(itemList).pushScene();
+                    new InventoryScene(itemlistMap).pushScene();
                     Sound.playEffect(R.raw.pauseeffect);
                     return true;
                 }
@@ -134,12 +135,13 @@ public class MainScene extends BaseScene {
 
     @Override
     public void update(long elapsedNanos) {
-        super.update(elapsedNanos);
-
         if(bGameover)
         {
             onEnd();
         }
+        else super.update(elapsedNanos);
+
+
     }
 
     @Override
