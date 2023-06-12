@@ -13,7 +13,8 @@ public class Score implements IGameObject{
     private final float right, top;
     private final Rect srcRect = new Rect();
     private final RectF dstRect = new RectF();
-    private int score= 1000;
+    private int score= 0;
+    private int displayScore;
 
     public Score(int mipmapResId, float right, float top, float width)
     {
@@ -37,12 +38,16 @@ public class Score implements IGameObject{
     }
     @Override
     public void update() {
-
+        if (score < displayScore) {
+            displayScore--;
+        } else if (score > displayScore) {
+            displayScore++;
+        }
     }
 
     @Override
     public void draw(Canvas canvas) {
-        int value = this.score;
+        int value = this.displayScore;
         float x = right;
         while(value > 0)
         {

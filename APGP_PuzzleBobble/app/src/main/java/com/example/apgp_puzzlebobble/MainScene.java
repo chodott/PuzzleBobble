@@ -18,6 +18,8 @@ public class MainScene extends BaseScene {
 
     public BobbleManager bobbleMgr;
     public static Score score;
+
+    public static TimeItem timeItem;
     public LimitTimer limitTimer;
     public EndScreen endScreen;
     public Path shotPath = new Path();
@@ -75,7 +77,13 @@ public class MainScene extends BaseScene {
     }
     public void equipItem(int type)
     {
-        bobbleMgr.equipItem(type);
+        if(type == ItemType.timer.ordinal()) {
+            timeItem = new TimeItem();
+            timeItem.setPos(Metrics.game_width/2, 1.f);
+            timeItem.applyAbility();
+        }
+        else
+            bobbleMgr.equipItem(type);
     }
 
     public boolean onTouchEvent(MotionEvent event) {
@@ -139,7 +147,12 @@ public class MainScene extends BaseScene {
         {
             onEnd();
         }
-        else super.update(elapsedNanos);
+        else
+        {
+            super.update(elapsedNanos);
+            if(timeItem!= null)
+                timeItem.update();
+        }
 
 
     }
@@ -149,6 +162,8 @@ public class MainScene extends BaseScene {
     {
         super.draw(canvas);
         canvas.drawPath(shotPath, paint);
+        if(timeItem != null)
+            timeItem.draw(canvas);
 
         if(bGameover)
         {

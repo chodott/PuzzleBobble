@@ -39,6 +39,7 @@ public class LimitTimer implements IGameObject{
     public void resumeTimer() {
         bStopped = false;
         stoppedTime = 0;
+        MainScene.timeItem.endTimer();
     }
 
     @Override

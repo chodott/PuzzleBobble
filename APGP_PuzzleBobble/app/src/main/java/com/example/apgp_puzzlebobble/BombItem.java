@@ -3,12 +3,12 @@ package com.example.apgp_puzzlebobble;
 import android.util.Log;
 
 public class BombItem extends ItemBobble {
-    private static float EXPLOSION_SIZE = 3.f;
+    private static float EXPLOSION_SIZE = 4.f;
     private static int FRAME_COUNT = 10;
     public boolean bExplosed = false;
     public BombItem(){
-        super(R.mipmap.bombsprite, FRAME_COUNT, 1);
-        this.type = ItemType.bomb;
+        super(R.mipmap.bombsprite,7.9f, FRAME_COUNT,1);
+        this.type = ItemType.bomb.ordinal();
     }
 
     public void explose()
@@ -35,6 +35,7 @@ public class BombItem extends ItemBobble {
 
         if (bExplosed && !bAnimating)
         {
+            BobbleManager.curItem = null;
             //삭제 코드
 
         }

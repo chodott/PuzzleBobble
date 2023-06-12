@@ -6,9 +6,11 @@ import android.view.MotionEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 public class InventoryScene extends BaseScene
 {
+    private static Random random = new Random();
     private Background bg;
     private static float speed;
     private float x,y = 0;
@@ -92,7 +94,7 @@ public class InventoryScene extends BaseScene
                 float endY = Metrics.toGameY(event.getY());
                 if(bTouchItem)
                 {
-                    //조합 추가해야함
+
                     if(startX == endX && startY == endY)
                     {
                         selectedItem.useItem();
@@ -103,6 +105,22 @@ public class InventoryScene extends BaseScene
                         //아이템 사용 사운드 추가
                         Sound.playEffect(R.raw.itemuseeffect);
                     }
+
+                    else
+                    {
+                        for(IGameObject gobj : gameObjects)
+                        {
+                            Item item = (Item)gobj;
+                            //아이템과 충돌 검사 후 반환
+                            if(selectedItem.checkCollision(item))
+                            {
+                                int type = random.nextInt(ItemType.values().length);
+                                selectedItem.change(type);
+                                gameObjects.remove(item);
+                            }
+                        }
+                    }
+
                     selectedItem = null;
                 }
 

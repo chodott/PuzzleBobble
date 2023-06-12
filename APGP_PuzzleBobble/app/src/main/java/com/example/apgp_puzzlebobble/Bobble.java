@@ -35,7 +35,7 @@ public class Bobble extends AnimSprite{
     public boolean bChecked =false;
     public Bobble()
     {
-        super(R.mipmap.bobblesprite, 4.5f, 4.5f, 1.f, 1.f, 1.955f, 7, COLOR_COUNT);
+        super(R.mipmap.bobblesprite, 4.5f, 4.5f, 1.f, 1.f, 6.955f, 7, COLOR_COUNT);
         if(random == null) random = new Random();
         color = random.nextInt(3);
         type = color;

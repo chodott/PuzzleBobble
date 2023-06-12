@@ -12,14 +12,18 @@ public class Item extends Sprite{
     private static int ITEM_COUNT = 3;
     private static Bitmap itemBitmap;
     public int type;
+    public int srcSize;
     protected RectF itemDstRect = new RectF();
     protected Rect srcRect = new Rect();
     public Item(float cx, float cy, int type) {
         super(R.mipmap.itembobble, cx, cy, CASE_SIZE, CASE_SIZE);
         this.type = type;
         itemBitmap =  BitmapFactory.decodeResource(GameView.res, R.mipmap.itemsprite);
-        int srcSize = itemBitmap.getWidth()/ITEM_COUNT;
+        srcSize = itemBitmap.getWidth()/ITEM_COUNT;
         srcRect.set(type * srcSize, 0 , (type + 1) * srcSize, srcSize);
+
+        float halfSize = ITEM_SIZE/2;
+        itemDstRect.set(x - halfSize, y - halfSize, x+ halfSize, y+ halfSize);
     }
 
     public boolean checkSelect(float cx, float cy)
@@ -48,5 +52,21 @@ public class Item extends Sprite{
 
         super.draw(canvas);
         canvas.drawBitmap(itemBitmap, srcRect, itemDstRect, null);
+    }
+
+    public boolean checkCollision(Item item)
+    {
+        if(this == item) return false;
+        double distance = Math.sqrt(Math.pow(item.y - y, 2) + Math.pow(item.x - x, 2));
+        if(distance < CASE_SIZE)
+            return true;
+
+        return false;
+    }
+
+    public void change(int itemtype)
+    {
+        type = itemtype;
+        srcRect.set(type * srcSize, 0 , (type + 1) * srcSize, srcSize);
     }
 }

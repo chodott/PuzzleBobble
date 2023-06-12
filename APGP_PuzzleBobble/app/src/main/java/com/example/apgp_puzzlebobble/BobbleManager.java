@@ -14,7 +14,7 @@ public class BobbleManager implements IGameObject {
     public static ArrayList<Integer> popTargetBobbles = new ArrayList<>();
 
     public Bobble curBobble;
-    public ItemBobble curItem;
+    public static ItemBobble curItem;
     public int curBobbleNum;
 
     BobbleManager()
@@ -146,8 +146,9 @@ public class BobbleManager implements IGameObject {
                 }
                 int score = comboSize * 10;
                 MainScene.score.setScore(MainScene.score.getScore() + score);
+                makeNewItem(comboSize);
+
             }
-            makeNewItem(comboSize);
 
         }
         popTargetBobbles.clear();
@@ -205,7 +206,7 @@ public class BobbleManager implements IGameObject {
         BaseScene scene = BaseScene.getTopScene();
         MainScene mainscene = (MainScene)scene;
         //콤보 종류
-        mainscene.addNewItem(0);
+        mainscene.addNewItem(2);
     }
 
     public void equipItem(int type)
@@ -248,6 +249,7 @@ public class BobbleManager implements IGameObject {
         if(curItem != null)
         {
             curItem.update();
+            if(curItem == null) return;
             if(!curItem.bActive) return;
             boolean bHit = false;
             for(int key: bobbleMap.keySet())

@@ -12,6 +12,7 @@ public class AnimSprite extends Sprite{
     protected int frameWidth, frameHeight;
     protected float time, fps;
 
+    protected boolean bLoop;
     protected boolean bAnimating;
     public int type = 0;
 
@@ -45,9 +46,11 @@ public class AnimSprite extends Sprite{
             time += BaseScene.frameTime;
             int frameIndex = Math.round(time * fps) % frameCount;
             srcRect.set(frameIndex * frameWidth, type * frameHeight, (frameIndex + 1) * frameWidth, (type+1) * frameHeight);
-            if(maxFrame == frameIndex + 1) bAnimating = false;
+            if(maxFrame == frameIndex + 1 && !bLoop)
+                bAnimating = false;
         }
-        srcRect.set(0,type * frameHeight, frameWidth, (type + 1) * frameHeight);
+        else
+            srcRect.set(0,type * frameHeight, frameWidth, (type + 1) * frameHeight);
     }
     @Override
     public void draw(Canvas canvas) {
