@@ -180,11 +180,11 @@ public class BobbleManager implements IGameObject {
         {
             for(int key : bb.parentsBobbleNum)
             {
-                checkAttached(key);
+                bb.bAttached = checkAttached(key);
             }
             if(bb.bAttached == false)
             {
-                Log.d("debug", "dropBobble: " + bb.parentsBobbleNum);
+                Log.d("check", "dropBobble: " + bb.num + "parent" + bb.parentsBobbleNum);
                 bb.bDestroyed = true;
             }
                 uncheckBobble();
@@ -327,7 +327,8 @@ public class BobbleManager implements IGameObject {
         return false;
     }
 
-    private void uncheckBobble() {
+    private void uncheckBobble()
+    {
         for(Bobble bb : bobbleMap.values()) bb.bChecked = false;
     }
 
