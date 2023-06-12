@@ -40,6 +40,7 @@ public class LimitTimer implements IGameObject{
         bStopped = false;
         stoppedTime = 0;
         MainScene.timeItem.endTimer();
+        Sound.playMusic(R.raw.mainmusic);
     }
 
     @Override

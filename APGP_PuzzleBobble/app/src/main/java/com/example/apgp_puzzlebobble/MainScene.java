@@ -71,7 +71,9 @@ public class MainScene extends BaseScene {
         bGameover = false;
         bPause = false;
         score.setScore(0);
+        itemlistMap.clear();
         BobbleManager.restart();
+        Sound.playMusic(R.raw.mainmusic);
     }
 
     protected void onStart()
@@ -99,6 +101,7 @@ public class MainScene extends BaseScene {
             timeItem = new TimeItem();
             timeItem.setPos(Metrics.game_width/2, 1.f);
             timeItem.applyAbility();
+            Sound.playMusic(R.raw.ticktock);
         }
         else
             bobbleMgr.equipItem(type);
@@ -134,6 +137,7 @@ public class MainScene extends BaseScene {
                 if(bGameover) {
                     if (restartBtn.checkTouched(startX, -startY))
                     {
+                        Sound.playEffect(R.raw.toucheffect);
                         popScene();
                         MainScene.restart();
                         new MainScene().pushScene();
@@ -147,6 +151,7 @@ public class MainScene extends BaseScene {
                 {
                     if (restartBtn.checkTouched(startX, -startY))
                     {
+                        Sound.playEffect(R.raw.toucheffect);
                         popScene();
                         MainScene.restart();
                         new MainScene().pushScene();
@@ -157,6 +162,7 @@ public class MainScene extends BaseScene {
                     }
                     else if(resumeBtn.checkTouched(startX, -startY))
                     {
+                        Sound.playEffect(R.raw.toucheffect);
                         bPause = false;
                     }
                 }
@@ -171,6 +177,7 @@ public class MainScene extends BaseScene {
 
                     else if(pauseBtn.checkTouched(startX, -startY))
                     {
+                        Sound.playEffect(R.raw.pauseeffect);
                         bPause = true;
                     }
 

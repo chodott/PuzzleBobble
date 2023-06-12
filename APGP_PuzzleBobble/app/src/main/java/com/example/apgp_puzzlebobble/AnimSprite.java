@@ -44,7 +44,7 @@ public class AnimSprite extends Sprite{
         super.update();
         if(bAnimating) {
             time += BaseScene.frameTime;
-            int frameIndex = Math.round(time * fps) % frameCount;
+            frameIndex = Math.round(time * fps) % frameCount;
             srcRect.set(frameIndex * frameWidth, type * frameHeight, (frameIndex + 1) * frameWidth, (type+1) * frameHeight);
             if(maxFrame == frameIndex + 1 && !bLoop)
                 bAnimating = false;

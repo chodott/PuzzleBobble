@@ -27,6 +27,8 @@ public class Sound {
         soundIdMap.put(R.raw.itemuseeffect, soundId);
         soundId = pool.load(GameView.view.getContext(), R.raw.shoteffect, 1);
         soundIdMap.put(R.raw.shoteffect, soundId);
+        soundId = pool.load(GameView.view.getContext(), R.raw.toucheffect, 1);
+        soundIdMap.put(R.raw.toucheffect, soundId);
 
     }
 

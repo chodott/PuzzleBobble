@@ -15,7 +15,6 @@ public class BombItem extends ItemBobble {
     {
         Sound.playEffect(R.raw.bombeffect);
         bExplosed = true;
-        setSize(EXPLOSION_SIZE, EXPLOSION_SIZE);
         bActive = false;
         bAnimating = true;
     }
@@ -40,6 +39,8 @@ public class BombItem extends ItemBobble {
             //삭제 코드
 
         }
+        else if(frameIndex != 0)
+            setSize(EXPLOSION_SIZE, EXPLOSION_SIZE);
     }
 
     @Override
