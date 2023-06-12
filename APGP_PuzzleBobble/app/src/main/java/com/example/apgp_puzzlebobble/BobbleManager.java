@@ -134,9 +134,10 @@ public class BobbleManager implements IGameObject {
             {
                 for (int j : FindBobble(i).parentsBobbleNum)
                 {
-                    //FindBobble(j).parentsBobbleNum.remove(j);
+                    Bobble parentbb = FindBobble(j);
+                    parentbb.parentsBobbleNum.remove((Object)i);
                 }
-                FindBobble(i).pop();
+                DeleteBobble(i);
             }
 
             int score = popTargetBobbles.size() * 10;

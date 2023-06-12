@@ -15,6 +15,8 @@ public class MainScene extends BaseScene {
     private static Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     public static boolean bGameover = false;
+    public static boolean bPause = false;
+    public static Button pauseBtn;
 
     public BobbleManager bobbleMgr;
     public static Score score;
@@ -23,10 +25,12 @@ public class MainScene extends BaseScene {
     public LimitTimer limitTimer;
     public EndScreen endScreen;
     public Path shotPath = new Path();
-    public HashMap<ItemType, Integer> itemlistMap = new HashMap<>();
+    public static HashMap<ItemType, Integer> itemlistMap = new HashMap<>();
 
     private Button restartBtn;
     private Button endBtn;
+
+    private Button resumeBtn;
     float startX, startY;
     static
     {
@@ -44,12 +48,18 @@ public class MainScene extends BaseScene {
         limitTimer = new LimitTimer(R.mipmap.scoresprite, 4.5f, 0.f, 1.f);
         add(limitTimer);
 
+        //pause
+        pauseBtn = new Button(R.mipmap.pausebtn, 0.5f, 0.5f, 1.f, 1.f);
+        pauseBtn.setSrcRect();
+
+        resumeBtn = new Button(R.mipmap.buttonsprite, Metrics.game_width/2, Metrics.game_height/2, 4.f, 1.f);
+        resumeBtn.setSrcRect(2);
 
         //Game Over관련
         endScreen = new EndScreen();
 
-        restartBtn = new Button(R.mipmap.buttonsprite, Metrics.game_width/2, Metrics.game_height/2 - 0.75f, 4.f, 1.f);
-        endBtn = new Button(R.mipmap.buttonsprite, Metrics.game_width/2, Metrics.game_height/2 + 0.75f, 4.f, 1.f);
+        restartBtn = new Button(R.mipmap.buttonsprite, Metrics.game_width/2, Metrics.game_height/2 - 1.f, 4.f, 1.f);
+        endBtn = new Button(R.mipmap.buttonsprite, Metrics.game_width/2, Metrics.game_height/2 + 1.f, 4.f, 1.f);
         restartBtn.setSrcRect(0);
         endBtn.setSrcRect(1);
 
@@ -59,6 +69,7 @@ public class MainScene extends BaseScene {
     private static void restart()
     {
         bGameover = false;
+        bPause = false;
         score.setScore(0);
         BobbleManager.restart();
     }
@@ -79,7 +90,7 @@ public class MainScene extends BaseScene {
     {
         ItemType itemType = ItemType.values()[type];
         if(itemlistMap.containsKey(itemType))
-            itemlistMap.put(itemType, itemlistMap.get(type));
+            itemlistMap.put(itemType, itemlistMap.get(itemType) + 1);
         else itemlistMap.put(itemType, 1);
     }
     public void equipItem(int type)
@@ -121,23 +132,50 @@ public class MainScene extends BaseScene {
                 float endY = -Metrics.toGameY(event.getY());
 
                 if(bGameover) {
-                    if (restartBtn.checkTouched(startX, -startY)) {
+                    if (restartBtn.checkTouched(startX, -startY))
+                    {
                         popScene();
                         MainScene.restart();
                         new MainScene().pushScene();
-                    } else if (endBtn.checkTouched(startX, -startY)) {
+                    }
+                    else if (endBtn.checkTouched(startX, -startY)) {
                         System.exit(0);
                     }
                 }
 
-                else {
+                else if(bPause)
+                {
+                    if (restartBtn.checkTouched(startX, -startY))
+                    {
+                        popScene();
+                        MainScene.restart();
+                        new MainScene().pushScene();
 
+                    }
+                    else if (endBtn.checkTouched(startX, -startY)) {
+                        System.exit(0);
+                    }
+                    else if(resumeBtn.checkTouched(startX, -startY))
+                    {
+                        bPause = false;
+                    }
+                }
+
+                else {
                     if (-startY > 14.f && -endY < 10.f) {
                         //아이템 창 호출
+                        Sound.playEffect(R.raw.pauseeffect);
                         new InventoryScene(itemlistMap).pushScene();
-                        sound.playEffect(R.raw.pauseeffect);
                         return true;
-                    } else {
+                    }
+
+                    else if(pauseBtn.checkTouched(startX, -startY))
+                    {
+                        bPause = true;
+                    }
+
+                    else
+                    {
 
                         float direction = (startY - endY) / (startX - endX);
                         bobbleMgr.shotBobble(direction);
@@ -154,6 +192,10 @@ public class MainScene extends BaseScene {
         if(bGameover)
         {
             onEnd();
+        }
+        else if(bPause)
+        {
+
         }
         else
         {
@@ -172,12 +214,22 @@ public class MainScene extends BaseScene {
         canvas.drawPath(shotPath, paint);
         if(timeItem != null)
             timeItem.draw(canvas);
+        pauseBtn.draw(canvas);
 
         if(bGameover)
         {
             endScreen.draw(canvas);
             restartBtn.draw(canvas);
             endBtn.draw(canvas);
+        }
+
+        if(bPause)
+        {
+            endScreen.draw(canvas);
+            restartBtn.draw(canvas);
+            endBtn.draw(canvas);
+            resumeBtn.draw(canvas);
+
         }
 
     }

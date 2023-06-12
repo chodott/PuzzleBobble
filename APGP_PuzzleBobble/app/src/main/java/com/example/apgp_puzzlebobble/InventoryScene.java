@@ -28,7 +28,7 @@ public class InventoryScene extends BaseScene
         for(ItemType key : itemList.keySet())
         {
             int type = key.ordinal();
-            addItem(type);
+            addItem(type, itemList.get(key));
         }
     }
 
@@ -53,7 +53,11 @@ public class InventoryScene extends BaseScene
 
     @Override
     protected void onEnd() {
-
+        MainScene.itemlistMap.clear();
+        for(int key : ItemMap.keySet())
+        {
+            MainScene.itemlistMap.put(ItemType.values()[key], ItemMap.get(key).count);
+        }
     }
 
     @Override
@@ -64,6 +68,7 @@ public class InventoryScene extends BaseScene
         {
 
             Item item = ItemMap.get(key);
+            item.update();
             if(item.count <= 0)
                 targetList.add(key);
         }
@@ -89,11 +94,10 @@ public class InventoryScene extends BaseScene
         switch(action)
         {
             case MotionEvent.ACTION_DOWN:
-                //위치 동기화 시켜야함
                 startX = Metrics.toGameX(event.getX());
                 startY = Metrics.toGameY(event.getY());
                 bTouchItem = checkItemSelect(startX, startY);
-                Log.d("Inventory", "onTouchEvent: " + bTouchItem);
+
                 break;
             case MotionEvent.ACTION_MOVE:
                 if(bTouchItem)
@@ -113,6 +117,7 @@ public class InventoryScene extends BaseScene
                     {
                         selectedItem.useItem();
                         popScene();
+                        onEnd();
                         MainScene mainscene = (MainScene)getTopScene();
                         mainscene.equipItem(selectedItem.type);
 
@@ -142,6 +147,7 @@ public class InventoryScene extends BaseScene
 
                 else if(startY < 4.f && endY > 10.f)
                 {
+                    onEnd();
                     popScene();
                 }
                 break;
@@ -154,11 +160,19 @@ public class InventoryScene extends BaseScene
         if(ItemMap.containsKey(type)) ItemMap.get(type).addCount();
         else
         {
-            float row = ((type+1) / 4 + 1) * Metrics.game_height/4;
-            float column = (type+1) % 3 * Metrics.game_width/3;
+            float row = ((int)(type / 3) + 1) * Metrics.game_height/4;
+            float column = (type % 3 + 1) * Metrics.game_width/4;
             Item item = new Item(column, row, type);
             ItemMap.put(type, item);
         }
+    }
+    private void addItem(int type, int count)
+    {
+        float row = ((int)(type / 3) + 1) * Metrics.game_height/4;
+        float column = (type % 3 + 1) * Metrics.game_width/4;
+        Item item = new Item(column, row, type);
+        item.count = count;
+        ItemMap.put(type, item);
     }
 
 }

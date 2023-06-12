@@ -9,7 +9,7 @@ public abstract class BaseScene {
     private static ArrayList<BaseScene> stack = new ArrayList<>();
     public static float frameTime;
 
-    public static Sound sound = new Sound();
+    public  Sound sound = new Sound();
     public static BaseScene getTopScene()
     {
         return stack.get(stack.size()-1);

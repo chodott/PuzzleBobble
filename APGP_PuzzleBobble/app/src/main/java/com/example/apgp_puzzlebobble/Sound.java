@@ -18,15 +18,15 @@ public class Sound {
         soundId = pool.load(GameView.view.getContext(), R.raw.bombeffect, 1);
         soundIdMap.put(R.raw.bombeffect, soundId);
         soundId = pool.load(GameView.view.getContext(), R.raw.popeffect, 1);
-        soundIdMap.put(R.raw.bombeffect, soundId);
+        soundIdMap.put(R.raw.popeffect, soundId);
         soundId = pool.load(GameView.view.getContext(), R.raw.pauseeffect, 1);
-        soundIdMap.put(R.raw.bombeffect, soundId);
+        soundIdMap.put(R.raw.pauseeffect, soundId);
         soundId = pool.load(GameView.view.getContext(), R.raw.gameovereffect, 1);
-        soundIdMap.put(R.raw.bombeffect, soundId);
+        soundIdMap.put(R.raw.gameovereffect, soundId);
         soundId = pool.load(GameView.view.getContext(), R.raw.itemuseeffect, 1);
-        soundIdMap.put(R.raw.bombeffect, soundId);
+        soundIdMap.put(R.raw.itemuseeffect, soundId);
         soundId = pool.load(GameView.view.getContext(), R.raw.shoteffect, 1);
-        soundIdMap.put(R.raw.bombeffect, soundId);
+        soundIdMap.put(R.raw.shoteffect, soundId);
 
     }
 

@@ -13,7 +13,12 @@ public class Button extends Sprite
     public void setSrcRect(int type)
     {
         int srcHeight = bitmap.getHeight();
-        srcRect.set(0, type * srcHeight/2, bitmap.getWidth(), (type + 1) * srcHeight/2);
+        srcRect.set(0, type * srcHeight/3, bitmap.getWidth(), (type + 1) * srcHeight/3);
+    }
+
+    public void setSrcRect()
+    {
+        srcRect.set(0, 0, bitmap.getWidth(), bitmap.getHeight());
     }
 
     @Override
@@ -29,7 +34,7 @@ public class Button extends Sprite
     }
 
     public boolean checkTouched(float cx, float cy) {
-        if(cx <= x + width/2 && cx >= x -width/2 && cy <= y + height && cy >= y - height)
+        if(cx <= x + width/2 && cx >= x -width/2 && cy <= y + height/2 && cy >= y - height/2)
         {
                return true;
         }

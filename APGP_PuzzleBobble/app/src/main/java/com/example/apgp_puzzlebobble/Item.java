@@ -57,7 +57,7 @@ public class Item extends Sprite{
 
     void useItem()
     {
-
+        decCount();
     }
 
     @Override
