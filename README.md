@@ -46,6 +46,27 @@ UI - 시작 화면, 메인 화면, 아이템 보관함, 일시 정지, 게임 �
 
 9주차 디버깅 및 버그 수정 - 50%
 
+# MainScene
+BobbleManager
+- BobbleMap(HashMap)을 기반으로 Bobble 객체를 추가하거나 삭제, 충돌연산을 처리하는 객체
+- popBobbles()/색이 같은 구슬 연쇄 파괴, dropBobbles()/다른 구슬과 붙어있지 않은 구슬 하강, 
+- shotBobble()/현재 장착한 구슬 발사, addNewLine()/상단의 새로운 구슬 줄 생성
+Bobble
+- 각각 고유의 color와 num 변수를 가짐
+- ArrayList parentsBobbleNum에 구슬 주변의 다른 구슬의 num값을 가짐
+- checkCollision(Bobble target)/다른 구슬과의 충돌 반환
+BombItem
+- 충돌 시 주변 Bobble를 파괴하는 객체
+LimitTimer
+- 제한 시간을 나타내는 객체
+- TimeItem이 사용되면 Update 정지
+TimeItem
+- 사용 시 5초간 LimitTimer Update 정지
+# InventoryScene
+Item
+- touch 시 MainScene에 EquipItem 호출
+- drag하여 다른 Item과 충돌하는 것으로 bomb/Time 중 랜덤한 Item 생성
+
 # 기술
 - 수업 내용에서 차용한 것
 Sound, bitmap pool, Score, AnimSprite, Sprite, Metrics, BaseScene, Background
