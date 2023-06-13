@@ -51,17 +51,22 @@ BobbleManager
 - BobbleMap(HashMap)을 기반으로 Bobble 객체를 추가하거나 삭제, 충돌연산을 처리하는 객체
 - popBobbles()/색이 같은 구슬 연쇄 파괴, dropBobbles()/다른 구슬과 붙어있지 않은 구슬 하강, 
 - shotBobble()/현재 장착한 구슬 발사, addNewLine()/상단의 새로운 구슬 줄 생성
+
 Bobble
 - 각각 고유의 color와 num 변수를 가짐
 - ArrayList parentsBobbleNum에 구슬 주변의 다른 구슬의 num값을 가짐
 - checkCollision(Bobble target)/다른 구슬과의 충돌 반환
+
 BombItem
 - 충돌 시 주변 Bobble를 파괴하는 객체
+
 LimitTimer
 - 제한 시간을 나타내는 객체
 - TimeItem이 사용되면 Update 정지
+
 TimeItem
 - 사용 시 5초간 LimitTimer Update 정지
+
 # InventoryScene
 Item
 - touch 시 MainScene에 EquipItem 호출
