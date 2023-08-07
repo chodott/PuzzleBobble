@@ -162,3 +162,39 @@ public boolean checkInExplosion(Bobble bb)
 
 
 }
+
+public Class HorizonBomb extends BombItem
+{
+	EXPLOSION_SIZE = 0.5F;
+
+public void applyAbility()
+{
+	explose();
+	for(int key: BobbleManager.bobbleMap.keySet())
+	{
+		boolean bResult = checkInExplosion(BobbleManager.bobbleMap.get(key));
+		if(bResult)
+		{
+			BobbleManager.popTargetBobbles.add(key);
+		}
+	}
+}
+
+//checkInExplostion 가상화 필요
+
+
+public boolean checkInExplosion(Bobble bb)
+{
+	if(bb.y =< y + EXPLOSION_SIZE && bb.y >= y - EXPLOSION_SIZE)
+	{
+ 		//y값 반대 아닌지 확인 필요
+		return true;
+	}		
+	
+	return false;
+}
+
+
+}
+
+
