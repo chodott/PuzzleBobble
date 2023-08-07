@@ -134,8 +134,7 @@ public class InventoryScene extends BaseScene
                             {
                                 selectedItem.decCount();
                                 item.decCount();
-                                int type = random.nextInt(2) + 7;
-
+                                int type = random.nextInt(4) + 7;
                                 addItem(type);
                                 break;
                             }

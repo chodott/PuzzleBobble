@@ -3,8 +3,10 @@ package com.example.apgp_puzzlebobble;
 import android.util.Log;
 
 public class BombItem extends ItemBobble {
-    private static float EXPLOSION_SIZE = 4.f;
     private static int FRAME_COUNT = 10;
+
+    public float EXPLOSION_SIZE = 4.f;
+
     public boolean bExplosed = false;
     public BombItem(){
         super(R.mipmap.bombsprite,3.9f, FRAME_COUNT,1);

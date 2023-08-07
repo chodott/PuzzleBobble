@@ -9,5 +9,7 @@ public enum ItemType {
     pupple_bobble,
     grey_bobble,
     bomb,
+    HorlizonBomb,
+    VerticalBomb,
     timer;
 }

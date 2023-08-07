@@ -241,6 +241,14 @@ public class BobbleManager implements IGameObject {
                 break;
 
             case 8:
+                curItem = new HorizonBomb();
+                break;
+
+            case 9:
+                curItem = new VerticalBomb();
+                break;
+
+            case 10:
                 curItem = new TimeItem();
                 break;
         }
