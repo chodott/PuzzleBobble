@@ -122,3 +122,43 @@ UI 추가 구현 - 랭킹 화면, 씬 전환 시 애니메이션
 6주차(7.31 ~ 8.4) 하이스코어 반영 / 랭킹 화면 구현
 
 이후로는 디버그 및 수정 계획입니다.
+
+
+
+
+
+//////////실습
+
+
+public Class VerticalBomb extends BombItem
+{
+	EXPLOSION_SIZE = 0.5F;
+
+public void applyAbility()
+{
+	explose();
+	for(int key: BobbleManager.bobbleMap.keySet())
+	{
+		boolean bResult = checkInExplosion(BobbleManager.bobbleMap.get(key));
+		if(bResult)
+		{
+			BobbleManager.popTargetBobbles.add(key);
+		}
+	}
+}
+
+//checkInExplostion 가상화 필요
+
+
+public boolean checkInExplosion(Bobble bb)
+{
+	if(bb.x =< x + EXPLOSION_SIZE && bb.x >= x - EXPLOSION_SIZE)
+	{
+		return true;
+	}		
+	
+	return false;
+}
+
+
+}
