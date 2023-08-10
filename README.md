@@ -198,3 +198,28 @@ public boolean checkInExplosion(Bobble bb)
 }
 
 
+#0810
+//버블 이동 중 라인 추가 기능 일시 정지
+//LimitTimer
+
+update()
+{
+	BobbleManager.bWaitingAddLine = true;
+}
+
+
+
+//BobbleManager
+
+update()
+{
+	else()
+	{
+		if(bWaitingAddLine)
+		{
+			AddBobbleLine();
+			bWaitingAddLine = false;
+		}
+	}
+}
+
