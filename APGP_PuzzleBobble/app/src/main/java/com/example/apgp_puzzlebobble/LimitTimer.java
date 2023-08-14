@@ -52,7 +52,8 @@ public class LimitTimer implements IGameObject{
             int temp = (int)(runningTime / ADDLINE_TIME);
             if(spawnTime != temp)
             {
-                BobbleManager.addBobbleLine();
+                //BobbleManager.addBobbleLine();
+                BobbleManager.bWaitingAddLine = true;
                 spawnTime = temp;
             }
 

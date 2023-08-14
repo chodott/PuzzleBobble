@@ -14,6 +14,7 @@ public class BobbleManager implements IGameObject {
     public static ArrayList<Integer> popTargetBobbles = new ArrayList<>();
     public static ArrayList<Integer> trashList = new ArrayList<>();
     public static int saveNum = 0;
+    public static boolean bWaitingAddLine;
     public Bobble curBobble;
     public static ItemBobble curItem;
     public int curBobbleNum;
@@ -315,6 +316,16 @@ public class BobbleManager implements IGameObject {
                 addNewBobble();
                 uncheckBobble();
                 popBobbles(false);
+            }
+
+        }
+
+        else
+        {
+            if(bWaitingAddLine)
+            {
+                addBobbleLine();
+                bWaitingAddLine = false;
             }
 
         }
