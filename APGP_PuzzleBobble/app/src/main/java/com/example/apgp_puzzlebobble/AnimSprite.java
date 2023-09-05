@@ -1,5 +1,6 @@
 package com.example.apgp_puzzlebobble;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.Log;
@@ -37,7 +38,10 @@ public class AnimSprite extends Sprite{
         srcRect.set(0,type * frameHeight, frameWidth, (type + 1) * frameHeight);
     }
 
-
+    public void endAnimation()
+    {
+        bAnimating = false;
+    }
 
     @Override
     public void update() {
@@ -47,7 +51,9 @@ public class AnimSprite extends Sprite{
             frameIndex = Math.round(time * fps) % frameCount;
             srcRect.set(frameIndex * frameWidth, type * frameHeight, (frameIndex + 1) * frameWidth, (type+1) * frameHeight);
             if(maxFrame == frameIndex + 1 && !bLoop)
-                bAnimating = false;
+            {
+                endAnimation();
+            }
         }
         else
             srcRect.set(0,type * frameHeight, frameWidth, (type + 1) * frameHeight);
@@ -55,5 +61,10 @@ public class AnimSprite extends Sprite{
     @Override
     public void draw(Canvas canvas) {
         canvas.drawBitmap(bitmap, srcRect, dstRect, null);
+    }
+
+    public void draw(Canvas canvas, Bitmap newBitmap)
+    {
+        canvas.drawBitmap(newBitmap, srcRect, dstRect, null);
     }
 }

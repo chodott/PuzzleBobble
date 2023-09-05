@@ -155,6 +155,7 @@ public class BobbleManager implements IGameObject {
                     Bobble targetbb = FindBobble(i);
                     targetColor = targetbb.color;
                     if(targetbb == null)  continue;
+                    targetbb.bBurst = true;
                     for (int j : targetbb.parentsBobbleNum)
                     {
                         Bobble checkbb = FindBobble(j);
@@ -263,7 +264,8 @@ public class BobbleManager implements IGameObject {
 
     void DeleteBobble(int num)
     {
-        bobbleMap.remove(num);
+        bobbleMap.get(num).burst();
+        //bobbleMap.remove(num);
     }
 
     @Override

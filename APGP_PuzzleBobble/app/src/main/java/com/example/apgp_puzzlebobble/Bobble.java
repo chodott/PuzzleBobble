@@ -14,13 +14,11 @@ public class Bobble extends AnimSprite{
     private static final float BOBBLE_SIZE = 0.5F;
     private static float dropSpeed = 20.f;
     private static Random random;
-
     private static float speed = 10.f;
-
     private static int COLOR_COUNT = 7;
+    private static Bitmap burstBitmap;
     private float xShotSpeed;
     private float yShotSpeed;
-
     private float accumulatedTime;
     private float direction;
 
@@ -30,6 +28,7 @@ public class Bobble extends AnimSprite{
     public int num;
     public int color;
     public boolean bDestroyed;
+    public boolean bBurst;
     public boolean bActive;
 
     public boolean bAttached;
@@ -37,6 +36,10 @@ public class Bobble extends AnimSprite{
     public Bobble()
     {
         super(R.mipmap.bobblesprite, 4.5f, 2.5f, 1.f, 1.f, 6.955f, 7, COLOR_COUNT);
+        if(R.mipmap.bobbleburstsprite != 0)
+        {
+            burstBitmap = BitmapPool.get(R.mipmap.bobbleburstsprite);
+        }
         if(random == null) random = new Random();
         color = random.nextInt(COLOR_COUNT);
         type = color;
@@ -63,6 +66,18 @@ public class Bobble extends AnimSprite{
     public void setActive(boolean b)
     {
         bActive = b;
+    }
+
+    public void burst()
+    {
+        bAnimating = true;
+        bBurst = true;
+
+        int Width = burstBitmap.getWidth();
+        int Height = burstBitmap.getHeight();
+        frameWidth = Width/ frameCount;
+        frameHeight = Height/COLOR_COUNT;
+        srcRect.set(0,type * frameHeight, frameWidth, (type + 1) * frameHeight);
     }
 
     public boolean checkCollision(Bobble target)
@@ -101,13 +116,21 @@ public class Bobble extends AnimSprite{
         return false;
     }
 
-    public void update()
+    public void endAnimation()
+    {
+        super.endAnimation();
+        if(bBurst) BobbleManager.trashList.add(num);
+    }
 
+    public void update()
     {
         super.update();
         float frameTime = BaseScene.frameTime;
         if(bDestroyed)
         {
+            //연쇄 반응 자리 고정
+            if(bBurst) return;
+
             y += dropSpeed * frameTime;
 
             //삭제 조건
@@ -135,7 +158,8 @@ public class Bobble extends AnimSprite{
     @Override
     public void draw(Canvas canvas)
     {
-        super.draw(canvas);
+        if(bBurst) super.draw(canvas, burstBitmap);
+        else super.draw(canvas);
     }
 
     public void shot(float direction)
