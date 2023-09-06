@@ -97,6 +97,7 @@ public class MainScene extends BaseScene {
     }
     public void equipItem(int type)
     {
+        Log.d("a", "equipItem:" + type);
         if(type == ItemType.timer.ordinal()) {
             timeItem = new TimeItem();
             timeItem.setPos(Metrics.game_width/2, 1.f);

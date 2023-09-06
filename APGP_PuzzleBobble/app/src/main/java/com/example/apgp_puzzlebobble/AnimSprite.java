@@ -41,6 +41,8 @@ public class AnimSprite extends Sprite{
     public void endAnimation()
     {
         bAnimating = false;
+        frameIndex = 0;
+        time = 0;
     }
 
     @Override
@@ -60,6 +62,7 @@ public class AnimSprite extends Sprite{
     }
     @Override
     public void draw(Canvas canvas) {
+
         canvas.drawBitmap(bitmap, srcRect, dstRect, null);
     }
 

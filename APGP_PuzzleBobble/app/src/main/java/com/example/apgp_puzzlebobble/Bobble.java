@@ -75,9 +75,11 @@ public class Bobble extends AnimSprite{
 
         int Width = burstBitmap.getWidth();
         int Height = burstBitmap.getHeight();
+
+
         frameWidth = Width/ frameCount;
         frameHeight = Height/COLOR_COUNT;
-        srcRect.set(0,type * frameHeight, frameWidth, (type + 1) * frameHeight);
+        //srcRect.set(0,type * frameHeight, frameWidth, (type + 1) * frameHeight);
     }
 
     public boolean checkCollision(Bobble target)
@@ -91,9 +93,8 @@ public class Bobble extends AnimSprite{
         }
         if(BOBBLE_SIZE * 2 > distance)
         {
-            bAnimating = true;
             setActive(false);
-
+            bAnimating = true;
             float gap = 1.f- (float)distance;
             float slope = (targetY - y) / (targetX - x);
 

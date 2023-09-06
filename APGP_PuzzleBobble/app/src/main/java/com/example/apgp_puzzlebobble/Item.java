@@ -9,7 +9,7 @@ import android.graphics.RectF;
 public class Item extends Sprite{
     private static float CASE_SIZE = 2.f;
     private static float ITEM_SIZE = 1.f;
-    private static int ITEM_COUNT = 9;
+    private static int ITEM_COUNT = 11;
 
     private static float  CNT_SIZE = 0.4f;
     private static Bitmap itemBitmap;
