@@ -17,8 +17,7 @@ public class BombItem extends ItemBobble {
     {
         Sound.playEffect(R.raw.bombeffect);
         bExplosed = true;
-        bActive = false;
-        bAnimating = true;
+
     }
 
     public boolean checkInExplosion(Bobble bb)
@@ -28,7 +27,8 @@ public class BombItem extends ItemBobble {
         {
             return true;
         }
-        else return false;
+
+        return false;
     }
 
     @Override
@@ -38,7 +38,6 @@ public class BombItem extends ItemBobble {
         if (bExplosed && !bAnimating)
         {
             BobbleManager.curItem = null;
-            //삭제 코드
 
         }
         else if(frameIndex != 0)
@@ -48,6 +47,7 @@ public class BombItem extends ItemBobble {
     @Override
     public void applyAbility() {
         explose();
+
         for(int key: BobbleManager.bobbleMap.keySet())
         {
             boolean bResult = checkInExplosion(BobbleManager.bobbleMap.get(key));

@@ -100,7 +100,10 @@ public class BobbleManager implements IGameObject {
     {
         //발사 효과음 출력
         Sound.playEffect(R.raw.shoteffect);
-        if(curItem != null) curItem.shot(direction);
+        if(curItem != null)
+        {
+            if(!curItem.bUsed) curItem.shot(direction);
+        }
         else curBobble.shot(direction);
     }
 
@@ -144,6 +147,7 @@ public class BobbleManager implements IGameObject {
             int score = popTargetBobbles.size() * 10;
             MainScene.score.setScore(MainScene.score.getScore() + score);
         }
+
         else
         {
             int comboSize = popTargetBobbles.size();
@@ -151,10 +155,12 @@ public class BobbleManager implements IGameObject {
             {
                 //pop bobble sound
                 Sound.playEffect(R.raw.popeffect);
-                for (int i : popTargetBobbles) {
+                for (int i : popTargetBobbles)
+                {
                     Bobble targetbb = FindBobble(i);
                     targetColor = targetbb.color;
                     if(targetbb == null)  continue;
+
                     for (int j : targetbb.parentsBobbleNum)
                     {
                         Bobble checkbb = FindBobble(j);
@@ -278,19 +284,22 @@ public class BobbleManager implements IGameObject {
         //충돌체크
         if(curItem != null)
         {
+
             curItem.update();
             if(curItem == null) return;
             if(!curItem.bActive) return;
+
             boolean bHit = false;
             for(int key: bobbleMap.keySet())
             {
                 bHit = curItem.checkCollision(bobbleMap.get(key));
                 if (bHit) {
                     curItem.applyAbility();
+                    popBobbles(true);
+                    Log.d("item", "update: ");
                     break;
                 }
             }
-            popBobbles(true);
         }
 
         else if(curBobble.getAcitve())

@@ -9,7 +9,8 @@ public abstract class ItemBobble extends AnimSprite
     private float xShotSpeed;
     private float yShotSpeed;
     private static float speed = 10.f;
-    public boolean bActive;
+    public boolean bActive = false;
+    public boolean bUsed = false;
 
     public ItemBobble(int bitmapId, float fps, int frameCount, int typeCount)
     {
@@ -59,6 +60,7 @@ public abstract class ItemBobble extends AnimSprite
             yShotSpeed = (float)Math.sin(angleRadians);
         }
 
+        bUsed = true;
         bActive = true;
 
     }

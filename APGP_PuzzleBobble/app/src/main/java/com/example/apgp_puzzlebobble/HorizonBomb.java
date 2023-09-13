@@ -1,5 +1,7 @@
 package com.example.apgp_puzzlebobble;
 
+import android.util.Log;
+
 public class HorizonBomb extends BombItem
 {
     public HorizonBomb()
@@ -22,7 +24,8 @@ public class HorizonBomb extends BombItem
     }
     public boolean checkInExplosion(Bobble bb)
     {
-        if(bb.y <= y + EXPLOSION_SIZE && bb.y >= y - EXPLOSION_SIZE)
+
+        if(bb.y >= y - EXPLOSION_SIZE && bb.y <= y + EXPLOSION_SIZE)
         {
             //y값 반대 아닌지 확인 필요
             return true;

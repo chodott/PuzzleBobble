@@ -97,8 +97,8 @@ public class InventoryScene extends BaseScene
                 startX = Metrics.toGameX(event.getX());
                 startY = Metrics.toGameY(event.getY());
                 bTouchItem = checkItemSelect(startX, startY);
-
                 break;
+
             case MotionEvent.ACTION_MOVE:
                 if(bTouchItem)
                 {
@@ -107,13 +107,16 @@ public class InventoryScene extends BaseScene
                     selectedItem.move(curX, curY);
                 }
                 break;
+
             case MotionEvent.ACTION_UP:
                 float endX = Metrics.toGameX(event.getX());
                 float endY = Metrics.toGameY(event.getY());
                 if(bTouchItem)
                 {
 
-                    if(startX == endX && startY == endY)
+                    //아이템 사용 범위 적절하게 변환 필요
+                    Double touchDistance = Math.sqrt(Math.pow(startX - endX,2) + Math.pow(startY - endY, 2));
+                    if(touchDistance <= 1.f)
                     {
                         selectedItem.useItem();
                         popScene();
@@ -159,7 +162,7 @@ public class InventoryScene extends BaseScene
         if(ItemMap.containsKey(type)) ItemMap.get(type).addCount();
         else
         {
-            float row = ((int)(type / 3) + 1) * Metrics.game_height/4;
+            float row = ((int)(type / 3) + 1) * Metrics.game_height/5;
             float column = (type % 3 + 1) * Metrics.game_width/4;
             Item item = new Item(column, row, type);
             ItemMap.put(type, item);

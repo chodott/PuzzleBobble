@@ -79,7 +79,6 @@ public class Bobble extends AnimSprite{
 
         frameWidth = Width/ frameCount;
         frameHeight = Height/COLOR_COUNT;
-        //srcRect.set(0,type * frameHeight, frameWidth, (type + 1) * frameHeight);
     }
 
     public boolean checkCollision(Bobble target)
@@ -120,7 +119,11 @@ public class Bobble extends AnimSprite{
     public void endAnimation()
     {
         super.endAnimation();
-        if(bBurst) BobbleManager.trashList.add(num);
+        if(bBurst)
+        {
+            bVisibility = false;
+            BobbleManager.trashList.add(num);
+        }
     }
 
     public void update()
@@ -159,7 +162,10 @@ public class Bobble extends AnimSprite{
     @Override
     public void draw(Canvas canvas)
     {
-        if(bBurst) super.draw(canvas, burstBitmap);
+        if(bBurst)
+        {
+            if(bVisibility) super.draw(canvas, burstBitmap);
+        }
         else super.draw(canvas);
     }
 

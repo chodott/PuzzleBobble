@@ -13,13 +13,16 @@ public class VerticalBomb extends BombItem
         for(int key: BobbleManager.bobbleMap.keySet())
         {
             boolean bResult = checkInExplosion(BobbleManager.bobbleMap.get(key));
-            if(bResult) { BobbleManager.popTargetBobbles.add(key); }
+            if(bResult)
+            {
+                BobbleManager.popTargetBobbles.add(key);
+            }
         }
     }
 
     public boolean checkInExplosion(Bobble bb)
     {
-        if (bb.x <= + EXPLOSION_SIZE && bb.x >= x - EXPLOSION_SIZE)
+        if (bb.x <= x + EXPLOSION_SIZE && bb.x >= x - EXPLOSION_SIZE)
         {
             return true;
         }

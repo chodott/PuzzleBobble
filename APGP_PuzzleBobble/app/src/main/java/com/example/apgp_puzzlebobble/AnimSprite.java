@@ -15,6 +15,7 @@ public class AnimSprite extends Sprite{
 
     protected boolean bLoop;
     protected boolean bAnimating;
+    public boolean bVisibility = true;
     public int type = 0;
 
     public AnimSprite(int bitmapResId, float cx, float cy, float width, float height, float fps, int frameCount, int typeCount)
