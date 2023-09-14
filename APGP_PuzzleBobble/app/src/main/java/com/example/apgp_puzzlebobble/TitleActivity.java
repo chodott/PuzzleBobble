@@ -31,4 +31,9 @@ public class TitleActivity extends AppCompatActivity {
         Sound.stopMusic();
         finish();
     }
+
+    public void onBtnRank(View view)
+    {
+
+    }
 }

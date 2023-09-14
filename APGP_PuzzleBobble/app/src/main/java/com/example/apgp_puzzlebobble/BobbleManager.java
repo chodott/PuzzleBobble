@@ -351,7 +351,11 @@ public class BobbleManager implements IGameObject {
     {
         for(Bobble bb : bobbleMap.values())
         {
-            if(bb.y >13.f && !bb.bDestroyed) return true;
+            if(bb.y >13.f && !bb.bDestroyed)
+            {
+                //HighScoreManager.setInt(this);
+                return true;
+            }
         }
         return false;
     }

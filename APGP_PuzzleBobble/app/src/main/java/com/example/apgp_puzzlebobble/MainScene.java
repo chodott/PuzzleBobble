@@ -23,6 +23,8 @@ public class MainScene extends BaseScene {
 
     public static TimeItem timeItem;
     public LimitTimer limitTimer;
+
+    public Arrow arrow;
     public EndScreen endScreen;
     public Path shotPath = new Path();
     public static HashMap<ItemType, Integer> itemlistMap = new HashMap<>();
@@ -41,12 +43,16 @@ public class MainScene extends BaseScene {
     public MainScene()
     {
         add(new Background(0));
+        arrow = new Arrow(R.mipmap.gearsprite,Metrics.game_width/2, 14.f, 5.f, 5.f);
+        add(arrow);
         bobbleMgr = new BobbleManager();
         add(bobbleMgr);
         score =  new Score(R.mipmap.scoresprite, 9.f, 0.f, 0.8f);
         add(score);
         limitTimer = new LimitTimer(R.mipmap.scoresprite, 4.5f, 0.f, 1.f);
         add(limitTimer);
+
+
 
         //pause
         pauseBtn = new Button(R.mipmap.pausebtn, 0.5f, 0.5f, 1.f, 1.f);
@@ -112,8 +118,8 @@ public class MainScene extends BaseScene {
         int action = event.getAction();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                startX = Metrics.toGameX(event.getX());
-                startY = -Metrics.toGameY(event.getY());
+                startX = Metrics.game_width/2;
+                startY = 14.f;
 
                 return true;
             case MotionEvent.ACTION_MOVE:
@@ -121,14 +127,16 @@ public class MainScene extends BaseScene {
                 float curY = -Metrics.toGameY(event.getY());
 
                 //구슬 각도 조절 동작
-                shotPath.reset();
-                float xCenter = Metrics.game_width/2;
-                shotPath.moveTo(xCenter, 14.f);
-                float slope = (startY - curY) / (startX - curX);
-                float xDist = startX  - curX;
-                float xPos = xCenter + (startX - curX);
-                float yPos = 14.f - (slope * (xDist));
-                shotPath.lineTo(xPos, yPos);
+//                shotPath.reset();
+//                float xCenter = Metrics.game_width/2;
+//                shotPath.moveTo(xCenter, 14.f);
+//                float slope = (startY + curY) / (startX - curX);
+//                float xDist = startX  - curX;
+//                float xPos = xCenter + (startX - curX);
+//                float yPos = 14.f - (slope * (xDist));
+//                shotPath.lineTo(xPos, yPos);
+
+                arrow.setAngle(curX, -curY);
                 return true;
 
             case MotionEvent.ACTION_UP:
@@ -185,9 +193,9 @@ public class MainScene extends BaseScene {
                     else
                     {
 
-                        float direction = (startY - endY) / (startX - endX);
+                        float direction = (startY + endY) / -(startX - endX);
                         bobbleMgr.shotBobble(direction);
-                        shotPath.reset();
+                        //shotPath.reset();
                         return true;
                     }
                 }
@@ -219,7 +227,7 @@ public class MainScene extends BaseScene {
     public void draw(Canvas canvas)
     {
         super.draw(canvas);
-        canvas.drawPath(shotPath, paint);
+        //canvas.drawPath(shotPath, paint);
         if(timeItem != null)
             timeItem.draw(canvas);
         pauseBtn.draw(canvas);
