@@ -3,13 +3,13 @@ package com.example.apgp_puzzlebobble;
 import android.util.Log;
 
 public class BombItem extends ItemBobble {
-    private static int FRAME_COUNT = 10;
+    public static int FRAME_COUNT = 10;
 
     public float EXPLOSION_SIZE = 4.f;
 
     public boolean bExplosed = false;
     public BombItem(){
-        super(R.mipmap.bombsprite,3.9f, FRAME_COUNT,1);
+        super(R.mipmap.bombsprite,6.955f, FRAME_COUNT,1);
         type = 0;
     }
 

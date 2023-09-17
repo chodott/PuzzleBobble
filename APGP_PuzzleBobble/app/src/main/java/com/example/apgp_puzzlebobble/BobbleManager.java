@@ -31,6 +31,7 @@ public class BobbleManager implements IGameObject {
         nextNum = 0;
         bobbleMap.clear();
         popTargetBobbles.clear();
+        trashList.clear();
         curItem = null;
     }
 
@@ -39,7 +40,7 @@ public class BobbleManager implements IGameObject {
         //발사할 구슬 생성
         curBobbleNum = nextNum++;
         curBobble = new Bobble()
-                .setPos(Metrics.game_width/2, 14.f);
+                .setPos(Metrics.game_width/2, 14.5f);
     }
     void addBobble()
     {
@@ -173,7 +174,6 @@ public class BobbleManager implements IGameObject {
                 makeNewItem(comboSize);
 
             }
-
         }
         popTargetBobbles.clear();
         uncheckBobble();
@@ -189,12 +189,12 @@ public class BobbleManager implements IGameObject {
             {
                 bb.bAttached = checkAttached(key);
             }
-            if(bb.bAttached == false)
+            if(bb.bAttached == false && bb.y > 2.f)
             {
-                Log.d("check", "dropBobble: " + bb.num + "parent" + bb.parentsBobbleNum);
-                bb.bDestroyed = true;
+               bb.bDestroyed = true;
             }
-                uncheckBobble();
+
+            uncheckBobble();
         }
 
         for(Bobble bb : bobbleMap.values())
@@ -205,10 +205,11 @@ public class BobbleManager implements IGameObject {
 
     private boolean checkAttached(int key) {
         Bobble bb = bobbleMap.get(key);
+        if(bb == null) return false;
         if(bb.bChecked) return bb.bAttached;
 
         bb.bChecked = true;
-        if(bb.y <= 2.5f || bb.bAttached)
+        if(bb.y <= 2.0f || bb.bAttached)
         {
             bb.bAttached = true;
             return true;
@@ -284,7 +285,6 @@ public class BobbleManager implements IGameObject {
         //충돌체크
         if(curItem != null)
         {
-
             curItem.update();
             if(curItem == null) return;
             if(!curItem.bActive) return;
@@ -305,23 +305,29 @@ public class BobbleManager implements IGameObject {
         else if(curBobble.getAcitve())
         {
             boolean bHit = false;
-            for(int key: bobbleMap.keySet())
+            if(curBobble.y <= 2.f) bHit = true;
+            else
             {
-                if(key != curBobbleNum)
+                for(int key: bobbleMap.keySet())
                 {
-                    boolean bResult = curBobble.checkCollision(bobbleMap.get(key));
-                    if(bResult)
+                    if(key != curBobbleNum)
                     {
-                        curBobble.parentsBobbleNum.add(key);
-                        bobbleMap.get(key).parentsBobbleNum.add(curBobbleNum);
-                        bHit = true;
+                        boolean bResult = curBobble.checkCollision(bobbleMap.get(key));
+                        if(bResult)
+                        {
+                            curBobble.parentsBobbleNum.add(key);
+                            bobbleMap.get(key).parentsBobbleNum.add(curBobbleNum);
+                            bHit = true;
+                        }
                     }
                 }
             }
+
             if(bHit)
             {
                 addBobble(curBobble, curBobbleNum);
                 checkBobble(curBobbleNum);
+                curBobble.setActive(false);
                 popTargetBobbles.add(curBobbleNum);
                 addNewBobble();
                 uncheckBobble();

@@ -15,6 +15,9 @@ public class InventoryScene extends BaseScene
     private static float speed;
     private float x,y = 0;
 
+    //Button
+    private Button returnBtn;
+
     public HashMap<Integer, Item> ItemMap= new HashMap<>();
     public boolean bTouchItem = false;
     public Item selectedItem;
@@ -23,6 +26,9 @@ public class InventoryScene extends BaseScene
     public InventoryScene(HashMap<ItemType ,Integer> itemList)
     {
         bg = new Background(1);
+
+        returnBtn = new Button(R.mipmap.itembobble, Metrics.game_width - 1.f, Metrics.game_height - 1.f, 1.5f, 1.5f);
+        returnBtn.setSrcRect();
 
         //Item 획득 목록 전달
         for(ItemType key : itemList.keySet())
@@ -81,6 +87,7 @@ public class InventoryScene extends BaseScene
     @Override
     public void draw(Canvas canvas) {
         bg.draw(canvas);
+        returnBtn.draw(canvas);
         super.draw(canvas);
         for(Item item : ItemMap.values())
         {
@@ -114,7 +121,6 @@ public class InventoryScene extends BaseScene
                 if(bTouchItem)
                 {
 
-                    //아이템 사용 범위 적절하게 변환 필요
                     Double touchDistance = Math.sqrt(Math.pow(startX - endX,2) + Math.pow(startY - endY, 2));
                     if(touchDistance <= 1.f)
                     {
@@ -138,16 +144,18 @@ public class InventoryScene extends BaseScene
                                 selectedItem.decCount();
                                 item.decCount();
                                 int type = random.nextInt(4) + 7;
-                                addItem(type);
+                                addItem(type, endX, endY);
                                 break;
                             }
                         }
+
+                        selectedItem.release(endX, endY);
                     }
 
                     selectedItem = null;
                 }
 
-                else if(startY < 4.f && endY > 10.f)
+                else if(returnBtn.checkTouched(endX, endY))
                 {
                     onEnd();
                     popScene();
@@ -157,22 +165,22 @@ public class InventoryScene extends BaseScene
         return true;
     }
 
-    private void addItem(int type)
+    private void addItem(int type, float x, float y)
     {
         if(ItemMap.containsKey(type)) ItemMap.get(type).addCount();
         else
         {
             float row = ((int)(type / 3) + 1) * Metrics.game_height/5;
             float column = (type % 3 + 1) * Metrics.game_width/4;
-            Item item = new Item(column, row, type);
+            Item item = new Item(x, y, type, column, row);
             ItemMap.put(type, item);
         }
     }
     private void addItem(int type, int count)
     {
-        float row = ((int)(type / 3) + 1) * Metrics.game_height/4;
+        float row = ((int)(type / 3) + 1) * Metrics.game_height/5;
         float column = (type % 3 + 1) * Metrics.game_width/4;
-        Item item = new Item(column, row, type);
+        Item item = new Item(column, row, type, column, row);
         item.count = count;
         ItemMap.put(type, item);
     }

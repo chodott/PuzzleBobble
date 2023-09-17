@@ -152,10 +152,11 @@ public class Bobble extends AnimSprite{
                 xShotSpeed *= -1.f; //방향 변경
             }
 
-            if(y <= 2.f)
+            else if (y<= 2.f)
             {
-                bActive = false;
+                y = 2.f;
             }
+
         }
 
     }

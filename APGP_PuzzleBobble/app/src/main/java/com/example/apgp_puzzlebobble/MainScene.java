@@ -17,6 +17,7 @@ public class MainScene extends BaseScene {
     public static boolean bGameover = false;
     public static boolean bPause = false;
     public static Button pauseBtn;
+    public static Button invenBtn;
 
     public BobbleManager bobbleMgr;
     public static Score score;
@@ -43,7 +44,7 @@ public class MainScene extends BaseScene {
     public MainScene()
     {
         add(new Background(0));
-        arrow = new Arrow(R.mipmap.gearsprite,Metrics.game_width/2, 14.f, 5.f, 5.f);
+        arrow = new Arrow(R.mipmap.gearsprite,Metrics.game_width/2, 14.5f, 5.f, 5.f);
         add(arrow);
         bobbleMgr = new BobbleManager();
         add(bobbleMgr);
@@ -53,9 +54,11 @@ public class MainScene extends BaseScene {
         add(limitTimer);
 
 
+        invenBtn = new Button(R.mipmap.itembobble, Metrics.game_width - 1.f, Metrics.game_height - 1.f, 1.5f, 1.5f);
+        invenBtn.setSrcRect();
 
         //pause
-        pauseBtn = new Button(R.mipmap.pausebtn, 0.5f, 0.5f, 1.f, 1.f);
+        pauseBtn = new Button(R.mipmap.pausebtn2, 0.5f, 0.5f, 1.f, 1.f);
         pauseBtn.setSrcRect();
 
         resumeBtn = new Button(R.mipmap.buttonsprite, Metrics.game_width/2, Metrics.game_height/2, 4.f, 1.f);
@@ -144,21 +147,21 @@ public class MainScene extends BaseScene {
                 float endY = -Metrics.toGameY(event.getY());
 
                 if(bGameover) {
-                    if (restartBtn.checkTouched(startX, -startY))
+                    if (restartBtn.checkTouched(endX, -endY))
                     {
                         Sound.playEffect(R.raw.toucheffect);
                         popScene();
                         MainScene.restart();
                         new MainScene().pushScene();
                     }
-                    else if (endBtn.checkTouched(startX, -startY)) {
+                    else if (endBtn.checkTouched(endX, -endY)) {
                         System.exit(0);
                     }
                 }
 
                 else if(bPause)
                 {
-                    if (restartBtn.checkTouched(startX, -startY))
+                    if (restartBtn.checkTouched(endX, -endY))
                     {
                         Sound.playEffect(R.raw.toucheffect);
                         popScene();
@@ -166,25 +169,26 @@ public class MainScene extends BaseScene {
                         new MainScene().pushScene();
 
                     }
-                    else if (endBtn.checkTouched(startX, -startY)) {
+                    else if (endBtn.checkTouched(endX, -endY)) {
                         System.exit(0);
                     }
-                    else if(resumeBtn.checkTouched(startX, -startY))
+                    else if(resumeBtn.checkTouched(endX, -endY))
                     {
                         Sound.playEffect(R.raw.toucheffect);
                         bPause = false;
                     }
                 }
 
-                else {
-                    if (-startY > 14.f && -endY < 10.f) {
+                else
+                {
+                    if (invenBtn.checkTouched(endX, -endY)) {
                         //아이템 창 호출
                         Sound.playEffect(R.raw.pauseeffect);
                         new InventoryScene(itemlistMap).pushScene();
                         return true;
                     }
 
-                    else if(pauseBtn.checkTouched(startX, -startY))
+                    else if(pauseBtn.checkTouched(endX, -endY))
                     {
                         Sound.playEffect(R.raw.pauseeffect);
                         bPause = true;
@@ -230,7 +234,9 @@ public class MainScene extends BaseScene {
         //canvas.drawPath(shotPath, paint);
         if(timeItem != null)
             timeItem.draw(canvas);
+
         pauseBtn.draw(canvas);
+        invenBtn.draw(canvas);
 
         if(bGameover)
         {
