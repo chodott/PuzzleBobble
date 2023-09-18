@@ -35,7 +35,7 @@ public abstract class ItemBobble extends AnimSprite
         {
             x += xShotSpeed * frameTime * speed;
             y -= yShotSpeed * frameTime * speed;
-            if(x <= 0.f || x >= 9.f)
+            if(x <= 1.f || x >= 9.f)
             {
                 xShotSpeed *= -1.f; //방향 변경
             }

@@ -76,6 +76,8 @@ public class Bobble extends AnimSprite{
         int Width = burstBitmap.getWidth();
         int Height = burstBitmap.getHeight();
 
+        parentsBobbleNum.clear();
+
 
         frameWidth = Width/ frameCount;
         frameHeight = Height/COLOR_COUNT;
@@ -101,13 +103,30 @@ public class Bobble extends AnimSprite{
             float newX, newY;
             if(slope < 0.f)
             {
-                newX = x - (float)Math.cos(angleRadians) * gap;
-                newY = y - (float)Math.sin(angleRadians) * gap;
+                if(x < targetX)
+                {
+                    newX = x - (float)Math.cos(angleRadians) * gap;
+                    newY = y - (float)Math.sin(angleRadians) * gap;
+                }
+                else
+                {
+                    newX = x + (float)Math.cos(angleRadians) * gap;
+                    newY = y + (float)Math.sin(angleRadians) * gap;
+                }
+
             }
             else
             {
-                newX = x + (float)Math.cos(angleRadians) * gap;
-                newY = y + (float)Math.sin(angleRadians) * gap;
+                if(x < targetX)
+                {
+                    newX = x - (float)Math.cos(angleRadians) * gap;
+                    newY = y - (float)Math.sin(angleRadians) * gap;
+                }
+                else
+                {
+                    newX = x + (float)Math.cos(angleRadians) * gap;
+                    newY = y + (float)Math.sin(angleRadians) * gap;
+                }
             }
 
             setPos(newX, newY);

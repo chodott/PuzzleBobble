@@ -69,8 +69,8 @@ public class BobbleManager implements IGameObject {
             {
                 curbb.parentsBobbleNum.add(saveNum);
                 FindBobble(saveNum).parentsBobbleNum.add(addNum);
-
             }
+
             saveNum = addNum;
         }
 
@@ -85,6 +85,7 @@ public class BobbleManager implements IGameObject {
                     boolean bOverlap = bb.checkCollision(curbb);
                     if(bOverlap)
                     {
+
                         curbb.parentsBobbleNum.add(bbnum);
                         bb.parentsBobbleNum.add(curbbnum);
                     }
@@ -140,8 +141,15 @@ public class BobbleManager implements IGameObject {
                 for (int j : FindBobble(i).parentsBobbleNum)
                 {
                     Bobble parentbb = FindBobble(j);
-                    parentbb.parentsBobbleNum.remove((Object)i);
+                    if(parentbb != null)
+                    {
+                        parentbb.parentsBobbleNum.remove((Object)i);
+                    }
                 }
+            }
+
+            for(int i : popTargetBobbles)
+            {
                 DeleteBobble(i);
             }
 
@@ -160,15 +168,22 @@ public class BobbleManager implements IGameObject {
                 {
                     Bobble targetbb = FindBobble(i);
                     targetColor = targetbb.color;
-                    if(targetbb == null)  continue;
 
                     for (int j : targetbb.parentsBobbleNum)
                     {
                         Bobble checkbb = FindBobble(j);
-                        checkbb.parentsBobbleNum.remove((Object)i);
+                        if(checkbb != null) {
+                            checkbb.parentsBobbleNum.remove((Object) i);
+                        }
                     }
+
+                }
+
+                for(int i : popTargetBobbles)
+                {
                     DeleteBobble(i);
                 }
+
                 int score = comboSize * 10;
                 MainScene.score.setScore(MainScene.score.getScore() + score);
                 makeNewItem(comboSize);
