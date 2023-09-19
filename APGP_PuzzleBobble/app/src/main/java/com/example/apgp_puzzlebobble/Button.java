@@ -10,11 +10,21 @@ public class Button extends Sprite
         super(bitmapResId, cx, cy, width, height);
     }
 
-    public void setSrcRect(int type)
+    public void setSrcRect(int type, boolean Horizon)
     {
-        int srcHeight = bitmap.getHeight();
-        srcRect.set(0, type * srcHeight/3, bitmap.getWidth(), (type + 1) * srcHeight/3);
+        if(Horizon)
+        {
+            int srcWidth = bitmap.getWidth()/4;
+            int srcHeight = bitmap.getHeight();
+            srcRect.set(type * srcWidth, 0, (type+1) * srcWidth, srcHeight);
+        }
+        else
+        {
+            int srcHeight = bitmap.getHeight();
+            srcRect.set(0, type * srcHeight / 3, bitmap.getWidth(), (type + 1) * srcHeight / 3);
+        }
     }
+
 
     public void setSrcRect()
     {

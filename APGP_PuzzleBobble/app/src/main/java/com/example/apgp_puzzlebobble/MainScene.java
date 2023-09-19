@@ -42,6 +42,8 @@ public class MainScene extends BaseScene {
     private Button RightArrowBtn;
     private Button UpArrowBtn;
     private Button DownArrowBtn;
+
+    public int nameNum = 1;
     float startX, startY;
     static
     {
@@ -58,7 +60,7 @@ public class MainScene extends BaseScene {
         add(bobbleMgr);
         score =  new Score(R.mipmap.scoresprite, 9.f, 0.f, 0.8f);
         add(score);
-        limitTimer = new LimitTimer(R.mipmap.scoresprite, 4.5f, 0.f, 0.7f);
+        limitTimer = new LimitTimer(R.mipmap.scoresprite, Metrics.game_width/2 - 0.7f, 0.f, 0.7f);
         add(limitTimer);
 
 
@@ -70,25 +72,25 @@ public class MainScene extends BaseScene {
         pauseBtn.setSrcRect();
 
         resumeBtn = new Button(R.mipmap.buttonsprite, Metrics.game_width/2, Metrics.game_height/2, 4.f, 1.f);
-        resumeBtn.setSrcRect(2);
+        resumeBtn.setSrcRect(2, false);
 
         //Game Over관련
         endScreen = new EndScreen();
-        alphabetName = new Alphabet(R.mipmap.namesprite, Metrics.game_width/2 + 0.8f, Metrics.game_height/2, 0.8f);
+        alphabetName = new Alphabet(R.mipmap.namesprite, Metrics.game_width/2 + 1.2f, Metrics.game_height/2 - 0.4f, 0.8f);
 
-        restartBtn = new Button(R.mipmap.buttonsprite, Metrics.game_width/2, Metrics.game_height/2 - 1.2f, 4.f, 1.f);
-        endBtn = new Button(R.mipmap.buttonsprite, Metrics.game_width/2, Metrics.game_height/2 + 1.2f, 4.f, 1.f);
-        restartBtn.setSrcRect(0);
-        endBtn.setSrcRect(1);
+        restartBtn = new Button(R.mipmap.buttonsprite, Metrics.game_width/2, Metrics.game_height/2 - 2.2f, 4.f, 1.f);
+        endBtn = new Button(R.mipmap.buttonsprite, Metrics.game_width/2, Metrics.game_height/2 + 2.2f, 4.f, 1.f);
+        restartBtn.setSrcRect(0, false);
+        endBtn.setSrcRect(1, false);
 
-        LeftArrowBtn = new Button(R.mipmap.buttonsprite, Metrics.game_width/2 - 2.f, Metrics.game_height/2, 1.f, 1.f);
-        RightArrowBtn = new Button(R.mipmap.buttonsprite, Metrics.game_width/2 - 2.f, Metrics.game_height/2, 1.f, 1.f);
-        UpArrowBtn = new Button(R.mipmap.buttonsprite, Metrics.game_width/2 - 2.f, Metrics.game_height/2 - 1.f, 1.f, 1.f);
-        DownArrowBtn = new Button(R.mipmap.buttonsprite, Metrics.game_width/2 - 2.f, Metrics.game_height/2 + 1.f, 1.f, 1.f);
-        LeftArrowBtn.setSrcRect(0);
-        RightArrowBtn.setSrcRect(1);
-        UpArrowBtn.setSrcRect(2);
-        DownArrowBtn.setSrcRect(3);
+        LeftArrowBtn = new Button(R.mipmap.arrowbtnsprite, Metrics.game_width/2 - 2.f, Metrics.game_height/2, 1.f, 1.f);
+        RightArrowBtn = new Button(R.mipmap.arrowbtnsprite, Metrics.game_width/2 + 2.f, Metrics.game_height/2, 1.f, 1.f);
+        UpArrowBtn = new Button(R.mipmap.arrowbtnsprite, Metrics.game_width/2, Metrics.game_height/2 - 1.f, 1.f, 1.f);
+        DownArrowBtn = new Button(R.mipmap.arrowbtnsprite, Metrics.game_width/2, Metrics.game_height/2 + 1.f, 1.f, 1.f);
+        LeftArrowBtn.setSrcRect(1, true);
+        RightArrowBtn.setSrcRect(0, true);
+        UpArrowBtn.setSrcRect(2, true);
+        DownArrowBtn.setSrcRect(3, true);
 
         //임의로 추가
     }
@@ -121,8 +123,6 @@ public class MainScene extends BaseScene {
             if (curScore > highScore)
                 HighScoreManager.setInt(MainActivity.mContext, "High", score.getScore());
 
-            score.movePos(5.5f, 6.3f);
-
             //Rank
             int saveScore;
             int saveRank;
@@ -144,14 +144,6 @@ public class MainScene extends BaseScene {
 
                 }
             }
-
-            for (int i = 0; i < 10; ++i) {
-                //String rank = Integer.toString(i + 1);
-                //Log.d("rank", "rank: " + rank + "score: " + HighScoreManager.getInt(MainActivity.mContext, rank));
-            }
-
-            //이름 정하기
-
 
             bSaveRank = true;
         }
@@ -210,15 +202,73 @@ public class MainScene extends BaseScene {
                     if (restartBtn.checkTouched(endX, -endY))
                     {
                         Sound.playEffect(R.raw.toucheffect);
+                        onEnd();
                         popScene();
                         MainScene.restart();
                         new MainScene().pushScene();
                     }
                     else if (endBtn.checkTouched(endX, -endY)) {
+                        onEnd();
                         System.exit(0);
                     }
 
-                    else if()
+                    else if(RightArrowBtn.checkTouched(endX, -endY))
+                    {
+                        if(nameNum <2)
+                        {
+                            DownArrowBtn.x += 0.8f;
+                            UpArrowBtn.x += 0.8f;
+                            nameNum++;
+                            DownArrowBtn.setDstRect();
+                            UpArrowBtn.setDstRect();
+                        }
+                        return true;
+                    }
+
+                    else if(LeftArrowBtn.checkTouched(endX, -endY))
+                    {
+                        if(nameNum>0) {
+                            DownArrowBtn.x -= 0.8f;
+                            UpArrowBtn.x -= 0.8f;
+                            nameNum--;
+                            DownArrowBtn.setDstRect();
+                            UpArrowBtn.setDstRect();
+                        }
+                        return true;
+                    }
+
+                    else if(DownArrowBtn.checkTouched(endX, -endY))
+                    {
+                        //글자 다운
+                        char ch[] = new char[3];
+                        alphabetName.getName().getChars(0, 3, ch, 0);
+                        ch[nameNum] += 1;
+
+                        if(ch[nameNum] >= 91)
+                        {
+                            ch[nameNum] = 'A';
+                        }
+                        String newName = new String(ch);
+                        alphabetName.setName(newName);
+                        return true;
+                    }
+
+                    else if(UpArrowBtn.checkTouched(endX, -endY))
+                    {
+                        //글자 업
+                        char ch[] = new char[3];
+                        alphabetName.getName().getChars(0, 3, ch, 0);
+                        ch[nameNum] -= 1;
+
+                        if(ch[nameNum] <= 64)
+                        {
+                            ch[nameNum] = 'Z';
+                        }
+
+                        String newName = new String(ch);
+                        alphabetName.setName(newName);
+                        return true;
+                    }
                 }
 
                 else if(bPause)
@@ -226,12 +276,14 @@ public class MainScene extends BaseScene {
                     if (restartBtn.checkTouched(endX, -endY))
                     {
                         Sound.playEffect(R.raw.toucheffect);
+                        onEnd();
                         popScene();
                         MainScene.restart();
                         new MainScene().pushScene();
 
                     }
                     else if (endBtn.checkTouched(endX, -endY)) {
+                        onEnd();
                         System.exit(0);
                     }
                     else if(resumeBtn.checkTouched(endX, -endY))
@@ -273,7 +325,7 @@ public class MainScene extends BaseScene {
     public void update(long elapsedNanos) {
         if(bGameover)
         {
-            onEnd();
+
         }
         else if(bPause)
         {
@@ -306,6 +358,12 @@ public class MainScene extends BaseScene {
             restartBtn.draw(canvas);
             endBtn.draw(canvas);
             score.draw(canvas);
+            alphabetName.draw(canvas);
+
+            LeftArrowBtn.draw(canvas);
+            RightArrowBtn.draw(canvas);
+            UpArrowBtn.draw(canvas);
+            DownArrowBtn.draw(canvas);
         }
 
         if(bPause)

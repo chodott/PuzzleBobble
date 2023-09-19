@@ -5,8 +5,8 @@ import android.graphics.Canvas;
 import android.view.MotionEvent;
 
 public class EndScreen extends AnimSprite{
-    static float SCREEN_WIDTH = 5.f;
-    static float SCREEN_HEIGHT = 5.f;
+    static float SCREEN_WIDTH = 8.f;
+    static float SCREEN_HEIGHT = 8.f;
 
 
     public EndScreen()
