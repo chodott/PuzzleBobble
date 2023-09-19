@@ -36,8 +36,12 @@ public class Item extends Sprite{
     public Item(float cx, float cy, int type, float column, float row) {
         super(R.mipmap.itembobble, cx, cy, CASE_SIZE, CASE_SIZE);
         this.type = type;
-        itemBitmap =  BitmapFactory.decodeResource(GameView.res, R.mipmap.itemsprite);
-        countBitmap = BitmapFactory.decodeResource(GameView.res, R.mipmap.scoresprite);
+        if (R.mipmap.itemsprite != 0) {
+            itemBitmap = BitmapPool.get(R.mipmap.itemsprite);
+        }
+        if (R.mipmap.scoresprite != 0) {
+            countBitmap = BitmapPool.get(R.mipmap.scoresprite);
+        }
         srcSize = itemBitmap.getWidth()/ITEM_COUNT;
         cntSrcSize = countBitmap.getWidth()/10;
         srcRect.set(type * srcSize, 0 , (type + 1) * srcSize, srcSize);

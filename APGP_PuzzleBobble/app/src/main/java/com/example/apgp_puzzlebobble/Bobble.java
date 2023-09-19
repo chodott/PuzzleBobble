@@ -88,11 +88,10 @@ public class Bobble extends AnimSprite{
         float targetX = target.x;
         float targetY = target.y;
         double distance = Math.sqrt(Math.pow(x - target.x,2) + Math.pow(y - target.y,2));
-        if(distance == 0.f)
-        {
-            return true;
-        }
-        if(BOBBLE_SIZE * 2 > distance)
+
+        if(target.bBurst || target.bDestroyed) return false;
+
+        if(BOBBLE_SIZE * 2 >= distance)
         {
             setActive(false);
             bAnimating = true;
@@ -171,7 +170,7 @@ public class Bobble extends AnimSprite{
                 xShotSpeed *= -1.f; //방향 변경
             }
 
-            else if (y<= 2.25f)
+            else if (y< 2.25f)
             {
                 y = 2.25f;
             }

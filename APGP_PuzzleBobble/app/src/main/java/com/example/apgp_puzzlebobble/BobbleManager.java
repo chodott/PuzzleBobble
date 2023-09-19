@@ -15,7 +15,7 @@ public class BobbleManager implements IGameObject {
     public static ArrayList<Integer> trashList = new ArrayList<>();
     public static int saveNum = 0;
     public static boolean bWaitingAddLine;
-    public Bobble curBobble;
+    public static Bobble curBobble;
     public static ItemBobble curItem;
     public int curBobbleNum;
     private int targetColor;
@@ -32,6 +32,7 @@ public class BobbleManager implements IGameObject {
         bobbleMap.clear();
         popTargetBobbles.clear();
         trashList.clear();
+        bWaitingAddLine = false;
         curItem = null;
     }
 
@@ -82,7 +83,9 @@ public class BobbleManager implements IGameObject {
                 if(curbbnum != bbnum)
                 {
                     Bobble curbb = bobbleMap.get(curbbnum);
-                    boolean bOverlap = bb.checkCollision(curbb);
+                    //boolean bOverlap = bb.checkCollision(curbb);
+                    boolean bOverlap = false;
+                    if(bb.y <= 2.25f && bb.x <= curbb.x + 0.5f && bb.x >= curbb.x - 0.5f) bOverlap = true;
                     if(bOverlap)
                     {
 
@@ -203,7 +206,9 @@ public class BobbleManager implements IGameObject {
             for(int key : bb.parentsBobbleNum)
             {
                 bb.bAttached = checkAttached(key);
+                if(bb.bAttached) break;
             }
+
             if(bb.bAttached == false && bb.y > 2.25f)
             {
                bb.bDestroyed = true;
@@ -286,7 +291,7 @@ public class BobbleManager implements IGameObject {
     void DeleteBobble(int num)
     {
         bobbleMap.get(num).burst();
-        //bobbleMap.remove(num);
+       //bobbleMap.remove(num);
     }
 
     @Override
@@ -311,7 +316,6 @@ public class BobbleManager implements IGameObject {
                 if (bHit) {
                     curItem.applyAbility();
                     popBobbles(true);
-                    Log.d("item", "update: ");
                     break;
                 }
             }
@@ -320,7 +324,11 @@ public class BobbleManager implements IGameObject {
         else if(curBobble.getAcitve())
         {
             boolean bHit = false;
-            if(curBobble.y <= 2.f) bHit = true;
+            if(curBobble.y <= 2.25f)
+            {
+                bHit = true;
+                curBobble.y = 2.25f;
+            }
             else
             {
                 for(int key: bobbleMap.keySet())

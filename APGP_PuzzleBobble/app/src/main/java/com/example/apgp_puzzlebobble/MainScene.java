@@ -297,8 +297,10 @@ public class MainScene extends BaseScene {
                 {
                     if (invenBtn.checkTouched(endX, -endY)) {
                         //아이템 창 호출
-                        Sound.playEffect(R.raw.pauseeffect);
-                        new InventoryScene(itemlistMap).pushScene();
+                        if(!BobbleManager.curBobble.getAcitve()) {
+                            Sound.playEffect(R.raw.pauseeffect);
+                            new InventoryScene(itemlistMap).pushScene();
+                        }
                         return true;
                     }
 

@@ -23,7 +23,6 @@ public class LimitTimer implements IGameObject{
 
     public LimitTimer(int mipmapResId, float right, float top, float width)
     {
-        //this.bitmap = BitmapFactory.decodeResource(GameView.res, mipmapResId);
         this.bitmap = BitmapPool.get(mipmapResId);
         this.right = right;
         this.top = top;
