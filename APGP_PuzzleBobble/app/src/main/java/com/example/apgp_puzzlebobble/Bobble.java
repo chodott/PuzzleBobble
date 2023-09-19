@@ -35,7 +35,7 @@ public class Bobble extends AnimSprite{
     public boolean bChecked =false;
     public Bobble()
     {
-        super(R.mipmap.bobblesprite, 4.5f, 2.5f, 1.f, 1.f, 6.955f, 7, COLOR_COUNT);
+        super(R.mipmap.bobblesprite, 4.5f, 4.0f, 1.f, 1.f, 6.955f, 7, COLOR_COUNT);
         if(R.mipmap.bobbleburstsprite != 0)
         {
             burstBitmap = BitmapPool.get(R.mipmap.bobbleburstsprite);
@@ -46,7 +46,7 @@ public class Bobble extends AnimSprite{
     }
 
     public Bobble(int type) {
-        super(R.mipmap.bobblesprite, 4.5f, 2.5f, 1.f, 1.f, 6.955f, 7, COLOR_COUNT);
+        super(R.mipmap.bobblesprite, 4.5f, 4.0f, 1.f, 1.f, 6.955f, 7, COLOR_COUNT);
         this.type = type;
     }
 
@@ -171,9 +171,9 @@ public class Bobble extends AnimSprite{
                 xShotSpeed *= -1.f; //방향 변경
             }
 
-            else if (y<= 2.f)
+            else if (y<= 2.25f)
             {
-                y = 2.f;
+                y = 2.25f;
             }
 
         }

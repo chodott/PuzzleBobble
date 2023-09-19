@@ -34,6 +34,7 @@ public class TitleActivity extends AppCompatActivity {
 
     public void onBtnRank(View view)
     {
-
+        startActivity(new Intent(this, RankActivity.class));
+        BaseScene.getTopScene().onEnd();
     }
 }

@@ -3,32 +3,24 @@ package com.example.apgp_puzzlebobble;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.os.Bundle;
-import android.view.DragEvent;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.ImageView;
 
-public class MainActivity extends AppCompatActivity {
+public class RankActivity extends AppCompatActivity {
 
     private GameView gameView;
 
     public static Context mContext;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         gameView = new GameView(this);
-        setContentView(R.layout.activity_main);
-        setContentView(gameView);
 
+        setContentView(R.layout.activity_rank);
+        setContentView(gameView);
         mContext = this;
 
-        new MainScene().pushScene();
+        new RankScene().pushScene();
         BaseScene.getTopScene().onStart();
     }
-
-
 }

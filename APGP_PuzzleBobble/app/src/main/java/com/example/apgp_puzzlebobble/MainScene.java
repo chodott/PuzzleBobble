@@ -14,6 +14,8 @@ import java.util.HashMap;
 public class MainScene extends BaseScene {
     private static Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
+    private boolean bSaveRank = false;
+
     public static boolean bGameover = false;
     public static boolean bPause = false;
     public static Button pauseBtn;
@@ -21,6 +23,7 @@ public class MainScene extends BaseScene {
 
     public BobbleManager bobbleMgr;
     public static Score score;
+    public static Alphabet alphabetName;
 
     public static TimeItem timeItem;
     public LimitTimer limitTimer;
@@ -34,6 +37,11 @@ public class MainScene extends BaseScene {
     private Button endBtn;
 
     private Button resumeBtn;
+
+    private Button LeftArrowBtn;
+    private Button RightArrowBtn;
+    private Button UpArrowBtn;
+    private Button DownArrowBtn;
     float startX, startY;
     static
     {
@@ -44,13 +52,13 @@ public class MainScene extends BaseScene {
     public MainScene()
     {
         add(new Background(0));
-        arrow = new Arrow(R.mipmap.gearsprite,Metrics.game_width/2, 14.5f, 5.f, 5.f);
+        arrow = new Arrow(R.mipmap.gearsprite,Metrics.game_width/2, 17.0f, 5.f, 5.f);
         add(arrow);
         bobbleMgr = new BobbleManager();
         add(bobbleMgr);
         score =  new Score(R.mipmap.scoresprite, 9.f, 0.f, 0.8f);
         add(score);
-        limitTimer = new LimitTimer(R.mipmap.scoresprite, 4.5f, 0.f, 1.f);
+        limitTimer = new LimitTimer(R.mipmap.scoresprite, 4.5f, 0.f, 0.7f);
         add(limitTimer);
 
 
@@ -58,7 +66,7 @@ public class MainScene extends BaseScene {
         invenBtn.setSrcRect();
 
         //pause
-        pauseBtn = new Button(R.mipmap.pausebtn2, 0.5f, 0.5f, 1.f, 1.f);
+        pauseBtn = new Button(R.mipmap.pausebtn2, 0.75f, 0.75f, 1.5f, 1.5f);
         pauseBtn.setSrcRect();
 
         resumeBtn = new Button(R.mipmap.buttonsprite, Metrics.game_width/2, Metrics.game_height/2, 4.f, 1.f);
@@ -66,11 +74,21 @@ public class MainScene extends BaseScene {
 
         //Game Over관련
         endScreen = new EndScreen();
+        alphabetName = new Alphabet(R.mipmap.namesprite, Metrics.game_width/2 + 0.8f, Metrics.game_height/2, 0.8f);
 
-        restartBtn = new Button(R.mipmap.buttonsprite, Metrics.game_width/2, Metrics.game_height/2 - 1.f, 4.f, 1.f);
-        endBtn = new Button(R.mipmap.buttonsprite, Metrics.game_width/2, Metrics.game_height/2 + 1.f, 4.f, 1.f);
+        restartBtn = new Button(R.mipmap.buttonsprite, Metrics.game_width/2, Metrics.game_height/2 - 1.2f, 4.f, 1.f);
+        endBtn = new Button(R.mipmap.buttonsprite, Metrics.game_width/2, Metrics.game_height/2 + 1.2f, 4.f, 1.f);
         restartBtn.setSrcRect(0);
         endBtn.setSrcRect(1);
+
+        LeftArrowBtn = new Button(R.mipmap.buttonsprite, Metrics.game_width/2 - 2.f, Metrics.game_height/2, 1.f, 1.f);
+        RightArrowBtn = new Button(R.mipmap.buttonsprite, Metrics.game_width/2 - 2.f, Metrics.game_height/2, 1.f, 1.f);
+        UpArrowBtn = new Button(R.mipmap.buttonsprite, Metrics.game_width/2 - 2.f, Metrics.game_height/2 - 1.f, 1.f, 1.f);
+        DownArrowBtn = new Button(R.mipmap.buttonsprite, Metrics.game_width/2 - 2.f, Metrics.game_height/2 + 1.f, 1.f, 1.f);
+        LeftArrowBtn.setSrcRect(0);
+        RightArrowBtn.setSrcRect(1);
+        UpArrowBtn.setSrcRect(2);
+        DownArrowBtn.setSrcRect(3);
 
         //임의로 추가
     }
@@ -94,7 +112,49 @@ public class MainScene extends BaseScene {
 
     protected void onEnd()
     {
-        Sound.pauseMusic();
+        if(!bSaveRank)
+        {
+            Sound.pauseMusic();
+
+            int highScore = HighScoreManager.getInt(MainActivity.mContext, "High");
+            int curScore = score.getScore();
+            if (curScore > highScore)
+                HighScoreManager.setInt(MainActivity.mContext, "High", score.getScore());
+
+            score.movePos(5.5f, 6.3f);
+
+            //Rank
+            int saveScore;
+            int saveRank;
+            for (int i = 0; i < 10; ++i) {
+                int rank = i + 1;
+                saveScore = HighScoreManager.getInt(MainActivity.mContext, Integer.toString(rank));
+                if (saveScore < curScore) {
+                    saveRank = rank;
+                    for (int j = 10; j > saveRank; --j) {
+                        String string_rank = Integer.toString(j);
+                        String string_newRank = Integer.toString(j - 1);
+
+                        HighScoreManager.setInt(MainActivity.mContext, string_rank, HighScoreManager.getInt(MainActivity.mContext, string_newRank));
+                        HighScoreManager.setString(MainActivity.mContext, string_rank +".", HighScoreManager.getString(MainActivity.mContext, string_newRank + "."));
+                    }
+                    HighScoreManager.setInt(MainActivity.mContext, Integer.toString(saveRank), curScore);
+                    HighScoreManager.setString(MainActivity.mContext,Integer.toString(saveRank) + ".", alphabetName.getName() );
+                    break;
+
+                }
+            }
+
+            for (int i = 0; i < 10; ++i) {
+                //String rank = Integer.toString(i + 1);
+                //Log.d("rank", "rank: " + rank + "score: " + HighScoreManager.getInt(MainActivity.mContext, rank));
+            }
+
+            //이름 정하기
+
+
+            bSaveRank = true;
+        }
     }
 
     public void addNewItem(int type)
@@ -122,7 +182,7 @@ public class MainScene extends BaseScene {
         switch (action) {
             case MotionEvent.ACTION_DOWN:
                 startX = Metrics.game_width/2;
-                startY = 14.f;
+                startY = 17.f;
 
                 return true;
             case MotionEvent.ACTION_MOVE:
@@ -157,6 +217,8 @@ public class MainScene extends BaseScene {
                     else if (endBtn.checkTouched(endX, -endY)) {
                         System.exit(0);
                     }
+
+                    else if()
                 }
 
                 else if(bPause)
@@ -243,6 +305,7 @@ public class MainScene extends BaseScene {
             endScreen.draw(canvas);
             restartBtn.draw(canvas);
             endBtn.draw(canvas);
+            score.draw(canvas);
         }
 
         if(bPause)

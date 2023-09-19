@@ -40,7 +40,7 @@ public class BobbleManager implements IGameObject {
         //발사할 구슬 생성
         curBobbleNum = nextNum++;
         curBobble = new Bobble()
-                .setPos(Metrics.game_width/2, 14.5f);
+                .setPos(Metrics.game_width/2, 17.0f);
     }
     void addBobble()
     {
@@ -63,7 +63,7 @@ public class BobbleManager implements IGameObject {
         {
             int addNum = nextNum++;
             newbbNum.add(addNum);
-            Bobble curbb = new Bobble().setPos(i * 1.f + 1.f, 2.f);
+            Bobble curbb = new Bobble().setPos(i * 1.f + 1.f, 2.25f);
             addBobble(curbb, addNum);
             if(i > 0)
             {
@@ -204,7 +204,7 @@ public class BobbleManager implements IGameObject {
             {
                 bb.bAttached = checkAttached(key);
             }
-            if(bb.bAttached == false && bb.y > 2.f)
+            if(bb.bAttached == false && bb.y > 2.25f)
             {
                bb.bDestroyed = true;
             }
@@ -224,7 +224,7 @@ public class BobbleManager implements IGameObject {
         if(bb.bChecked) return bb.bAttached;
 
         bb.bChecked = true;
-        if(bb.y <= 2.0f || bb.bAttached)
+        if(bb.y <= 2.25f || bb.bAttached)
         {
             bb.bAttached = true;
             return true;
@@ -275,7 +275,7 @@ public class BobbleManager implements IGameObject {
                 curItem = new TimeItem();
                 break;
         }
-        curBobble.setPos(Metrics.game_width/2, 14.f);
+        curBobble.setPos(Metrics.game_width/2, 17.f);
     }
 
     static Bobble FindBobble(int num)
@@ -372,7 +372,7 @@ public class BobbleManager implements IGameObject {
     {
         for(Bobble bb : bobbleMap.values())
         {
-            if(bb.y >13.f && !bb.bDestroyed)
+            if(bb.y >14.f && !bb.bDestroyed)
             {
                 //HighScoreManager.setInt(this);
                 return true;

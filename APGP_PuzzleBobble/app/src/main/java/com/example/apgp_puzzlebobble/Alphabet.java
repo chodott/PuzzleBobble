@@ -1,13 +1,12 @@
 package com.example.apgp_puzzlebobble;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
 
-public class Score implements IGameObject{
+public class Alphabet implements IGameObject{
     private final Bitmap bitmap;
     private final int srcWidth, srcHeight;
     private final float dstWidth, dstHeight;
@@ -16,25 +15,24 @@ public class Score implements IGameObject{
     private float padX = 0.f;
     private final Rect srcRect = new Rect();
     private final RectF dstRect = new RectF();
-    private int score= 0;
+    private String name = "EMP";
     private int displayScore=0;
 
-    private boolean bAnimating = true;
-
-    public Score(int mipmapResId, float right, float top, float width)
+    public Alphabet(int mipmapResId, float right, float top, float width)
     {
         this.bitmap = BitmapPool.get(mipmapResId);
         this.right = right;
         this.top = top;
-        this.srcWidth = bitmap.getWidth() / 10;
+        this.srcWidth = bitmap.getWidth() / 26;
         this.srcHeight = bitmap.getHeight();
         this.dstWidth = width;
         this.dstHeight = dstWidth * srcHeight / srcWidth;
+        this.name = "EMP";
     }
 
-    public void setScore(int score)
+    public void setName(String name)
     {
-        this.score = score;
+        this.name = name;
     }
 
     public void movePos(float right , float top)
@@ -43,38 +41,28 @@ public class Score implements IGameObject{
         this.top = top;
     }
 
-    public int getScore()
+    public String getName()
     {
-        return score;
-    }
-
-    public void setbAnimating(boolean b)
-    {
-        bAnimating = b;
+        return name;
     }
     @Override
     public void update() {
-        if (score < displayScore) {
-            displayScore--;
-        } else if (score > displayScore) {
-            displayScore++;
-        }
+
     }
 
     @Override
     public void draw(Canvas canvas) {
-        int value = this.displayScore;
-        if(!bAnimating) value = score;
+        char[] ch = new char[3];
+        name.getChars(0,3, ch, 0);
         float x = right;
-        while(value > 0)
+        for(int i=2;i>=0;--i)
         {
-            int digit = value % 10;
-            int leftPos = digit * srcWidth;
-            srcRect.set(leftPos, 0, leftPos + srcWidth, srcHeight);
-            x -= dstWidth;
-            dstRect.set(x, top, x + dstWidth, top + dstHeight);
-            canvas.drawBitmap(bitmap, srcRect, dstRect, null);
-            value /= 10;
+           int num = (ch[i]) - 65;
+           int leftPos = num * srcWidth;
+           srcRect.set(leftPos, 0, leftPos + srcWidth, srcHeight);
+           x -= dstWidth;
+           dstRect.set(x, top, x + dstWidth, top + dstHeight);
+           canvas.drawBitmap(bitmap, srcRect, dstRect, null);
         }
     }
 }

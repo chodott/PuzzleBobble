@@ -26,4 +26,20 @@ public class HighScoreManager {
         return value;
     }
 
+    public static void setString(Context context, String key, String value)
+    {
+        SharedPreferences prefs = getPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(key, value);
+        editor.commit();
+    }
+
+    public static String getString(Context context, String key)
+    {
+        SharedPreferences prefs = getPreferences(context);
+        String defaultName = "EMP";
+        String value = prefs.getString(key, defaultName);
+        return value;
+    }
+
 }

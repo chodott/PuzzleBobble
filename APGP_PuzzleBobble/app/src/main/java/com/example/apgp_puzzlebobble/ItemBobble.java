@@ -14,7 +14,7 @@ public abstract class ItemBobble extends AnimSprite
 
     public ItemBobble(int bitmapId, float fps, int frameCount, int typeCount)
     {
-        super(bitmapId, Metrics.game_width/2, 14.f, 1.f, 1.f, fps, frameCount, typeCount);
+        super(bitmapId, Metrics.game_width/2, 17.f, 1.f, 1.f, fps, frameCount, typeCount);
     }
 
     public ItemBobble setPos(float xPos, float yPos)
