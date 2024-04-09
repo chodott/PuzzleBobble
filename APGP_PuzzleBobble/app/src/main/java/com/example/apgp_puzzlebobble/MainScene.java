@@ -58,9 +58,9 @@ public class MainScene extends BaseScene {
         add(arrow);
         bobbleMgr = new BobbleManager();
         add(bobbleMgr);
-        score =  new Score(R.mipmap.scoresprite, 9.f, 0.f, 0.8f);
+        score =  new Score(R.mipmap.scoresprite, Metrics.game_width, 0.f, 0.7f);
         add(score);
-        limitTimer = new LimitTimer(R.mipmap.scoresprite, Metrics.game_width/2 - 0.7f, 0.f, 0.7f);
+        limitTimer = new LimitTimer(R.mipmap.scoresprite, Metrics.game_width/2 + 0.8f, 0.f, 0.8f);
         add(limitTimer);
 
 

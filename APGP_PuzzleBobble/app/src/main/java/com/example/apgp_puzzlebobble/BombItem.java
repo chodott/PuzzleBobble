@@ -56,6 +56,5 @@ public class BombItem extends ItemBobble {
                 BobbleManager.popTargetBobbles.add(key);
             }
         }
-
     }
 }

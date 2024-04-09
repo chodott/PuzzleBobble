@@ -19,6 +19,10 @@ public class TitleActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_title);
 
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
+
     }
 
     public void onBtnStart(View view)

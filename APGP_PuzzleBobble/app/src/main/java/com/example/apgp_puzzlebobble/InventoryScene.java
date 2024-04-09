@@ -120,7 +120,6 @@ public class InventoryScene extends BaseScene
                 float endY = Metrics.toGameY(event.getY());
                 if(bTouchItem)
                 {
-
                     Double touchDistance = Math.sqrt(Math.pow(startX - endX,2) + Math.pow(startY - endY, 2));
                     if(touchDistance <= 1.f)
                     {
@@ -148,10 +147,8 @@ public class InventoryScene extends BaseScene
                                 break;
                             }
                         }
-
                         selectedItem.release(endX, endY);
                     }
-
                     selectedItem = null;
                 }
 
@@ -173,6 +170,7 @@ public class InventoryScene extends BaseScene
             float row = ((int)(type / 3) + 1) * Metrics.game_height/5;
             float column = (type % 3 + 1) * Metrics.game_width/4;
             Item item = new Item(x, y, type, column, row);
+            item.bNeedMove = true;
             ItemMap.put(type, item);
         }
     }

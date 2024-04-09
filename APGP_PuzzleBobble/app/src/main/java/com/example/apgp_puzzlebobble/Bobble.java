@@ -11,11 +11,12 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Bobble extends AnimSprite{
-    private static final float BOBBLE_SIZE = 0.5F;
+    public static final float BOBBLE_SIZE = 0.5F;
     private static float dropSpeed = 20.f;
     private static Random random;
     private static float speed = 10.f;
     private static int COLOR_COUNT = 7;
+    private static int FRAME_COUNT = 7;
     private static Bitmap burstBitmap;
     private float xShotSpeed;
     private float yShotSpeed;
@@ -35,7 +36,7 @@ public class Bobble extends AnimSprite{
     public boolean bChecked =false;
     public Bobble()
     {
-        super(R.mipmap.bobblesprite, 4.5f, 4.0f, 1.f, 1.f, 6.955f, 7, COLOR_COUNT);
+        super(R.mipmap.bobblesprite, 4.5f, 4.0f, BOBBLE_SIZE * 2, BOBBLE_SIZE * 2, 6.955f, FRAME_COUNT, COLOR_COUNT);
         if(R.mipmap.bobbleburstsprite != 0)
         {
             burstBitmap = BitmapPool.get(R.mipmap.bobbleburstsprite);
@@ -46,7 +47,7 @@ public class Bobble extends AnimSprite{
     }
 
     public Bobble(int type) {
-        super(R.mipmap.bobblesprite, 4.5f, 4.0f, 1.f, 1.f, 6.955f, 7, COLOR_COUNT);
+        super(R.mipmap.bobblesprite, 4.5f, 4.0f, BOBBLE_SIZE * 2, BOBBLE_SIZE * 2, 6.955f, FRAME_COUNT, COLOR_COUNT);
         this.type = type;
     }
 
@@ -77,8 +78,6 @@ public class Bobble extends AnimSprite{
         int Height = burstBitmap.getHeight();
 
         parentsBobbleNum.clear();
-
-
         frameWidth = Width/ frameCount;
         frameHeight = Height/COLOR_COUNT;
     }
@@ -165,7 +164,7 @@ public class Bobble extends AnimSprite{
         {
             x += xShotSpeed * frameTime * speed;
             y -= yShotSpeed * frameTime * speed;
-            if(x <= 1.f || x >= 9.f)
+            if(x <= 1.f || x >= 9.5f)
             {
                 xShotSpeed *= -1.f; //방향 변경
             }
@@ -174,9 +173,7 @@ public class Bobble extends AnimSprite{
             {
                 y = 2.25f;
             }
-
         }
-
     }
     @Override
     public void draw(Canvas canvas)
@@ -207,18 +204,12 @@ public class Bobble extends AnimSprite{
         }
 
         bActive = true;
-
     }
 
     public void pop()
     {
         bDestroyed = true;
         bAnimating = true;
-
-        //width = 2.f;
-        //height = 2.f;
-
-
     }
 }
 

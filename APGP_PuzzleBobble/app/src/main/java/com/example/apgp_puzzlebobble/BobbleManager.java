@@ -64,7 +64,7 @@ public class BobbleManager implements IGameObject {
         {
             int addNum = nextNum++;
             newbbNum.add(addNum);
-            Bobble curbb = new Bobble().setPos(i * 1.f + 1.f, 2.25f);
+            Bobble curbb = new Bobble().setPos(i * 1.f + 1.25f, 2.25f);
             addBobble(curbb, addNum);
             if(i > 0)
             {
@@ -85,10 +85,9 @@ public class BobbleManager implements IGameObject {
                     Bobble curbb = bobbleMap.get(curbbnum);
                     //boolean bOverlap = bb.checkCollision(curbb);
                     boolean bOverlap = false;
-                    if(bb.y <= 2.25f && bb.x <= curbb.x + 0.5f && bb.x >= curbb.x - 0.5f) bOverlap = true;
+                    if(bb.y <= 2.25f && bb.x <= curbb.x + Bobble.BOBBLE_SIZE && bb.x >= curbb.x - Bobble.BOBBLE_SIZE) bOverlap = true;
                     if(bOverlap)
                     {
-
                         curbb.parentsBobbleNum.add(bbnum);
                         bb.parentsBobbleNum.add(curbbnum);
                     }
@@ -117,8 +116,6 @@ public class BobbleManager implements IGameObject {
     {   //충돌 발생시 이벤트
         Bobble bb = FindBobble(bobbleNum);
         bb.bChecked = true;
-        //if(bb == null) return;
-        //if(bb.parentsBobbleNum.isEmpty()) return;
         for(int bbNum : bb.parentsBobbleNum)
         {
             Bobble checkbb = FindBobble(bbNum);
@@ -127,8 +124,7 @@ public class BobbleManager implements IGameObject {
 
             checkbb.bChecked = true;
             if(bb.color == checkbb.color)
-            {
-                //컬러가 같을 때 부모 계속 추적
+            {   //컬러가 같을 때 부모 계속 추적
                 checkBobble(bbNum);
                 popTargetBobbles.add(bbNum);
             }
@@ -372,6 +368,8 @@ public class BobbleManager implements IGameObject {
         {
             bobbleMap.remove(key);
         }
+        trashList.clear();
+
 
         MainScene.bGameover = checkGameover();
     }

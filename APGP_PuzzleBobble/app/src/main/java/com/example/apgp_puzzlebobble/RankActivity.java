@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
 
 public class RankActivity extends AppCompatActivity {
 
@@ -19,6 +20,10 @@ public class RankActivity extends AppCompatActivity {
         setContentView(R.layout.activity_rank);
         setContentView(gameView);
         mContext = this;
+
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
 
         new RankScene().pushScene();
         BaseScene.getTopScene().onStart();

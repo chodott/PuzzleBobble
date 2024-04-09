@@ -16,12 +16,10 @@
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="400dp"
-        android:layout_height="729dp"
+        android:layout_width="411dp"
+        android:layout_height="890dp"
         android:layout_gravity="center"
-        android:orientation="vertical"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="1dp">
+        android:orientation="vertical">
 
         <Button
             android:id="@+id/button"
@@ -39,7 +37,7 @@
             android:layout_gravity="center"
             android:onClick="onBtnQuit"
             android:text="Quit"
-            android:translationY="520dp" />
+            android:translationY="525dp" />
 
         <Button
             android:id="@+id/button3"
@@ -50,26 +48,7 @@
             android:text="RANK"
             android:translationY="430dp" />
 
-        <TableLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="45dp" />
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="35dp" />
-        </TableLayout>
 
     </LinearLayout>
 

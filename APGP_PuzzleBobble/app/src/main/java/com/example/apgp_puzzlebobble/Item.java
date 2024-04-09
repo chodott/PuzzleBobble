@@ -29,6 +29,7 @@ public class Item extends Sprite{
     public int cntSrcSize;
 
     public boolean bHolding;
+    public boolean bNeedMove;
     protected RectF itemDstRect = new RectF();
     protected RectF cntDstRect = new RectF();
     protected Rect srcRect = new Rect();
@@ -72,6 +73,7 @@ public class Item extends Sprite{
     public void release(float x, float y)
     {
         bHolding = false;
+        bNeedMove = true;
         startX = x;
         startY = y;
         time = 0;
@@ -115,10 +117,9 @@ public class Item extends Sprite{
 
         countSrcRect.set(count * cntSrcSize, 0, (count + 1) * cntSrcSize, countBitmap.getHeight());
 
-        if((x != endX || y != endY) && !bHolding)
+        if(bNeedMove && !bHolding)
         {
             //베지어로 이동
-
             float deltaX = endX - startX;
             float deltaY = endY - startY;
 
@@ -130,6 +131,8 @@ public class Item extends Sprite{
             float newX = startX + deltaX * time/1.f;
             float newY = startY + deltaY * time/1.f;
             move(newX, newY);
+
+            if(time >= 1.f) bNeedMove = false;
         }
     }
 

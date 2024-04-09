@@ -20,7 +20,6 @@ public class VerticalBomb extends BombItem
                 explosionList.add(new AnimSprite(R.mipmap.bombsprite, x, y, width, height, fps, FRAME_COUNT, 1));
             }
         }
-
         EXPLOSION_SIZE = 0.5f;
     }
     public void applyAbility()
