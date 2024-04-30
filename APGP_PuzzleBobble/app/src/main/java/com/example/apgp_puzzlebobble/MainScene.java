@@ -181,16 +181,6 @@ public class MainScene extends BaseScene {
                 float curX = Metrics.toGameX(event.getX());
                 float curY = -Metrics.toGameY(event.getY());
 
-                //구슬 각도 조절 동작
-//                shotPath.reset();
-//                float xCenter = Metrics.game_width/2;
-//                shotPath.moveTo(xCenter, 14.f);
-//                float slope = (startY + curY) / (startX - curX);
-//                float xDist = startX  - curX;
-//                float xPos = xCenter + (startX - curX);
-//                float yPos = 14.f - (slope * (xDist));
-//                shotPath.lineTo(xPos, yPos);
-
                 arrow.setAngle(curX, -curY);
                 return true;
 

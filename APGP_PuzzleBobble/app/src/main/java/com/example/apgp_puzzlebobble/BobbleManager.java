@@ -200,22 +200,19 @@ public class BobbleManager implements IGameObject {
         for(Bobble bb : bobbleMap.values())
         {
             for(int key : bb.parentsBobbleNum)
-            {
+            {   //접촉한 Bobble이 있는지 판단
                 bb.bAttached = checkAttached(key);
+                //해결 코드 - 접촉한 Bobble이 있울 때 반복문 탈출.
                 if(bb.bAttached) break;
             }
 
-            if(bb.bAttached == false && bb.y > 2.25f)
+            //제일 윗줄, 접촉하지 않은 Bobble Drop
+            if(!bb.bAttached && bb.y > 2.25f)
             {
                bb.bDestroyed = true;
             }
-
+            //남은 Bobble상태 초기화
             uncheckBobble();
-        }
-
-        for(Bobble bb : bobbleMap.values())
-        {
-            bb.bAttached = false;
         }
     }
 
@@ -388,8 +385,14 @@ public class BobbleManager implements IGameObject {
     }
 
     private void uncheckBobble()
+
     {
-        for(Bobble bb : bobbleMap.values()) bb.bChecked = false;
+
+        for(Bobble bb : bobbleMap.values())
+        {
+            bb.bChecked = false;
+            bb.bAttached = false;
+        }
     }
 
     @Override
