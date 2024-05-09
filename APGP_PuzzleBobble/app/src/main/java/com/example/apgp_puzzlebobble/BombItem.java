@@ -20,17 +20,6 @@ public class BombItem extends ItemBobble {
 
     }
 
-    public boolean checkInExplosion(Bobble bb)
-    {
-        double dist = Math.sqrt(Math.pow(x - bb.x, 2) + Math.pow(y - bb.y,2));
-        if(dist < EXPLOSION_SIZE/2)
-        {
-            return true;
-        }
-
-        return false;
-    }
-
     @Override
     public void update() {
         super.update();
@@ -46,15 +35,22 @@ public class BombItem extends ItemBobble {
 
     @Override
     public void applyAbility() {
+        //폭파 사운드 출력
         explose();
 
         for(int key: BobbleManager.bobbleMap.keySet())
-        {
+        {   //폭발 범위 내 Bobble 제거
             boolean bResult = checkInExplosion(BobbleManager.bobbleMap.get(key));
             if(bResult)
             {
                 BobbleManager.popTargetBobbles.add(key);
             }
         }
+    }
+
+    public boolean checkInExplosion(Bobble bb)
+    {   //원형 범위로 충돌 체크
+        double dist = Math.sqrt(Math.pow(x - bb.x, 2) + Math.pow(y - bb.y,2));
+        return dist < EXPLOSION_SIZE / 2;
     }
 }

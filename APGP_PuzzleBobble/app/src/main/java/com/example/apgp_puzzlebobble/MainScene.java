@@ -118,33 +118,27 @@ public class MainScene extends BaseScene {
         {
             Sound.pauseMusic();
 
-            int highScore = HighScoreManager.getInt(MainActivity.mContext, "High");
             int curScore = score.getScore();
-            if (curScore > highScore)
-                HighScoreManager.setInt(MainActivity.mContext, "High", score.getScore());
-
             //Rank
             int saveScore;
-            int saveRank;
             for (int i = 0; i < 10; ++i) {
                 int rank = i + 1;
                 saveScore = HighScoreManager.getInt(MainActivity.mContext, Integer.toString(rank));
                 if (saveScore < curScore) {
-                    saveRank = rank;
-                    for (int j = 10; j > saveRank; --j) {
+                    int curRank = rank;
+                    for (int j = 10; j > curRank; --j) {
                         String string_rank = Integer.toString(j);
                         String string_newRank = Integer.toString(j - 1);
 
                         HighScoreManager.setInt(MainActivity.mContext, string_rank, HighScoreManager.getInt(MainActivity.mContext, string_newRank));
                         HighScoreManager.setString(MainActivity.mContext, string_rank +".", HighScoreManager.getString(MainActivity.mContext, string_newRank + "."));
                     }
-                    HighScoreManager.setInt(MainActivity.mContext, Integer.toString(saveRank), curScore);
-                    HighScoreManager.setString(MainActivity.mContext,Integer.toString(saveRank) + ".", alphabetName.getName() );
+                    HighScoreManager.setInt(MainActivity.mContext, Integer.toString(curRank), curScore);
+                    HighScoreManager.setString(MainActivity.mContext,Integer.toString(curRank) + ".", alphabetName.getName() );
                     break;
 
                 }
             }
-
             bSaveRank = true;
         }
     }

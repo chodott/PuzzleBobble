@@ -24,7 +24,6 @@ public class VerticalBomb extends BombItem
     }
     public void applyAbility()
     {
-        explose();
         for(int i=0; i < explosionList.size(); ++i)
         {
             AnimSprite explosion = explosionList.get(i);
@@ -32,27 +31,15 @@ public class VerticalBomb extends BombItem
             explosion.bAnimating = true;
             explosion.y = i * 1.f + 2.f;
             explosion.x = x;
-            //explosion.dstRect.set(x - EXPLOSION_SIZE, newY - EXPLOSION_SIZE, x + EXPLOSION_SIZE, newY + EXPLOSION_SIZE);
         }
 
-        for(int key: BobbleManager.bobbleMap.keySet())
-        {
-            boolean bResult = checkInExplosion(BobbleManager.bobbleMap.get(key));
-            if(bResult)
-            {
-                BobbleManager.popTargetBobbles.add(key);
-            }
-        }
+        super.applyAbility();
     }
 
     public boolean checkInExplosion(Bobble bb)
     {
-        if (bb.x <= x + EXPLOSION_SIZE && bb.x >= x - EXPLOSION_SIZE)
-        {
-            return true;
-        }
-
-        return false;
+        //x값만 비교하여 세로 범위 폭파
+        return (bb.x <= x + EXPLOSION_SIZE && bb.x >= x - EXPLOSION_SIZE);
     }
 
 

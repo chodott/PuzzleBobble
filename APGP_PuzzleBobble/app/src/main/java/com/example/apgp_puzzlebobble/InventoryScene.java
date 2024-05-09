@@ -128,8 +128,6 @@ public class InventoryScene extends BaseScene
                         onEnd();
                         MainScene mainscene = (MainScene)getTopScene();
                         mainscene.equipItem(selectedItem.type);
-
-                        //아이템 사용 사운드 추가
                         Sound.playEffect(R.raw.itemuseeffect);
                     }
 
