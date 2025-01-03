@@ -20,7 +20,8 @@ public class Bobble extends AnimSprite{
     private static Bitmap burstBitmap;
     private float xShotSpeed;
     private float yShotSpeed;
-    private float accumulatedTime;
+    public int column;
+    public int row;
     private float direction;
 
 
@@ -77,12 +78,11 @@ public class Bobble extends AnimSprite{
         int Width = burstBitmap.getWidth();
         int Height = burstBitmap.getHeight();
 
-        parentsBobbleNum.clear();
         frameWidth = Width/ frameCount;
         frameHeight = Height/COLOR_COUNT;
     }
 
-    public boolean checkCollision(Bobble target)
+    public boolean checkCollision(Bobble target, boolean bOdd)
     {
         float targetX = target.x;
         float targetY = target.y;
@@ -90,47 +90,48 @@ public class Bobble extends AnimSprite{
 
         if(target.bBurst || target.bDestroyed) return false;
 
-        if(BOBBLE_SIZE * 2 >= distance)
+        if(BOBBLE_SIZE * 2 < distance) return false;
+
+        setActive(false);
+        bAnimating = true;
+        float slope = (targetY - y) / (targetX - x);
+        if(Math.abs(slope) < 1.0f)
         {
-            setActive(false);
-            bAnimating = true;
-            float gap = 1.f- (float)distance;
-            float slope = (targetY - y) / (targetX - x);
-
-            double angleRadians = Math.atan(slope);
-            float newX, newY;
-            if(slope < 0.f)
+            row = target.row;
+            if(x<target.x) column = target.column - 1;
+            else column = target.column+1;
+        }
+        else if(slope >= 1.0f)
+        {
+            if(x<target.x)
             {
-                if(x < targetX)
-                {
-                    newX = x - (float)Math.cos(angleRadians) * gap;
-                    newY = y - (float)Math.sin(angleRadians) * gap;
-                }
-                else
-                {
-                    newX = x + (float)Math.cos(angleRadians) * gap;
-                    newY = y + (float)Math.sin(angleRadians) * gap;
-                }
-
+                row = target.row-1;
+                column =target.column- (bOdd?1:0);
             }
             else
             {
-                if(x < targetX)
-                {
-                    newX = x - (float)Math.cos(angleRadians) * gap;
-                    newY = y - (float)Math.sin(angleRadians) * gap;
-                }
-                else
-                {
-                    newX = x + (float)Math.cos(angleRadians) * gap;
-                    newY = y + (float)Math.sin(angleRadians) * gap;
-                }
+                row = target.row+1;
+                column =target.column+(bOdd?1:0);
+                int max = BobbleManager.LIST_WIDTH;
+                if(target.column >= max) column = max-1;
             }
-
-            setPos(newX, newY);
-            return true;
         }
-        return false;
+        else
+        {
+            if(x<target.x)
+            {
+                row = target.row+1;
+                column =target.column-(bOdd?0:1);
+                if(target.column<0) column =0;
+            }
+            else
+            {
+                row = target.row-1;
+                column =target.column+(bOdd?1:0);
+            }
+        }
+        return true;
+
     }
 
     public void endAnimation()
@@ -139,7 +140,7 @@ public class Bobble extends AnimSprite{
         if(bBurst)
         {
             bVisibility = false;
-            BobbleManager.trashList.add(num);
+            BobbleManager.bobbleArray[row][column] = null;
         }
     }
 
@@ -147,6 +148,7 @@ public class Bobble extends AnimSprite{
     {
         super.update();
         float frameTime = BaseScene.frameTime;
+
         if(bDestroyed)
         {
             //연쇄 반응 자리 고정

@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace 'com.example.apgp_puzzlebobble'
-    compileSdk 33
+    compileSdk 35
 
     defaultConfig {
         applicationId "com.example.apgp_puzzlebobble"
         minSdk 21
-        targetSdk 33
+        targetSdk 31
         versionCode 1
         versionName "1.0"
 

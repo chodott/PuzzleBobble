@@ -2,16 +2,29 @@ package com.example.apgp_puzzlebobble;
 
 import android.graphics.Canvas;
 import android.util.Log;
+import android.util.Pair;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Queue;
+
 
 public class BobbleManager implements IGameObject {
 
+    public static final int LIST_WIDTH = 9;
+    public static final int LIST_HEIGHT = 8;
+    public static Bobble[][] bobbleArray = new Bobble[LIST_HEIGHT][LIST_WIDTH];
+    private static boolean bOddNumber = false;
     public static int nextNum = 0;
     public static HashMap<Integer, Bobble> bobbleMap = new HashMap<>();
-    public static ArrayList<Integer> popTargetBobbles = new ArrayList<>();
+    public static ArrayList<Bobble> popTargetBobbles = new ArrayList<>();
     public static ArrayList<Integer> trashList = new ArrayList<>();
     public static int saveNum = 0;
     public static boolean bWaitingAddLine;
@@ -36,68 +49,43 @@ public class BobbleManager implements IGameObject {
         curItem = null;
     }
 
+
     void addNewBobble()
     {
         //발사할 구슬 생성
-        curBobbleNum = nextNum++;
         curBobble = new Bobble()
                 .setPos(Metrics.game_width/2, 17.0f);
-    }
-    void addBobble()
-    {
-        bobbleMap.put(Integer.valueOf(nextNum++), new Bobble());
-    }
-    static void addBobble(Bobble bobble, int num) {
-        bobbleMap.put(num, bobble);
-        bobble.num = num;
-    }
-    static void addBobble(Bobble bobble)
-    {
-        bobbleMap.put(Integer.valueOf(nextNum++), bobble);
     }
 
     static void addBobbleLine()
     {
-        ArrayList<Integer> newbbNum = new ArrayList<>();
-        //정해진 개수만큼 반복하면서 추가
-        for(int i=0;i<9; ++i)
+        //CUSTOM
+        for(int i=LIST_HEIGHT-2;i>=0;--i)
         {
-            int addNum = nextNum++;
-            newbbNum.add(addNum);
-            Bobble curbb = new Bobble().setPos(i * 1.f + 1.25f, 2.25f);
-            addBobble(curbb, addNum);
-            if(i > 0)
-            {
-                curbb.parentsBobbleNum.add(saveNum);
-                FindBobble(saveNum).parentsBobbleNum.add(addNum);
-            }
-
-            saveNum = addNum;
-        }
-
-        for(int bbnum: bobbleMap.keySet())
-        {
-            Bobble bb = bobbleMap.get(bbnum);
-            for(int curbbnum : newbbNum)
-            {
-                if(curbbnum != bbnum)
+            for(int j=0; j < LIST_WIDTH; ++j) {
+                Bobble bb = bobbleArray[i][j];
+                if (bb != null)
                 {
-                    Bobble curbb = bobbleMap.get(curbbnum);
-                    //boolean bOverlap = bb.checkCollision(curbb);
-                    boolean bOverlap = false;
-                    if(bb.y <= 2.25f && bb.x <= curbb.x + Bobble.BOBBLE_SIZE && bb.x >= curbb.x - Bobble.BOBBLE_SIZE) bOverlap = true;
-                    if(bOverlap)
-                    {
-                        curbb.parentsBobbleNum.add(bbnum);
-                        bb.parentsBobbleNum.add(curbbnum);
-                    }
+                    bb.setPos(bb.x, bb.y + 1.f);
+                    bb.row = i + 1;
                 }
+                bobbleArray[i+1][j] = bobbleArray[i][j];
             }
-            if(!newbbNum.contains(bbnum))
-                bb.setPos(bb.x, bb.y + 1.f);
+            //GameOver
+        }
+        bOddNumber = !bOddNumber;
+        int createBobbleCnt = LIST_WIDTH - (bOddNumber? 0:1);
+        float firstXpos = bOddNumber? 1.25f:1.75f;
+        for(int i=0;i<LIST_WIDTH; ++i)
+        {
+            if(i<createBobbleCnt)
+            {
+                bobbleArray[0][i] = new Bobble().setPos(i * 1.0f + firstXpos, 2.25f);
+                bobbleArray[0][i].row = 0; bobbleArray[0][i].column = i;
+            }
+            else bobbleArray[0][i] = null;
         }
 
-        newbbNum.clear();
     }
 
     void shotBobble(float direction)
@@ -112,44 +100,54 @@ public class BobbleManager implements IGameObject {
     }
 
 
-    void checkBobble(int bobbleNum)
+    boolean checkChain(Bobble bb)
     {   //충돌 발생시 이벤트
-        Bobble bb = FindBobble(bobbleNum);
-        bb.bChecked = true;
-        for(int bbNum : bb.parentsBobbleNum)
-        {
-            Bobble checkbb = FindBobble(bbNum);
-            if(checkbb == null) continue;
-            if(checkbb.bChecked) continue;
+        int chainCnt = 0;
+        int chainColor = bb.color;
 
-            checkbb.bChecked = true;
-            if(bb.color == checkbb.color)
-            {   //컬러가 같을 때 부모 계속 추적
-                checkBobble(bbNum);
-                popTargetBobbles.add(bbNum);
+        Queue<Pair<Integer,Integer>> nextBobbleQueue = new LinkedList<>();
+        nextBobbleQueue.add(new Pair<>(bb.row, bb.column));
+        while(!nextBobbleQueue.isEmpty())
+        {
+            Pair<Integer, Integer> pos = nextBobbleQueue.poll();
+            if(pos.first <0 || pos.second < 0|| pos.first>= LIST_HEIGHT || pos.second >=LIST_WIDTH) continue;
+            Bobble target = bobbleArray[pos.first][pos.second];
+            if(target == null) continue;
+            if(target.color != chainColor) continue;
+            if(target.bChecked) continue;
+            target.bChecked = true;
+            chainCnt++;
+            nextBobbleQueue.add(new Pair<>(pos.first-1, pos.second));
+            nextBobbleQueue.add(new Pair<>(pos.first, pos.second-1));
+            nextBobbleQueue.add(new Pair<>(pos.first, pos.second+1));
+            nextBobbleQueue.add(new Pair<>(pos.first+1, pos.second));
+
+            boolean bOdd = target.row % 2 ==0? bOddNumber:!bOddNumber;
+            if(bOdd)
+            {
+                nextBobbleQueue.add(new Pair<>(pos.first-1, pos.second-1));
+                nextBobbleQueue.add(new Pair<>(pos.first+1, pos.second-1));
             }
+            else
+            {
+                nextBobbleQueue.add(new Pair<>(pos.first+1, pos.second+1));
+                nextBobbleQueue.add(new Pair<>(pos.first-1, pos.second+1));
+            }
+            popTargetBobbles.add(target);
         }
+        uncheckBobble();
+        if(chainCnt>=3) return true;
+        popTargetBobbles.clear();
+        return false;
     }
 
     void popBobbles(boolean bUseItem)
     {
         if(bUseItem)
         {
-            for (int i : popTargetBobbles)
+            for(Bobble bb : popTargetBobbles)
             {
-                for (int j : FindBobble(i).parentsBobbleNum)
-                {
-                    Bobble parentbb = FindBobble(j);
-                    if(parentbb != null)
-                    {
-                        parentbb.parentsBobbleNum.remove((Object)i);
-                    }
-                }
-            }
-
-            for(int i : popTargetBobbles)
-            {
-                DeleteBobble(i);
+                bb.burst();
             }
 
             int score = popTargetBobbles.size() * 10;
@@ -158,88 +156,66 @@ public class BobbleManager implements IGameObject {
 
         else
         {
-            int comboSize = popTargetBobbles.size();
-            if(comboSize >= 3)
+            //pop bobble sound
+            Sound.playEffect(R.raw.popeffect);
+            for(Bobble bb : popTargetBobbles)
             {
-                //pop bobble sound
-                Sound.playEffect(R.raw.popeffect);
-                for (int i : popTargetBobbles)
-                {
-                    Bobble targetbb = FindBobble(i);
-                    targetColor = targetbb.color;
-
-                    for (int j : targetbb.parentsBobbleNum)
-                    {
-                        Bobble checkbb = FindBobble(j);
-                        if(checkbb != null) {
-                            checkbb.parentsBobbleNum.remove((Object) i);
-                        }
-                    }
-
-                }
-
-                for(int i : popTargetBobbles)
-                {
-                    DeleteBobble(i);
-                }
-
-                int score = comboSize * 10;
-                MainScene.score.setScore(MainScene.score.getScore() + score);
-                makeNewItem(comboSize);
-
+                bb.burst();
             }
         }
         popTargetBobbles.clear();
-        uncheckBobble();
-
-        //drop 필요
-        dropBobble();
         }
 
     public void dropBobble() {
-        for(Bobble bb : bobbleMap.values())
-        {
-            for(int key : bb.parentsBobbleNum)
-            {   //접촉한 Bobble이 있는지 판단
-                bb.bAttached = checkAttached(key);
-                //해결 코드 - 접촉한 Bobble이 있울 때 반복문 탈출.
-                if(bb.bAttached) break;
-            }
 
-            //제일 윗줄, 접촉하지 않은 Bobble Drop
-            if(!bb.bAttached && bb.y > 2.25f)
-            {
-               bb.bDestroyed = true;
-            }
-            //남은 Bobble상태 초기화
-            uncheckBobble();
-        }
-    }
-
-    private boolean checkAttached(int key) {
-        Bobble bb = bobbleMap.get(key);
-        if(bb == null) return false;
-        if(bb.bChecked) return bb.bAttached;
-
-        bb.bChecked = true;
-        if(bb.y <= 2.25f || bb.bAttached)
-        {
+        Queue<Pair<Integer,Integer>> nextBobbleQueue = new LinkedList<>();
+        for(int j=0;j<LIST_WIDTH;++j)
+        {   //제일 윗줄
+            Bobble bb = bobbleArray[0][j];
+            if(bb == null) continue;
             bb.bAttached = true;
-            return true;
+            nextBobbleQueue.add(new Pair<>(bb.row, bb.column));
         }
-        else
+
+        while(!nextBobbleQueue.isEmpty())
         {
-            for(int parentKey : bb.parentsBobbleNum)
+            Pair<Integer, Integer> pos = nextBobbleQueue.poll();
+            if(pos.first <0 || pos.second < 0|| pos.first>= LIST_HEIGHT || pos.second >=LIST_WIDTH) continue;
+            Bobble target = bobbleArray[pos.first][pos.second];
+            if(target == null) continue;
+            if(target.bChecked) continue;
+            if(target.bBurst) continue;
+            target.bChecked = true;
+            target.bAttached = true;
+            nextBobbleQueue.add(new Pair<>(pos.first-1, pos.second));
+            nextBobbleQueue.add(new Pair<>(pos.first, pos.second-1));
+            nextBobbleQueue.add(new Pair<>(pos.first, pos.second+1));
+            nextBobbleQueue.add(new Pair<>(pos.first+1, pos.second));
+
+            boolean bOdd = target.row % 2 ==0? bOddNumber:!bOddNumber;
+            if(bOdd)
             {
-                if(checkAttached(parentKey))
-                {
-                    bb.bAttached = true;
-                    return true;
-                }
+                nextBobbleQueue.add(new Pair<>(pos.first-1, pos.second-1));
+                nextBobbleQueue.add(new Pair<>(pos.first+1, pos.second-1));
+            }
+            else
+            {
+                nextBobbleQueue.add(new Pair<>(pos.first+1, pos.second+1));
+                nextBobbleQueue.add(new Pair<>(pos.first-1, pos.second+1));
             }
         }
 
-        return false;
+        for(int i=1;i<LIST_HEIGHT;++i)
+        {
+            for(int j=0;j<LIST_WIDTH;++j)
+            {
+                Bobble bb = bobbleArray[i][j];
+                if(bb == null || bb.bAttached) continue;
+                bb.bDestroyed = true;
+            }
+
+        }
+        uncheckBobble();
     }
 
     public void makeNewItem(int comboSize)
@@ -281,40 +257,39 @@ public class BobbleManager implements IGameObject {
         return bobbleMap.get(num);
     }
 
-    void DeleteBobble(int num)
-    {
-        bobbleMap.get(num).burst();
-       //bobbleMap.remove(num);
-    }
-
     @Override
     public void update() {
-        for(Bobble bb: bobbleMap.values())
+
+        for(int i=0;i<LIST_HEIGHT;++i)
         {
-            bb.update();
+            for(Bobble bb : bobbleArray[i])
+            {
+                if(bb == null) continue;
+                bb.update();
+            }
         }
         curBobble.update();
 
         //충돌체크
-        if(curItem != null)
-        {
-            curItem.update();
-            if(curItem == null) return;
-            if(!curItem.bActive) return;
+//        if(curItem != null)
+//        {
+//            curItem.update();
+//            if(curItem == null) return;
+//            if(!curItem.bActive) return;
+//
+//            boolean bHit = false;
+//            for(int key: bobbleMap.keySet())
+//            {
+//                bHit = curItem.checkCollision(bobbleMap.get(key));
+//                if (bHit) {
+//                    curItem.applyAbility();
+//                    popBobbles(true);
+//                    break;
+//                }
+//            }
+//        }
 
-            boolean bHit = false;
-            for(int key: bobbleMap.keySet())
-            {
-                bHit = curItem.checkCollision(bobbleMap.get(key));
-                if (bHit) {
-                    curItem.applyAbility();
-                    popBobbles(true);
-                    break;
-                }
-            }
-        }
-
-        else if(curBobble.getAcitve())
+        if(curBobble.getAcitve())
         {
             boolean bHit = false;
             if(curBobble.y <= 2.25f)
@@ -324,30 +299,34 @@ public class BobbleManager implements IGameObject {
             }
             else
             {
-                for(int key: bobbleMap.keySet())
-                {
-                    if(key != curBobbleNum)
+                for(int i = LIST_HEIGHT-1; i>=0;--i)
+                 {
+                    boolean bOdd = (i % 2 ==0) ? !bOddNumber : bOddNumber;
+                    for(int j= 0; j<LIST_WIDTH;++j)
                     {
-                        boolean bResult = curBobble.checkCollision(bobbleMap.get(key));
-                        if(bResult)
-                        {
-                            curBobble.parentsBobbleNum.add(key);
-                            bobbleMap.get(key).parentsBobbleNum.add(curBobbleNum);
-                            bHit = true;
-                        }
+
+                        if(bobbleArray[i][j] == null) continue;
+                        bHit = curBobble.checkCollision(bobbleArray[i][j], bOdd);
+                        if(bHit) break;
                     }
+
+                    if(!bHit) continue;
+                    bOdd = (curBobble.row % 2 ==0)? bOddNumber: !bOddNumber;
+                    float firstXpos = bOdd? 1.25f:1.75f;
+                    float firstYpos = 2.25f;
+                    curBobble.setPos(curBobble.column * 1.0f + firstXpos,
+                            curBobble.row * 1.0f + firstYpos);
+                    bobbleArray[curBobble.row][curBobble.column] = curBobble;
+                    break;
                 }
             }
 
             if(bHit)
             {
-                addBobble(curBobble, curBobbleNum);
-                checkBobble(curBobbleNum);
-                curBobble.setActive(false);
-                popTargetBobbles.add(curBobbleNum);
+                boolean bResult = checkChain(curBobble);
                 addNewBobble();
-                uncheckBobble();
-                popBobbles(false);
+                if(bResult) popBobbles(false);
+                dropBobble();
             }
         }
 
@@ -360,13 +339,6 @@ public class BobbleManager implements IGameObject {
             }
 
         }
-
-        for(int key : trashList)
-        {
-            bobbleMap.remove(key);
-        }
-        trashList.clear();
-
 
         MainScene.bGameover = checkGameover();
     }
@@ -387,20 +359,27 @@ public class BobbleManager implements IGameObject {
     private void uncheckBobble()
 
     {
-
-        for(Bobble bb : bobbleMap.values())
+        for(int i=0;i<LIST_HEIGHT; ++i)
         {
-            bb.bChecked = false;
-            bb.bAttached = false;
+            for(Bobble bb : bobbleArray[i])
+            {
+                if(bb == null) continue;
+                bb.bChecked = false;
+                bb.bAttached = false;
+            }
         }
     }
 
     @Override
     public void draw(Canvas canvas) {
 
-        for(Bobble bb : bobbleMap.values())
+        for(int i=0;i<LIST_HEIGHT;++i)
         {
-            bb.draw(canvas);
+            for(Bobble bb : bobbleArray[i])
+            {
+                if(bb==null) continue;
+                bb.draw(canvas);
+            }
         }
         curBobble.draw(canvas);
 

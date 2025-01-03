@@ -38,12 +38,16 @@ public class BombItem extends ItemBobble {
         //폭파 사운드 출력
         explose();
 
-        for(int key: BobbleManager.bobbleMap.keySet())
+        for(int i=0;i<BobbleManager.LIST_HEIGHT; ++i)
         {   //폭발 범위 내 Bobble 제거
-            boolean bResult = checkInExplosion(BobbleManager.bobbleMap.get(key));
-            if(bResult)
+            for(int j=0;j<BobbleManager.LIST_WIDTH; ++j)
             {
-                BobbleManager.popTargetBobbles.add(key);
+                Bobble target = BobbleManager.bobbleArray[i][j];
+                if(target == null) continue;
+                boolean bResult = checkInExplosion(target);
+                if(!bResult) continue;
+                BobbleManager.popTargetBobbles.add(target);
+
             }
         }
     }
