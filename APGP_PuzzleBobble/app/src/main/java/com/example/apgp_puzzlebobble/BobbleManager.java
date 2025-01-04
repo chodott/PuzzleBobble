@@ -20,6 +20,9 @@ public class BobbleManager implements IGameObject {
     public int curBobbleNum;
     private int targetColor;
 
+    //FPS Checker
+    FPSCounter fpsCounter = new FPSCounter();
+
     BobbleManager()
     {
         addBobbleLine();
@@ -341,6 +344,7 @@ public class BobbleManager implements IGameObject {
 
             if(bHit)
             {
+
                 addBobble(curBobble, curBobbleNum);
                 checkBobble(curBobbleNum);
                 curBobble.setActive(false);
