@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Choreographer;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,6 +16,10 @@ public class GameView extends View implements Choreographer.FrameCallback{
 
     public static Resources res;
     public static GameView view;
+
+    private long frameCount = 0;     // 프레임 카운터
+    private long fpsLastTime = 0;   // 마지막 FPS 계산 시간
+    private int currentFPS = 0;     // 계산된 FPS 값
 
 
     public GameView(Context context) {
@@ -89,6 +94,18 @@ public class GameView extends View implements Choreographer.FrameCallback{
             BaseScene.getTopScene().update(elapsedNanos);
         }
         previousNanos = nanos;
+        frameCount++; // 프레임 카운터 증가
+
+        // FPS 계산 (1초마다)
+        if (fpsLastTime == 0) {
+            fpsLastTime = nanos; // 초기화
+        } else if (nanos - fpsLastTime >= 1_000_000_000) { // 1초 경과
+            currentFPS = (int) frameCount; // 1초 동안 카운트된 프레임 수를 FPS로 저장
+            frameCount = 0; // 카운터 초기화
+            fpsLastTime = nanos; // 마지막 시간 갱신
+            Log.d("FPS", "FPS: "+currentFPS);
+        }
+
         invalidate();
         if(isShown())
         {
