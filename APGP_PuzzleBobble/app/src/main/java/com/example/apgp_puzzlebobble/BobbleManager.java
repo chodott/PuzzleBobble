@@ -344,6 +344,7 @@ public class BobbleManager implements IGameObject {
 
             if(bHit)
             {
+                long startTime = System.nanoTime(); // 시작 시간 기록
 
                 addBobble(curBobble, curBobbleNum);
                 checkBobble(curBobbleNum);
@@ -352,6 +353,11 @@ public class BobbleManager implements IGameObject {
                 addNewBobble();
                 uncheckBobble();
                 popBobbles(false);
+
+                long endTime = System.nanoTime(); // 종료 시간 기록
+                long elapsedTime = endTime - startTime; // 실행 시간 계산
+                Log.d("Adjacency List Method ", "NanoTime: " + elapsedTime / 1_000_000);
+
             }
         }
 
