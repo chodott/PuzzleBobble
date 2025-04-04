@@ -90,7 +90,7 @@ public class Bobble extends AnimSprite{
 
         if(target.bBurst || target.bDestroyed) return false;
 
-        if(BOBBLE_SIZE * 2 < distance) return false;
+        if(BOBBLE_SIZE * 2.0 < distance) return false;
 
         setActive(false);
         bAnimating = true;

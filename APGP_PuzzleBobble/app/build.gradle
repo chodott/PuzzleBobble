@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace 'com.example.apgp_puzzlebobble'
-    compileSdk 35
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.example.apgp_puzzlebobble"
@@ -26,6 +26,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.debug
         }
+        debug {
+                    debuggable true
+                }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

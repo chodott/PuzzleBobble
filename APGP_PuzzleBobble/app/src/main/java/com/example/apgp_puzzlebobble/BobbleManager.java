@@ -19,7 +19,7 @@ import java.util.Queue;
 public class BobbleManager implements IGameObject {
 
     public static final int LIST_WIDTH = 9;
-    public static final int LIST_HEIGHT = 8;
+    public static final int LIST_HEIGHT = 15;
     public static Bobble[][] bobbleArray = new Bobble[LIST_HEIGHT][LIST_WIDTH];
     private static boolean bOddNumber = false;
     public static int nextNum = 0;
@@ -66,7 +66,7 @@ public class BobbleManager implements IGameObject {
                 Bobble bb = bobbleArray[i][j];
                 if (bb != null)
                 {
-                    bb.setPos(bb.x, bb.y + 1.f);
+                    bb.setPos(bb.x, bb.y + 0.9f);
                     bb.row = i + 1;
                 }
                 bobbleArray[i+1][j] = bobbleArray[i][j];
@@ -99,48 +99,6 @@ public class BobbleManager implements IGameObject {
         else curBobble.shot(direction);
     }
 
-
-    boolean checkChain(Bobble bb)
-    {   //충돌 발생시 이벤트
-        int chainCnt = 0;
-        int chainColor = bb.color;
-
-        Queue<Pair<Integer,Integer>> nextBobbleQueue = new LinkedList<>();
-        nextBobbleQueue.add(new Pair<>(bb.row, bb.column));
-        while(!nextBobbleQueue.isEmpty())
-        {
-            Pair<Integer, Integer> pos = nextBobbleQueue.poll();
-            if(pos.first <0 || pos.second < 0|| pos.first>= LIST_HEIGHT || pos.second >=LIST_WIDTH) continue;
-            Bobble target = bobbleArray[pos.first][pos.second];
-            if(target == null) continue;
-            if(target.color != chainColor) continue;
-            if(target.bChecked) continue;
-            target.bChecked = true;
-            chainCnt++;
-            nextBobbleQueue.add(new Pair<>(pos.first-1, pos.second));
-            nextBobbleQueue.add(new Pair<>(pos.first, pos.second-1));
-            nextBobbleQueue.add(new Pair<>(pos.first, pos.second+1));
-            nextBobbleQueue.add(new Pair<>(pos.first+1, pos.second));
-
-            boolean bOdd = target.row % 2 ==0? bOddNumber:!bOddNumber;
-            if(bOdd)
-            {
-                nextBobbleQueue.add(new Pair<>(pos.first-1, pos.second-1));
-                nextBobbleQueue.add(new Pair<>(pos.first+1, pos.second-1));
-            }
-            else
-            {
-                nextBobbleQueue.add(new Pair<>(pos.first+1, pos.second+1));
-                nextBobbleQueue.add(new Pair<>(pos.first-1, pos.second+1));
-            }
-            popTargetBobbles.add(target);
-        }
-        uncheckBobble();
-        if(chainCnt>=3) return true;
-        popTargetBobbles.clear();
-        return false;
-    }
-
     void popBobbles(boolean bUseItem)
     {
         if(bUseItem)
@@ -164,29 +122,25 @@ public class BobbleManager implements IGameObject {
             }
         }
         popTargetBobbles.clear();
-        }
+    }
 
-    public void dropBobble() {
-
-        Queue<Pair<Integer,Integer>> nextBobbleQueue = new LinkedList<>();
-        for(int j=0;j<LIST_WIDTH;++j)
-        {   //제일 윗줄
-            Bobble bb = bobbleArray[0][j];
-            if(bb == null) continue;
-            bb.bAttached = true;
-            nextBobbleQueue.add(new Pair<>(bb.row, bb.column));
-        }
-
+    int bfs(Queue<Pair<Integer,Integer>> nextBobbleQueue, int chainColor)
+    {
+        int chainCnt = 0;
         while(!nextBobbleQueue.isEmpty())
         {
             Pair<Integer, Integer> pos = nextBobbleQueue.poll();
-            if(pos.first <0 || pos.second < 0|| pos.first>= LIST_HEIGHT || pos.second >=LIST_WIDTH) continue;
+            if(pos.first <0 || pos.second < 0||
+                    pos.first>= LIST_HEIGHT || pos.second >=LIST_WIDTH) continue;
+
             Bobble target = bobbleArray[pos.first][pos.second];
             if(target == null) continue;
+            if(chainColor >= 0 && target.color != chainColor) continue;
             if(target.bChecked) continue;
             if(target.bBurst) continue;
             target.bChecked = true;
             target.bAttached = true;
+            chainCnt++;
             nextBobbleQueue.add(new Pair<>(pos.first-1, pos.second));
             nextBobbleQueue.add(new Pair<>(pos.first, pos.second-1));
             nextBobbleQueue.add(new Pair<>(pos.first, pos.second+1));
@@ -203,7 +157,36 @@ public class BobbleManager implements IGameObject {
                 nextBobbleQueue.add(new Pair<>(pos.first+1, pos.second+1));
                 nextBobbleQueue.add(new Pair<>(pos.first-1, pos.second+1));
             }
+            if(chainColor >= 0) popTargetBobbles.add(target);
         }
+        return chainCnt;
+    }
+
+    boolean checkChain(Bobble bb)
+    {   //충돌 발생시 이벤트
+        int chainCnt = 0;
+        int chainColor = bb.color;
+
+        Queue<Pair<Integer,Integer>> nextBobbleQueue = new LinkedList<>();
+        nextBobbleQueue.add(new Pair<>(bb.row, bb.column));
+        chainCnt = bfs(nextBobbleQueue, chainColor);
+        uncheckBobble();
+        if(chainCnt>=3) return true;
+        popTargetBobbles.clear();
+        return false;
+    }
+
+    public void dropBobble() {
+        Queue<Pair<Integer,Integer>> nextBobbleQueue = new LinkedList<>();
+        for(int j=0;j<LIST_WIDTH;++j)
+        {   //제일 윗줄
+            Bobble bb = bobbleArray[0][j];
+            if(bb == null) continue;
+            bb.bAttached = true;
+            nextBobbleQueue.add(new Pair<>(bb.row, bb.column));
+        }
+
+        bfs(nextBobbleQueue, -1);
 
         for(int i=1;i<LIST_HEIGHT;++i)
         {
@@ -213,7 +196,6 @@ public class BobbleManager implements IGameObject {
                 if(bb == null || bb.bAttached) continue;
                 bb.bDestroyed = true;
             }
-
         }
         uncheckBobble();
     }
@@ -315,7 +297,7 @@ public class BobbleManager implements IGameObject {
                     float firstXpos = bOdd? 1.25f:1.75f;
                     float firstYpos = 2.25f;
                     curBobble.setPos(curBobble.column * 1.0f + firstXpos,
-                            curBobble.row * 1.0f + firstYpos);
+                            curBobble.row * 0.9f + firstYpos);
                     bobbleArray[curBobble.row][curBobble.column] = curBobble;
                     break;
                 }
