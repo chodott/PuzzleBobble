@@ -143,6 +143,12 @@ public class MainScene extends BaseScene {
         }
     }
 
+    public void onPause()
+    {
+        super.onPause();
+        bPause = true;
+    }
+
     public void addNewItem(int type)
     {
         ItemType itemType = ItemType.values()[type];

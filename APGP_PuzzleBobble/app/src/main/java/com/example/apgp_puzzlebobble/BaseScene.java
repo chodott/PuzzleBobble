@@ -49,6 +49,16 @@ public abstract class BaseScene {
         }
     }
 
+    public void onPause()
+    {
+        Sound.pauseMusic();
+    }
+
+    public void onResume()
+    {
+        Sound.resumeMusic();
+    }
+
     public boolean onTouchEvent(MotionEvent event) {
         return false;
     }

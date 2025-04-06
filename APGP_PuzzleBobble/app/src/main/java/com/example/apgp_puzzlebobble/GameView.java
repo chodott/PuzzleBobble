@@ -112,4 +112,14 @@ public class GameView extends View implements Choreographer.FrameCallback{
             Choreographer.getInstance().postFrameCallback(this);
         }
     }
+
+    public void onPause()
+    {
+        BaseScene.getTopScene().onPause();
+    }
+
+    protected void onResume()
+    {
+        Choreographer.getInstance().postFrameCallback(this); // 프레임 루프 재개
+    }
 }
