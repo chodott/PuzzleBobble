@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.lang.reflect.Array;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,13 +31,15 @@ public class BobbleManager implements IGameObject {
     public static boolean bWaitingAddLine;
     public static Bobble curBobble;
     public static ItemBobble curItem;
-    public int curBobbleNum;
-    private int targetColor;
+
+    int targetColor;
+    private TimeTracker timeTracker;
 
     BobbleManager()
     {
         addBobbleLine();
         addNewBobble();
+        timeTracker = new TimeTracker();
     }
 
     public static void restart()
@@ -273,6 +276,7 @@ public class BobbleManager implements IGameObject {
 
         if(curBobble.getAcitve())
         {
+            timeTracker.begin();
             boolean bHit = false;
             if(curBobble.y <= 2.25f)
             {
@@ -309,6 +313,7 @@ public class BobbleManager implements IGameObject {
                 addNewBobble();
                 if(bResult) popBobbles(false);
                 dropBobble();
+                timeTracker.end();
             }
         }
 
@@ -332,6 +337,7 @@ public class BobbleManager implements IGameObject {
             if(bb.y >14.f && !bb.bDestroyed)
             {
                 //HighScoreManager.setInt(this);
+                timeTracker.log();
                 return true;
             }
         }

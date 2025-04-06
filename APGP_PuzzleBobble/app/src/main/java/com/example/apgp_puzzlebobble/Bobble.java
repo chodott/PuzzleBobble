@@ -24,9 +24,6 @@ public class Bobble extends AnimSprite{
     public int row;
     private float direction;
 
-
-    public ArrayList<Integer> parentsBobbleNum = new ArrayList<>();
-
     public int num;
     public int color;
     public boolean bDestroyed;
