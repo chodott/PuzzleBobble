@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Bobble extends AnimSprite{
-    public static final float BOBBLE_SIZE = 0.5F;
+    public static final float BOBBLE_SIZE = 0.5f;
     private static float dropSpeed = 20.f;
     private static Random random;
     private static float speed = 10.f;
@@ -34,7 +34,7 @@ public class Bobble extends AnimSprite{
     public boolean bChecked =false;
     public Bobble()
     {
-        super(R.mipmap.bobblesprite, 4.5f, 4.0f, BOBBLE_SIZE * 2, BOBBLE_SIZE * 2, 6.955f, FRAME_COUNT, COLOR_COUNT);
+        super(R.mipmap.bobblesprite, 4.5f, 5.0f, BOBBLE_SIZE * 2, BOBBLE_SIZE * 2, 6.955f, FRAME_COUNT, COLOR_COUNT);
         if(R.mipmap.bobbleburstsprite != 0)
         {
             burstBitmap = BitmapPool.get(R.mipmap.bobbleburstsprite);
@@ -45,7 +45,7 @@ public class Bobble extends AnimSprite{
     }
 
     public Bobble(int type) {
-        super(R.mipmap.bobblesprite, 4.5f, 4.0f, BOBBLE_SIZE * 2, BOBBLE_SIZE * 2, 6.955f, FRAME_COUNT, COLOR_COUNT);
+        super(R.mipmap.bobblesprite, 4.5f, 5.0f, BOBBLE_SIZE * 2, BOBBLE_SIZE * 2, 6.955f, FRAME_COUNT, COLOR_COUNT);
         this.type = type;
     }
 

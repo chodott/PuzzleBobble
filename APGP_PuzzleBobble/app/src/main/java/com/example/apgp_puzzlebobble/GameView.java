@@ -20,11 +20,17 @@ public class GameView extends View implements Choreographer.FrameCallback{
     private long frameCount = 0;     // 프레임 카운터
     private long fpsLastTime = 0;   // 마지막 FPS 계산 시간
     private int currentFPS = 0;     // 계산된 FPS 값
-
+    private Log log;
+    private boolean bOneCnt = true;
 
     public GameView(Context context) {
         super(context);
         init(null, 0);
+    }
+
+    public GameView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(attrs, 0);
     }
 
     private void init(AttributeSet attrs, int defStyle) {
@@ -41,29 +47,27 @@ public class GameView extends View implements Choreographer.FrameCallback{
     protected void onSizeChanged(int w, int h, int oldw, int oldh)
     {
         super.onSizeChanged(w,h,oldw,oldh);
-//
-//        float view_ratio = (float)w / (float)h;
-//        float game_ratio = game_width / game_height;
-//        if(view_ratio > game_ratio)
-//        {
-//            x_offset = (int)((w - h * game_ratio)/2);
-//            y_offset = 0;
-//            scale = h/game_height;
-//        }
 
+        log.d("screensize", "w:"+getWidth() + "h:" +getHeight());
         float view_ratio = (float)w / (float)h;
         float game_ratio = Metrics.game_width / Metrics.game_height;
-        if (view_ratio > game_ratio) {
-            Metrics.x_offset = (int) ((w - h * game_ratio) / 2);
+        if (view_ratio >= game_ratio) {
+            Metrics.x_offset = ((w - h * game_ratio) / 2);
             Metrics.y_offset = 0;
             Metrics.scale = h / Metrics.game_height;
-        } else {
+        }
+        else {
             Metrics.x_offset = 0;
-            Metrics.y_offset = (int)((h - w / game_ratio) / 2);
+            Metrics.y_offset = ((h - w / game_ratio) / 2);
             Metrics.scale = w / Metrics.game_width;
         }
 
-
+        if(bOneCnt)
+        {
+            new MainScene().pushScene();
+            BaseScene.getTopScene().onStart();
+            bOneCnt = false;
+        }
     }
 
     @Override
@@ -120,6 +124,7 @@ public class GameView extends View implements Choreographer.FrameCallback{
 
     protected void onResume()
     {
+        BaseScene.getTopScene().onResume();
         Choreographer.getInstance().postFrameCallback(this); // 프레임 루프 재개
     }
 }

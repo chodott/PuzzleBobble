@@ -69,7 +69,7 @@ public class BobbleManager implements IGameObject {
                 Bobble bb = bobbleArray[i][j];
                 if (bb != null)
                 {
-                    bb.setPos(bb.x, bb.y + 0.9f);
+                    bb.setPos(bb.x, bb.y + 0.8f);
                     bb.row = i + 1;
                 }
                 bobbleArray[i+1][j] = bobbleArray[i][j];
@@ -83,7 +83,7 @@ public class BobbleManager implements IGameObject {
         {
             if(i<createBobbleCnt)
             {
-                bobbleArray[0][i] = new Bobble().setPos(i * 1.0f + firstXpos, 2.25f);
+                bobbleArray[0][i] = new Bobble().setPos(i * 1.0f + firstXpos, 2.4f);
                 bobbleArray[0][i].row = 0; bobbleArray[0][i].column = i;
             }
             else bobbleArray[0][i] = null;
@@ -237,11 +237,6 @@ public class BobbleManager implements IGameObject {
         curBobble.setPos(Metrics.game_width/2, 17.f);
     }
 
-    static Bobble FindBobble(int num)
-    {
-        return bobbleMap.get(num);
-    }
-
     @Override
     public void update() {
 
@@ -299,9 +294,9 @@ public class BobbleManager implements IGameObject {
                     if(!bHit) continue;
                     bOdd = (curBobble.row % 2 ==0)? bOddNumber: !bOddNumber;
                     float firstXpos = bOdd? 1.25f:1.75f;
-                    float firstYpos = 2.25f;
-                    curBobble.setPos(curBobble.column * 1.0f + firstXpos,
-                            curBobble.row * 0.9f + firstYpos);
+                    float firstYpos = 2.4f;
+                    curBobble.setPos(curBobble.column * Bobble.BOBBLE_SIZE*2 + firstXpos,
+                            curBobble.row * 0.8f + firstYpos);
                     bobbleArray[curBobble.row][curBobble.column] = curBobble;
                     break;
                 }

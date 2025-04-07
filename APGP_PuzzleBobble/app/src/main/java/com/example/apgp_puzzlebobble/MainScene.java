@@ -54,7 +54,7 @@ public class MainScene extends BaseScene {
     public MainScene()
     {
         add(new Background(0));
-        arrow = new Arrow(R.mipmap.gearsprite,Metrics.game_width/2, 17.0f, 5.f, 5.f);
+        arrow = new Arrow(R.mipmap.gearsprite,Metrics.game_width/2, 18.0f, 5.f, 5.f);
         add(arrow);
         bobbleMgr = new BobbleManager();
         add(bobbleMgr);

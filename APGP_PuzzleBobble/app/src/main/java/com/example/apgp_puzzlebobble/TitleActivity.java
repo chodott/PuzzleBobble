@@ -13,7 +13,6 @@ public class TitleActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         gameView = new GameView(this);
-        setContentView(gameView);
         new TitleScene().pushScene();
         BaseScene.getTopScene().onStart();
 
