@@ -30,7 +30,6 @@ public class MainScene extends BaseScene {
 
     public Arrow arrow;
     public EndScreen endScreen;
-    public Path shotPath = new Path();
     public static HashMap<ItemType, Integer> itemlistMap = new HashMap<>();
 
     private Button restartBtn;
@@ -42,6 +41,8 @@ public class MainScene extends BaseScene {
     private Button RightArrowBtn;
     private Button UpArrowBtn;
     private Button DownArrowBtn;
+
+    private InputManager inputManager = new InputManager();
 
     public int nameNum = 1;
     float startX, startY;
@@ -63,39 +64,54 @@ public class MainScene extends BaseScene {
         limitTimer = new LimitTimer(R.mipmap.scoresprite, Metrics.game_width/2 + 0.8f, 0.f, 0.8f);
         add(limitTimer);
 
-
+        //인벤토리는 좀 미루자
         invenBtn = new Button(R.mipmap.itembobble, Metrics.game_width - 1.f, Metrics.game_height - 1.f, 1.5f, 1.5f);
+        inputManager.addListener(invenBtn);
         invenBtn.setSrcRect();
 
         //pause
         pauseBtn = new Button(R.mipmap.pausebtn2, 0.75f, 0.75f, 1.5f, 1.5f);
+        pauseBtn.setOnClickToDo(this::onPause);
         pauseBtn.setSrcRect();
+        inputManager.addListener((pauseBtn));
 
+
+        //Resume
         resumeBtn = new Button(R.mipmap.buttonsprite, Metrics.game_width/2, Metrics.game_height/2, 4.f, 1.f);
+        resumeBtn.setOnClickToDo(this::onResume);
         resumeBtn.setSrcRect(2, false);
+        inputManager.addListener((resumeBtn));
 
         //Game Over관련
         endScreen = new EndScreen();
         alphabetName = new Alphabet(R.mipmap.namesprite, Metrics.game_width/2 + 1.2f, Metrics.game_height/2 - 0.4f, 0.8f);
 
         restartBtn = new Button(R.mipmap.buttonsprite, Metrics.game_width/2, Metrics.game_height/2 - 2.2f, 4.f, 1.f);
-        endBtn = new Button(R.mipmap.buttonsprite, Metrics.game_width/2, Metrics.game_height/2 + 2.2f, 4.f, 1.f);
         restartBtn.setSrcRect(0, false);
+        restartBtn.setOnClickToDo(this::restart);
+        inputManager.addListener((restartBtn));
+
+        endBtn = new Button(R.mipmap.buttonsprite, Metrics.game_width/2, Metrics.game_height/2 + 2.2f, 4.f, 1.f);
         endBtn.setSrcRect(1, false);
+        endBtn.setOnClickToDo(this::onEnd);
+        inputManager.addListener((endBtn));
 
         LeftArrowBtn = new Button(R.mipmap.arrowbtnsprite, Metrics.game_width/2 - 2.f, Metrics.game_height/2, 1.f, 1.f);
-        RightArrowBtn = new Button(R.mipmap.arrowbtnsprite, Metrics.game_width/2 + 2.f, Metrics.game_height/2, 1.f, 1.f);
-        UpArrowBtn = new Button(R.mipmap.arrowbtnsprite, Metrics.game_width/2, Metrics.game_height/2 - 1.f, 1.f, 1.f);
-        DownArrowBtn = new Button(R.mipmap.arrowbtnsprite, Metrics.game_width/2, Metrics.game_height/2 + 1.f, 1.f, 1.f);
         LeftArrowBtn.setSrcRect(1, true);
+
+        RightArrowBtn = new Button(R.mipmap.arrowbtnsprite, Metrics.game_width/2 + 2.f, Metrics.game_height/2, 1.f, 1.f);
         RightArrowBtn.setSrcRect(0, true);
+
+        UpArrowBtn = new Button(R.mipmap.arrowbtnsprite, Metrics.game_width/2, Metrics.game_height/2 - 1.f, 1.f, 1.f);
         UpArrowBtn.setSrcRect(2, true);
+
+        DownArrowBtn = new Button(R.mipmap.arrowbtnsprite, Metrics.game_width/2, Metrics.game_height/2 + 1.f, 1.f, 1.f);
         DownArrowBtn.setSrcRect(3, true);
 
         //임의로 추가
     }
 
-    private static void restart()
+    public void restart()
     {
         bGameover = false;
         bPause = false;
@@ -146,7 +162,14 @@ public class MainScene extends BaseScene {
     public void onPause()
     {
         super.onPause();
+        Sound.playEffect(R.raw.pauseeffect);
         bPause = true;
+    }
+
+    public void OnResume()
+    {
+        Sound.playEffect(R.raw.toucheffect);
+        bPause = false;
     }
 
     public void addNewItem(int type)
@@ -169,8 +192,61 @@ public class MainScene extends BaseScene {
             bobbleMgr.equipItem(type);
     }
 
+    public void MoveNameCursor(int type)
+    {
+        switch(type) {
+            case 0: //left Btn
+                if (nameNum > 0) {
+                    DownArrowBtn.x -= 0.8f;
+                    UpArrowBtn.x -= 0.8f;
+                    nameNum--;
+                    DownArrowBtn.setDstRect();
+                    UpArrowBtn.setDstRect();
+                }
+                break;
+
+            case 1: //rightBtn
+                if (nameNum < 2) {
+                    DownArrowBtn.x += 0.8f;
+                    UpArrowBtn.x += 0.8f;
+                    nameNum++;
+                    DownArrowBtn.setDstRect();
+                    UpArrowBtn.setDstRect();
+                }
+            case 2: //DownBtn
+            {
+                char ch[] = new char[3];
+                alphabetName.getName().getChars(0, 3, ch, 0);
+                ch[nameNum] += 1;
+
+                if (ch[nameNum] >= 91) {
+                    ch[nameNum] = 'A';
+                }
+                String newName = new String(ch);
+                alphabetName.setName(newName);
+                break;
+            }
+            case 3: //UpBtn
+            {
+                char ch[] = new char[3];
+                alphabetName.getName().getChars(0, 3, ch, 0);
+                ch[nameNum] -= 1;
+
+                if(ch[nameNum] <= 64)
+                {
+                    ch[nameNum] = 'Z';
+                }
+
+                String newName = new String(ch);
+                alphabetName.setName(newName);
+            }
+        }
+
+    }
+
     public boolean onTouchEvent(MotionEvent event) {
         int action = event.getAction();
+        inputManager.touchEvent(event);
         switch (action) {
             case MotionEvent.ACTION_DOWN:
                 startX = Metrics.game_width/2;
@@ -194,70 +270,8 @@ public class MainScene extends BaseScene {
                         Sound.playEffect(R.raw.toucheffect);
                         onEnd();
                         popScene();
-                        MainScene.restart();
+                        restart();
                         new MainScene().pushScene();
-                    }
-                    else if (endBtn.checkTouched(endX, -endY)) {
-                        onEnd();
-                        System.exit(0);
-                    }
-
-                    else if(RightArrowBtn.checkTouched(endX, -endY))
-                    {
-                        if(nameNum <2)
-                        {
-                            DownArrowBtn.x += 0.8f;
-                            UpArrowBtn.x += 0.8f;
-                            nameNum++;
-                            DownArrowBtn.setDstRect();
-                            UpArrowBtn.setDstRect();
-                        }
-                        return true;
-                    }
-
-                    else if(LeftArrowBtn.checkTouched(endX, -endY))
-                    {
-                        if(nameNum>0) {
-                            DownArrowBtn.x -= 0.8f;
-                            UpArrowBtn.x -= 0.8f;
-                            nameNum--;
-                            DownArrowBtn.setDstRect();
-                            UpArrowBtn.setDstRect();
-                        }
-                        return true;
-                    }
-
-                    else if(DownArrowBtn.checkTouched(endX, -endY))
-                    {
-                        //글자 다운
-                        char ch[] = new char[3];
-                        alphabetName.getName().getChars(0, 3, ch, 0);
-                        ch[nameNum] += 1;
-
-                        if(ch[nameNum] >= 91)
-                        {
-                            ch[nameNum] = 'A';
-                        }
-                        String newName = new String(ch);
-                        alphabetName.setName(newName);
-                        return true;
-                    }
-
-                    else if(UpArrowBtn.checkTouched(endX, -endY))
-                    {
-                        //글자 업
-                        char ch[] = new char[3];
-                        alphabetName.getName().getChars(0, 3, ch, 0);
-                        ch[nameNum] -= 1;
-
-                        if(ch[nameNum] <= 64)
-                        {
-                            ch[nameNum] = 'Z';
-                        }
-
-                        String newName = new String(ch);
-                        alphabetName.setName(newName);
-                        return true;
                     }
                 }
 
@@ -268,18 +282,9 @@ public class MainScene extends BaseScene {
                         Sound.playEffect(R.raw.toucheffect);
                         onEnd();
                         popScene();
-                        MainScene.restart();
+                        restart();
                         new MainScene().pushScene();
 
-                    }
-                    else if (endBtn.checkTouched(endX, -endY)) {
-                        onEnd();
-                        System.exit(0);
-                    }
-                    else if(resumeBtn.checkTouched(endX, -endY))
-                    {
-                        Sound.playEffect(R.raw.toucheffect);
-                        bPause = false;
                     }
                 }
 
@@ -294,15 +299,9 @@ public class MainScene extends BaseScene {
                         return true;
                     }
 
-                    else if(pauseBtn.checkTouched(endX, -endY))
-                    {
-                        Sound.playEffect(R.raw.pauseeffect);
-                        bPause = true;
-                    }
 
                     else
                     {
-
                         float direction = (startY + endY) / -(startX - endX);
                         bobbleMgr.shotBobble(direction);
                         //shotPath.reset();
@@ -315,15 +314,7 @@ public class MainScene extends BaseScene {
 
     @Override
     public void update(long elapsedNanos) {
-        if(bGameover)
-        {
-
-        }
-        else if(bPause)
-        {
-
-        }
-        else
+        if(!bGameover && !bPause)
         {
             super.update(elapsedNanos);
             if(timeItem!= null)
@@ -338,6 +329,7 @@ public class MainScene extends BaseScene {
     {
         super.draw(canvas);
         //canvas.drawPath(shotPath, paint);
+
         if(timeItem != null)
             timeItem.draw(canvas);
 

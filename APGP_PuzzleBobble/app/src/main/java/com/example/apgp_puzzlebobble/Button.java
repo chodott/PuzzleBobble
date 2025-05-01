@@ -2,10 +2,12 @@ package com.example.apgp_puzzlebobble;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.view.MotionEvent;
 
-public class Button extends Sprite
+public class Button extends Sprite implements InputManager.OnTouchListner
 {
     public Rect srcRect = new Rect();
+    private Runnable onClickToDo;
     public Button(int bitmapResId, float cx, float cy, float width, float height) {
         super(bitmapResId, cx, cy, width, height);
     }
@@ -31,6 +33,11 @@ public class Button extends Sprite
         srcRect.set(0, 0, bitmap.getWidth(), bitmap.getHeight());
     }
 
+    public void setOnClickToDo(Runnable todo)
+    {
+        onClickToDo = todo;
+    }
+
     @Override
     public void update()
     {
@@ -43,11 +50,21 @@ public class Button extends Sprite
         canvas.drawBitmap(bitmap,srcRect,dstRect,null);
     }
 
-    public boolean checkTouched(float cx, float cy) {
-        if(cx <= x + width/2 && cx >= x -width/2 && cy <= y + height/2 && cy >= y - height/2)
+    @Override
+    public void onTouch(MotionEvent event)
+    {
+        if(event.getAction() == MotionEvent.ACTION_DOWN)
         {
-               return true;
+            if(checkTouched(Metrics.toGameX(event.getX()), Metrics.toGameY(event.getY())))
+            {
+                onClickToDo.run();
+            }
         }
-        return false;
+    }
+
+    public boolean checkTouched(float cx, float cy)
+    {
+        if(cx <= x + width/2 && cx >= x -width/2 && cy <= y + height/2 && cy >= y - height/2) return true;
+        else return false;
     }
 }
