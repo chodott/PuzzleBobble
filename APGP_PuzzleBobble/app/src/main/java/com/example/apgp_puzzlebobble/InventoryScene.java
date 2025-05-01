@@ -11,6 +11,8 @@ import java.util.Random;
 public class InventoryScene extends BaseScene
 {
     private static Random random = new Random();
+    private InputManager inputManager = new InputManager();
+
     private Background bg;
     private static float speed;
     private float x,y = 0;
@@ -23,21 +25,20 @@ public class InventoryScene extends BaseScene
     public Item selectedItem;
     float startX, startY;
 
-    public InventoryScene(HashMap<ItemType ,Integer> itemList)
+    public InventoryScene()
     {
         bg = new Background(1);
 
         returnBtn = new Button(R.mipmap.itembobble, Metrics.game_width - 1.f, Metrics.game_height - 1.f, 1.5f, 1.5f);
         returnBtn.setSrcRect();
+        returnBtn.setOnClickToDo(this::openMainScene);
+        inputManager.addListener(returnBtn);
 
-        //Item 획득 목록 전달
-        for(ItemType key : itemList.keySet())
-        {
-            int type = key.ordinal();
-            addItem(type, itemList.get(key));
-        }
+    }
 
-
+    public void openMainScene()
+    {
+        swapScene();
     }
 
     public boolean checkItemSelect(float cx, float cy)
@@ -60,18 +61,15 @@ public class InventoryScene extends BaseScene
     }
 
     @Override
-    protected void onPause()
+    public void onPause()
     {
 
     }
 
     @Override
-    protected void onEnd() {
-        MainScene.itemlistMap.clear();
-        for(int key : ItemMap.keySet())
-        {
-            MainScene.itemlistMap.put(ItemType.values()[key], ItemMap.get(key).count);
-        }
+    protected void onEnd()
+    {
+
     }
 
     @Override
@@ -106,6 +104,7 @@ public class InventoryScene extends BaseScene
     public boolean onTouchEvent(MotionEvent event)
     {
         int action = event.getAction();
+        inputManager.touchEvent(event);
         switch(action)
         {
             case MotionEvent.ACTION_DOWN:
@@ -133,7 +132,6 @@ public class InventoryScene extends BaseScene
                     if(touchDistance <= 1.f)
                     {
                         selectedItem.useItem();
-                        popScene();
                         onEnd();
                         MainScene mainscene = (MainScene)getTopScene();
                         mainscene.equipItem(selectedItem.type);
@@ -158,12 +156,6 @@ public class InventoryScene extends BaseScene
                     }
                     selectedItem = null;
                 }
-
-                else if(returnBtn.checkTouched(endX, endY))
-                {
-                    onEnd();
-                    popScene();
-                }
                 break;
         }
         return true;
@@ -181,7 +173,7 @@ public class InventoryScene extends BaseScene
             ItemMap.put(type, item);
         }
     }
-    private void addItem(int type, int count)
+    public void addItem(int type, int count)
     {
         float row = ((int)(type / 3) + 1) * Metrics.game_height/5;
         float column = (type % 3 + 1) * Metrics.game_width/4;

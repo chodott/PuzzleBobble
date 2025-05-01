@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public abstract class BaseScene {
 
@@ -22,13 +23,18 @@ public abstract class BaseScene {
         return stack.size();
     }
 
+    public void swapScene()
+    {
+        Collections.swap(stack, 1,2);
+
+    }
+
     public void popScene()
     {
         stack.remove(this);
     }
 
     protected abstract void onStart();
-    protected abstract void onPause();
     protected abstract void onEnd();
 
     protected ArrayList<IGameObject> gameObjects = new ArrayList<>();

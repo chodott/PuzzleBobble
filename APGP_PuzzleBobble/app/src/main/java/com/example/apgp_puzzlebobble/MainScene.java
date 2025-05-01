@@ -13,7 +13,7 @@ import java.util.HashMap;
 
 public class MainScene extends BaseScene {
     private static Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-
+    private InventoryScene inventoryScene;
     private boolean bSaveRank = false;
 
     public static boolean bGameover = false;
@@ -30,7 +30,6 @@ public class MainScene extends BaseScene {
 
     public Arrow arrow;
     public EndScreen endScreen;
-    public static HashMap<ItemType, Integer> itemlistMap = new HashMap<>();
 
     private Button restartBtn;
     private Button endBtn;
@@ -68,6 +67,7 @@ public class MainScene extends BaseScene {
         invenBtn = new Button(R.mipmap.itembobble, Metrics.game_width - 1.f, Metrics.game_height - 1.f, 1.5f, 1.5f);
         inputManager.addListener(invenBtn);
         invenBtn.setSrcRect();
+        invenBtn.setOnClickToDo(this::openInventory);
 
         //pause
         pauseBtn = new Button(R.mipmap.pausebtn2, 0.75f, 0.75f, 1.5f, 1.5f);
@@ -108,15 +108,18 @@ public class MainScene extends BaseScene {
         DownArrowBtn = new Button(R.mipmap.arrowbtnsprite, Metrics.game_width/2, Metrics.game_height/2 + 1.f, 1.f, 1.f);
         DownArrowBtn.setSrcRect(3, true);
 
-        //임의로 추가
+        inventoryScene = new InventoryScene();
+        inventoryScene.pushScene();
     }
 
     public void restart()
     {
+        Sound.playEffect(R.raw.toucheffect);
+        onEnd();
+        popScene();
         bGameover = false;
         bPause = false;
         score.setScore(0);
-        itemlistMap.clear();
         BobbleManager.restart();
         Sound.playMusic(R.raw.mainmusic);
     }
@@ -174,10 +177,7 @@ public class MainScene extends BaseScene {
 
     public void addNewItem(int type)
     {
-        ItemType itemType = ItemType.values()[type];
-        if(itemlistMap.containsKey(itemType))
-            itemlistMap.put(itemType, itemlistMap.get(itemType) + 1);
-        else itemlistMap.put(itemType, 1);
+        inventoryScene.addItem(type,1);
     }
     public void equipItem(int type)
     {
@@ -244,9 +244,17 @@ public class MainScene extends BaseScene {
 
     }
 
+    public void openInventory()
+    {
+        if(!BobbleManager.curBobble.getAcitve()) {
+            Sound.playEffect(R.raw.pauseeffect);
+            swapScene();
+        }
+    }
+
     public boolean onTouchEvent(MotionEvent event) {
         int action = event.getAction();
-        inputManager.touchEvent(event);
+        if(inputManager.touchEvent(event)) return true;
         switch (action) {
             case MotionEvent.ACTION_DOWN:
                 startX = Metrics.game_width/2;
@@ -263,51 +271,10 @@ public class MainScene extends BaseScene {
             case MotionEvent.ACTION_UP:
                 float endX = Metrics.toGameX(event.getX());
                 float endY = -Metrics.toGameY(event.getY());
-
-                if(bGameover) {
-                    if (restartBtn.checkTouched(endX, -endY))
-                    {
-                        Sound.playEffect(R.raw.toucheffect);
-                        onEnd();
-                        popScene();
-                        restart();
-                        new MainScene().pushScene();
-                    }
-                }
-
-                else if(bPause)
-                {
-                    if (restartBtn.checkTouched(endX, -endY))
-                    {
-                        Sound.playEffect(R.raw.toucheffect);
-                        onEnd();
-                        popScene();
-                        restart();
-                        new MainScene().pushScene();
-
-                    }
-                }
-
-                else
-                {
-                    if (invenBtn.checkTouched(endX, -endY)) {
-                        //아이템 창 호출
-                        if(!BobbleManager.curBobble.getAcitve()) {
-                            Sound.playEffect(R.raw.pauseeffect);
-                            new InventoryScene(itemlistMap).pushScene();
-                        }
-                        return true;
-                    }
-
-
-                    else
-                    {
-                        float direction = (startY + endY) / -(startX - endX);
-                        bobbleMgr.shotBobble(direction);
-                        //shotPath.reset();
-                        return true;
-                    }
-                }
+                float direction = (startY + endY) / -(startX - endX);
+                bobbleMgr.shotBobble(direction);
+                //shotPath.reset();
+                return true;
         }
         return super.onTouchEvent(event);
     }

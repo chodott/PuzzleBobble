@@ -174,7 +174,11 @@ public class BobbleManager implements IGameObject {
         nextBobbleQueue.add(new Pair<>(bb.row, bb.column));
         chainCnt = bfs(nextBobbleQueue, chainColor);
         uncheckBobble();
-        if(chainCnt>=3) return true;
+        if(chainCnt>=3)
+        {
+            makeNewItem(bb.color);
+            return true;
+        }
         popTargetBobbles.clear();
         return false;
     }
@@ -203,7 +207,7 @@ public class BobbleManager implements IGameObject {
         uncheckBobble();
     }
 
-    public void makeNewItem(int comboSize)
+    public void makeNewItem(int targetColor)
     {
         BaseScene scene = BaseScene.getTopScene();
         MainScene mainscene = (MainScene)scene;
