@@ -6,7 +6,7 @@ import android.view.MotionEvent;
 import java.util.ArrayList;
 
 public abstract class BaseScene {
-    private static ArrayList<BaseScene> stack = new ArrayList<>();
+
     public static float frameTime;
 
     public  Sound sound = new Sound();
@@ -14,6 +14,8 @@ public abstract class BaseScene {
     {
         return stack.get(stack.size()-1);
     }
+
+    private static ArrayList<BaseScene> stack = new ArrayList<>();
     public int pushScene()
     {
         stack.add(this);
@@ -24,15 +26,16 @@ public abstract class BaseScene {
     {
         stack.remove(this);
     }
-    public int add(IGameObject gobj)
-    {
-        gameObjects.add(gobj);
-        return gameObjects.size();
-    }
 
     protected abstract void onStart();
+    protected abstract void onPause();
     protected abstract void onEnd();
 
+    protected ArrayList<IGameObject> gameObjects = new ArrayList<>();
+    public void add(IGameObject gobj)
+    {
+        gameObjects.add(gobj);
+    }
     public void update(long elapsedNanos)
     {
         frameTime = elapsedNanos/ 1_000_000_000f;
@@ -63,5 +66,4 @@ public abstract class BaseScene {
         return false;
     }
 
-    protected ArrayList<IGameObject> gameObjects = new ArrayList<>();
 }

@@ -36,6 +36,8 @@ public class InventoryScene extends BaseScene
             int type = key.ordinal();
             addItem(type, itemList.get(key));
         }
+
+
     }
 
     public boolean checkItemSelect(float cx, float cy)
@@ -54,6 +56,12 @@ public class InventoryScene extends BaseScene
 
     @Override
     protected void onStart() {
+
+    }
+
+    @Override
+    protected void onPause()
+    {
 
     }
 
@@ -120,7 +128,8 @@ public class InventoryScene extends BaseScene
                 float endY = Metrics.toGameY(event.getY());
                 if(bTouchItem)
                 {
-                    Double touchDistance = Math.sqrt(Math.pow(startX - endX,2) + Math.pow(startY - endY, 2));
+                    double touchDistance =
+                            Math.sqrt(Math.pow(startX - endX,2) + Math.pow(startY - endY, 2));
                     if(touchDistance <= 1.f)
                     {
                         selectedItem.useItem();

@@ -11,4 +11,10 @@ public class TitleScene extends BaseScene
     protected void onEnd() {
         Sound.stopMusic();
     }
+
+    @Override
+    protected void onPause()
+    {
+        Sound.stopMusic();
+    }
 }

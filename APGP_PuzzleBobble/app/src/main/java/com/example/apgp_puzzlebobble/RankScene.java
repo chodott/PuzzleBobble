@@ -43,6 +43,12 @@ public class RankScene extends BaseScene {
     }
 
     @Override
+    protected void onPause()
+    {
+        Sound.stopMusic();
+    }
+
+    @Override
     public void update(long elapsedNanos) {
         super.update(elapsedNanos);
         for(Score score : ScoreList)
