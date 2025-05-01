@@ -43,7 +43,7 @@ public class RankScene extends BaseScene {
     }
 
     @Override
-    protected void onPause()
+    public void onPause()
     {
         Sound.stopMusic();
     }

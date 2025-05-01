@@ -51,15 +51,17 @@ public class Button extends Sprite implements InputManager.OnTouchListner
     }
 
     @Override
-    public void onTouch(MotionEvent event)
+    public boolean onTouch(MotionEvent event)
     {
         if(event.getAction() == MotionEvent.ACTION_DOWN)
         {
             if(checkTouched(Metrics.toGameX(event.getX()), Metrics.toGameY(event.getY())))
             {
                 onClickToDo.run();
+                return true;
             }
         }
+        return false;
     }
 
     public boolean checkTouched(float cx, float cy)

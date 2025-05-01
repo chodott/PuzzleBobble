@@ -13,7 +13,7 @@ public class TitleScene extends BaseScene
     }
 
     @Override
-    protected void onPause()
+    public void onPause()
     {
         Sound.stopMusic();
     }

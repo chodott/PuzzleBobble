@@ -55,11 +55,4 @@ public class MainActivity extends AppCompatActivity {
         gameView.onResume();
     }
 
-    @Override
-    protected void onPause()
-    {
-        super.onPause();
-        BaseScene.getTopScene().onPause();
-    }
-
 }

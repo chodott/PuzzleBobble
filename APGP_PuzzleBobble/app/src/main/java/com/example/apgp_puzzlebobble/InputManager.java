@@ -14,16 +14,17 @@ public class InputManager
         touchListners.add(listner);
     }
 
-    public void touchEvent(MotionEvent event)
+    public boolean touchEvent(MotionEvent event)
     {
         for(OnTouchListner touchListner:touchListners)
         {
-            touchListner.onTouch(event);
+            if(touchListner.onTouch(event)) return true;
         }
+        return false;
     }
 
     public interface OnTouchListner
     {
-        void onTouch(MotionEvent event);
+        boolean onTouch(MotionEvent event);
     }
 }
